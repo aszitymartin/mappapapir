@@ -1,0 +1,1 @@
+<?php session_start(); if (isset($_SESSION['loggedin'])) { die('200'); } else { die('410'); }

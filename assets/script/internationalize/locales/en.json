@@ -1,0 +1,54 @@
+{
+  "head": {
+    "title": "Mappa Papír"
+  },
+  ".header_title_desc": {
+    "header-title-desc": "Everything that is stationery."
+  }, ".header-input-con": {
+    "header-search-holder": "Search for products.."
+  }, "#tooltipProfile": {
+    "tooltipProfile": "Login"
+  }, "#tooltipBasket": {
+    "tooltipBasket": "View Basket"
+  }, ".menuPriv": {
+    "menuPriv": "Advanced mode"
+  }, ".menuHelp": {
+    "menuHelp": "Help and Support"
+  }, ".menuPrivacy": {
+    "menuPrivacy": "Privacy"
+  }, ".menuTerms": {
+    "menuTerms": "Terms"
+  }, ".menuSettings": {
+    "menuSettings": "Settings"
+  }, ".menuFeedback": {
+    "menuFeedback": "Send Feedback"
+  }, ".menuLogout": {
+    "menuLogout": "Logout"
+  }, ".menuProfileSettings": {
+    "menuProfileSettings": "Profile settings"
+  }, ".menuWebshopSettings": {
+    "menuWebshopSettings": "Webshop settings"
+  }, ".menuThemeSettings": {
+    "menuThemeSettings": "Theme settings"
+  }, ".menuLanguageSettings": {
+    "menuLanguageSettings": "Language settings"
+  },
+
+
+  ".menuThemeDesc": {
+    "menuThemeDesc": "Change the theme of the page to reduce glare and relax your eyes."
+  },".menuLanguageDesc": {
+    "menuLanguageDesc": "Select the appropriate display language for you, which will be the default language on the page."
+  },
+
+
+  ".themeDark": {
+    "themeDark": "Dark mode"
+  }, ".themeLight": {
+    "themeLight": "Light mode"
+  }, ".themeAuto": {
+    "themeAuto": "Automatic"
+  }
+
+
+}

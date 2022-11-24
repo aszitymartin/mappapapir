@@ -1,0 +1,30 @@
+{
+  "name": "tinysort",
+  "version": "3.2.7",
+  "main": "dist/tinysort.min.js",
+  "license": "MIT/GPL",
+  "ignore": [
+    "**/.*",
+    "test",
+    "libs",
+    "doc",
+    ".bowerrc",
+    ".eslintrc.js",
+    ".gitignore",
+    "package.json",
+    "package-lock.json",
+    "webpack.config.js"
+  ],
+  "keywords": [
+    "sort",
+    "element",
+    "HTMLElement",
+    "Node",
+    "list",
+    "table",
+    "dom",
+    "html"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}

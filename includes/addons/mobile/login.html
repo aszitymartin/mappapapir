@@ -1,0 +1,66 @@
+<div class='user_action_con' style="border: none;" id='wizard_con'>
+    <div class='user_action_con_mobile_handler' id='user_action_con_mobile_handler'>
+    </div>
+    <div class='user_act_wrapper'>
+        <div class='user_act_breadcrumb align_left_h'>
+            <div class="user_act_breadcrumb_con">
+                <div class="wizard_breadcrumb_item">
+                    <span class="wizard_title">Belépési adatok</span>
+                </div>
+            </div>
+        </div>
+        <div class='user_act_wizard col login_wizard_con'>
+            <div class='wizard_main_image_con wizard_login_img_con'></div>
+            <form id='wizard_login_form'>
+                <div class='wizard_tab_login'>
+                    <div class='wizard_tab_main'>
+                        <div class='wizard_tab_main_item'>
+                            <span class='wizard_input_name'>E-mail cím</span>
+                            <div class='flex row'>
+                                <input class='wizard_input wizard_login_input' type='text' name='register_email' id="login__email" placeholder='mintamisi@email.hu' autocomplete='email' />
+                            </div>
+                        </div>
+                        <div class='wizard_tab_main_item'>
+                            <span class='wizard_input_name'>Jelszó</span>
+                            <div class='flex row'>
+                                <input class='wizard_input wizard_login_input wizard_login_input_pass' type="password" name='register_password' id="login__password" autocomplete='new-password' />
+                                <div class='wizard_input_password_show wizard_login_status' onclick="showPass('register_password')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" class="svg" fill-rule="nonzero" opacity="0.4"/><path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" class="svg" opacity="0.5"/></g>
+                                    </svg>
+                                </div>
+                            </div>
+                            <label class='wizard_input_info flex flex-row flex-align-c flex-justify-con-sb' id="logerr__con"><a href="#">Elfelejtett jelszó?</a></label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class='wizard_act_btn_con'>
+            <div>
+                <div id='wizard_back_to_main' class='wizard_act_btn button button-secondary' onclick='sidenavMain();'>Kilépés</div>
+            </div>
+            <div class='flex'>
+                <div id='wizard_next_btn' class='wizard_act_btn button button-primary' onclick="tryLogin()">Belépés</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function tryLogin () {
+    document.getElementById("wizard_next_btn").textContent = "Ellenőrzés..."; let apiKey = '739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544';
+    $.getJSON('https://api.ipdata.co?api-key=' + apiKey, function(data) { var log__data = new FormData();
+        const getDeviceType = () => { const ua = navigator.userAgent;
+            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) { return "tablet"; }
+            if ( /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) { return "mobile";}
+            return "desktop";
+        }; log__data.append("email", $('#login__email').val()); log__data.append("password", $('#login__password').val()); log__data.append("device", getDeviceType()); log__data.append("ip", data.ip); log__data.append("city", data.city); log__data.append("region", data.region); log__data.append("country", data.country_name);
+        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/actions/auth.php", data: log__data, dataType: 'json', contentType: false, processData: false,
+            success: function(res) { closeSidenav();
+                if (res === 200) { notificationSystem(0, 0, 0, 'Bejelentkezés', 'Sikeres bejelentkezés'); window.location.reload(true); }
+                if (res === 410) { notificationSystem(0, 1, 0, 'Bejelentkezés', 'Sikertelen bejelentkezés'); }
+            }, error: function (res) { console.log(res); }
+        });
+    }); 
+}
+</script>

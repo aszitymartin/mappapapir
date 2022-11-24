@@ -1,0 +1,31 @@
+<div class="flex flex-col gap-1" id="panel__main">
+    <div class="flex flex-row flex-align-c flex-justify-con-sb">
+        <span class="text-primary bold">Naptár készítés</span>
+        <span class="button button-secondary small-med" id="bc__box">Vissza</span>
+    </div>
+    <div class="flex flex-col gap-1 feat__body" id="feature__body">
+        <div class="flex flex-row gap-1 flex-justify-con-c">
+            <div class="flex flex-col">
+                <span class="text-primary bold small">A naptárat személyre szabottan, Önnek megfelelően szerkesztjük</span>
+                <ul>
+                    <li class="text-secondary capitalize"><span class="small-med">Színes betűvel, kerettel feltüntetheti a családi vonatkozású dátumokat</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">Kiemelheti a következő évre tervezett fontos események időpontjait</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">Bejelölheti az ajándékot kapó ízlésének megfelelő programokat, pl. koncertek, fesztiválok, színházi előadások, motoros találkozók, horgász versenyek</span></li>
+                </ul>
+                <span class="text-primary bold small">Egyedi naptár megrendelése</span>
+                <ul>
+                    <li class="text-secondary capitalize"><span class="small-med">válassza ki a naptár képanyagát</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">hozza be üzletünkbe bármilyen adathordozón ( CD, DVD, Pendrive )</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">papír alapú képeit és fotóit is várjuk, amelyeket a naptárkészítéshez beszkennelünk</span></li>
+                </ul>
+                <span class="text-primary bold small">Üzletünkben rendelhető naptár típusok</span>
+                <ul>
+                    <li class="text-secondary capitalize"><span class="small-med">falra akasztható, 13 lapos naptár A/4 és A/3 méretben</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">falra akasztható, 1 lapos naptár, melyet laminálással teszünk ellenállóvá</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">13 lapos asztali naptár 297x150mm, A/5 és A/6 méretben</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script> $('#bc__box').click(function () { $('#panel__main').load('/includes/addons/features/design.html'); }); </script>

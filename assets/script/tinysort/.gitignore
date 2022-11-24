@@ -1,0 +1,5 @@
+distdoc
+node_modules
+temp
+.idea/workspace.xml
+.idea/tasks.xml

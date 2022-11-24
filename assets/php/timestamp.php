@@ -1,0 +1,1 @@
+<?php $object = new stdClass(); $object->timestamp = date( "Y-m-d H:i:s" , $_POST['timestamp']); die(json_encode($object)); ?>

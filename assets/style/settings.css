@@ -1,0 +1,237 @@
+:root[data-theme="theme-dark"] {
+
+    --blue-main: #0A3556;
+    --blue-light: #004e9c;
+
+    --background: #202125;
+    --primary-light-color: #3a6dab;
+    --items: #2a2b2e;
+    --items-hover: #2f3033;
+    --button-shadow: RGBA(0, 0, 0, 0.2);
+    --button-shadow-lighter: RGBA(0, 0, 0, 0.4);
+    --button-hover: #212121;
+    --secondary-light-color: #7f7e83;
+    --search: #2a2b2e;
+    --divider: #383c3f;
+    --section-title: #e5e5e5;
+
+    --search-icon: url('/assets/icons/search_icon_dark.svg');
+}
+
+:root[data-theme="theme-light"] {
+
+    --blue-main: #0A3556;
+    --blue-light: #004e9c;
+
+    --background: #eaeef1;
+    --primary-light-color: #004E9C;
+    --items: #FAFAFA;
+    --items-hover: #f2f2f2;
+    --button-shadow: rgba(99, 99, 99, 0.2);
+    --button-shadow-lighter: rgba(99, 99, 99, 0.4);
+    --secondary-light-color: #727272;
+    --search: #f7f7f9;
+    --divider: #f7f7f9;
+    --section-title: #0A3556;
+
+    --search-icon: url('/assets/icons/search_icon.svg');
+}
+
+.settings_breadcrumbs ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.settings_breadcrumbs ul li {
+    list-style-type: none;
+    color: #777;
+    user-select: none;
+}
+
+.settings_breadcrumbs ul li a {
+    margin: 0 .5rem;
+    color: var(--section-title) !important;
+    font-weight: 700;
+}
+
+.default_link:hover {
+    text-decoration: none !important;
+}
+
+.settings_breadcrumbs ul li a:hover {
+    text-decoration: underline;
+}
+
+.settingsTabContent {
+    display: none;
+}
+
+.settingsTabLinks {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 1rem 1.5rem;
+    margin: .25rem;
+    border-radius: .4rem;
+    cursor: pointer;
+}
+
+.settingMenuActive {
+    background-color: var(--items) !important;
+}
+
+.settingsTabLinks:hover {
+    background-color: var(--items-hover);
+}
+
+.grid-main {
+    grid-area: main;
+}
+@media only screen and (min-width: 992px) {
+    .settingsGrid {
+        display: grid;
+        grid-template-areas:
+        'menu main main main main main main main main main main main main main';
+    }
+
+    .grid-left {
+        grid-area: menu;
+        border-right: 1px solid var(--divider);
+        user-select: none;
+        min-width: 20rem;
+        width: 20rem;
+        max-width: 20rem;
+    }
+
+}
+
+@media only screen and (max-width: 992px) {
+    .settingsGrid {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .grid-left {
+        user-select: none;
+        width: 100%;
+    }
+
+}
+
+.settingsTabLinkIcon {
+    margin-right: 1rem;
+}
+
+.settingsTabLinkName {
+    font-size: 1.1rem;
+    color: var(--section-title);
+}
+
+.settignsDisplayMain {
+    margin: 1.5rem 0;
+}
+
+.settingsElementsContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.settingsConTitle {
+    font-size: 1.2rem;
+    color: var(--section-title);
+    text-transform: uppercase;
+}
+
+.settCon {
+    display: flex;
+    flex-direction: column;
+}
+
+.settRow {
+    display: flex;
+    flex-direction: row;
+    margin: .25rem 2rem;
+    border-radius: .4rem;
+}
+
+.settRow:hover .settignsEditButton {
+    background-color: var(--items-hover);
+}
+
+.settCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.settRow > div {
+    display: flex;
+    padding: 1rem 1.5rem;
+}
+
+.settRow > div:first-of-type {
+    align-items: center;
+    min-width: 25%;
+    width: 25%;
+    max-width: 25%;
+    background-color: var(--items);
+    color: var(--section-title);
+    border-top-left-radius: .4rem;
+    border-bottom-left-radius: .4rem;
+}
+
+.settRow > div:last-of-type {
+    width: 75%;
+    color: var(--section-title);
+    background-color: var(--items);
+    border-top-right-radius: .4rem;
+    border-bottom-right-radius: .4rem;
+}
+
+.settSectTitle {
+    font-weight: 700;
+}
+
+.settings_sp {
+    display: flex;
+    justify-content: space-between;
+}
+
+.settSectAnsw {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settignsEditButton {
+    display: flex;
+    padding: .5rem;
+    border-radius: .3rem;
+    cursor: pointer;
+    transition: background .3s;
+}
+
+.settignsEditButton:hover {
+    background-color: #cedae4;
+}
+
+.settSectAnsw input {
+    border: none;
+    font-size: 1rem;
+    background-color: #dfe7ee;
+    outline: none;
+}
+
+.settSectAnsw input[type='submit'], .editSettingsCancel {
+    color: #0A3556;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.settSectAnsw input[type='submit']:hover, .editSettingsCancel:hover {
+    text-decoration: underline;
+}

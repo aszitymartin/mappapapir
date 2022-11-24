@@ -1,0 +1,43 @@
+:root { --text-success: #79df42; --text-danger: #ff3e1d; }
+:root[data-theme="theme-dark"] {
+    --blue-main: #0A3556; --blue-light: #004e9c;
+    --background: #202125;
+    --background-tr: #202125;
+    --primary-light-color: #3a6dab;
+    --items: #2a2b2e; --items-light: #454649; --items-hover: #2f3033;
+    --button-shadow-dark: RGBA(0, 0, 0, .6); --button-shadow: RGBA(0, 0, 0, 0.2); --button-shadow-lighter: RGBA(0, 0, 0, 0.4);
+    --button-hover: #212121;
+    --secondary-light-color: #7f7e83;
+    --search: #2a2b2e;
+    --divider: #383c3f;
+    --section-title: #e5e5e5;
+    --dark-contrast: #202125;
+    --white-contrast: #e5e5e5;
+    --menu-background: #2a2b2e;
+    --radio: #2a2b2e;
+    --white: #FAFAFA;
+    --search-icon: url('/assets/icons/search_icon_dark.svg');
+    --cookie: #101010;
+    --hl-bg: #2a2b2e;
+}
+
+:root[data-theme="theme-light"] {
+    --blue-main: #0A3556; --blue-light: #004e9c; 
+    --background: #eaeef1;
+    --background-tr: #eaeff294;
+    --primary-light-color: #004E9C;
+    --items: #FAFAFA; --items-light: #eaeef1; --items-hover: #f2f2f2;
+    --button-shadow-dark: RGBA(0, 0, 0, 0.2); --button-shadow: rgba(99, 99, 99, 0.2); --button-shadow-lighter: rgba(99, 99, 99, 0.4);
+    --secondary-light-color: #727272;
+    --search: #f7f7f9;
+    --divider: #f7f7f9;
+    --section-title: #0A3556;
+    --dark-contrast: #e5e5e5;
+    --white-contrast: #202125;
+    --menu-background: #e6e8f7;
+    --radio: #0a3556;
+    --white: #FAFAFA;
+    --search-icon: url('/assets/icons/search_icon.svg');
+    --cookie: #dce0e3;
+    --hl-bg: #e4e8eb;
+}

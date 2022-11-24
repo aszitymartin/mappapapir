@@ -1,0 +1,2 @@
+// Ez kell hogy mukodjon az apache2.conf
+$ sudo a2enmod rewrite

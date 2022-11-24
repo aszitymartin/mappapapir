@@ -1,0 +1,24 @@
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php'); $uid = $_SESSION['guid'];
+$stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
+?>
+<script>var formatter = new Intl.NumberFormat('hu-HU', {style: 'currency',currency: 'HUF',maximumFractionDigits: 0,minimumFractionDigits: 0});</script>
+<div class="flex flex-row gap-2 padding-1 text-muted user-select-none" id="profile-items-con">
+    <span onclick="showinPanelCredit('intabs-crediting', this.getAttribute('intab-data'))" intab-data="intabs-crediting" id="intab-crediting" class="flex flex-col flex-align-c text-align-c flex-justify-con-c gap-05 pr__item pr__item__active padding-b-1 pointer text-muted relative">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
+        <span class="smaller-med">Jóváírás</span>
+    </span>
+    <span onclick="showinPanelCredit('intabs-deduction', this.getAttribute('intab-data'))" intab-data="intabs-deduction" id="intab-deduction" class="flex flex-col flex-align-c text-align-c flex-justify-con-c gap-05 pr__item padding-b-1 pointer text-muted relative">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor"/></svg>
+        <span class="smaller-med">Levonás</span>
+    </span>
+    <span onclick="showinPanelCredit('intabs-history', this.getAttribute('intab-data'))" intab-data="intabs-history" id="intab-history" class="flex flex-col flex-align-c text-align-c flex-justify-con-c gap-05 pr__item padding-b-1 pointer text-muted relative">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28px" height="28px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M10.9630156,7.5 L11.0475062,7.5 C11.3043819,7.5 11.5194647,7.69464724 11.5450248,7.95024814 L12,12.5 L15.2480695,14.3560397 C15.403857,14.4450611 15.5,14.6107328 15.5,14.7901613 L15.5,15 C15.5,15.2109164 15.3290185,15.3818979 15.1181021,15.3818979 C15.0841582,15.3818979 15.0503659,15.3773725 15.0176181,15.3684413 L10.3986612,14.1087258 C10.1672824,14.0456225 10.0132986,13.8271186 10.0316926,13.5879956 L10.4644883,7.96165175 C10.4845267,7.70115317 10.7017474,7.5 10.9630156,7.5 Z" fill="currentColor"></path><path d="M7.38979581,2.8349582 C8.65216735,2.29743306 10.0413491,2 11.5,2 C17.2989899,2 22,6.70101013 22,12.5 C22,18.2989899 17.2989899,23 11.5,23 C5.70101013,23 1,18.2989899 1,12.5 C1,11.5151324 1.13559454,10.5619345 1.38913364,9.65805651 L3.31481075,10.1982117 C3.10672013,10.940064 3,11.7119264 3,12.5 C3,17.1944204 6.80557963,21 11.5,21 C16.1944204,21 20,17.1944204 20,12.5 C20,7.80557963 16.1944204,4 11.5,4 C10.54876,4 9.62236069,4.15592757 8.74872191,4.45446326 L9.93948308,5.87355717 C10.0088058,5.95617272 10.0495583,6.05898805 10.05566,6.16666224 C10.0712834,6.4423623 9.86044965,6.67852665 9.5847496,6.69415008 L4.71777931,6.96995273 C4.66931162,6.97269931 4.62070229,6.96837279 4.57348157,6.95710938 C4.30487471,6.89303938 4.13906482,6.62335149 4.20313482,6.35474463 L5.33163823,1.62361064 C5.35654118,1.51920756 5.41437908,1.4255891 5.49660017,1.35659741 C5.7081375,1.17909652 6.0235153,1.2066885 6.2010162,1.41822583 L7.38979581,2.8349582 Z" fill="currentColor" opacity="0.3"></path></g></svg>
+        <span class="smaller-med">Előzmények</span>
+    </span>
+</div>
+<div id="intabs-crediting" class="tab__content credtab flex-col card gap-1" style="background: transparent; padding: 0;"></div>
+<div id="intabs-deduction" class="tab__content credtab flex-col card gap-1" style="background: transparent; padding: 0;"></div>
+<div id="intabs-history" class="tab__content credtab flex-col card gap-1" style="background: transparent; padding: 0;"></div>
+<script content-type="application/javascript">var guid = <?= $uid; ?>;</script>
+<script src="/admin/users/crediting.js" content-type="application/javascript"></script>
+<script src="/admin/users/crediting/script/credit.js" content-type="application/javascript"></script>

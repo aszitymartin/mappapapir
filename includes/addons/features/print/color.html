@@ -1,0 +1,24 @@
+<div class="flex flex-col gap-1" id="panel__main">
+    <div class="flex flex-row flex-align-c flex-justify-con-sb">
+        <span class="text-primary bold">Színes</span>
+        <span class="button button-secondary small-med" id="bc__box">Vissza</span>
+    </div>
+    <div class="flex flex-col gap-1 feat__body" id="feature__body">
+        <div class="flex flex-row gap-1 flex-justify-con-c">
+            <div class="flex flex-col">
+                <span class="text-primary bold small">Színes másolás, nyomtatás paraméterei</span>
+                <ul>
+                    <li class="text-secondary capitalize"><span class="small-med">A/5, A/4, A/3 és SRA3 (320x450mm) méretben</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">Egy- és kétoldalas nyomatok készítése</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">90g-os lézer papírra történő színes másolás, nyomtatás esetén a papír árát a szolgáltatás tartalmazza</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">nagy felbontású (600dpi), pontos másolatok készítése</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">digitális szkennelés beépített szkenner segítségével</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">kicsinyítés, nagyítás 25%-400%</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">magas lapszám kapacitás</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">valósághű színek, 600 illetve 1200 dpi</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script> $('#bc__box').click(function () { $('#panel__main').load('/includes/addons/features/print.html'); }); </script>

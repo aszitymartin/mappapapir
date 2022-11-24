@@ -1,0 +1,29 @@
+{
+  "name": "translater.js",
+  "version": "1.0.12",
+  "description": "Simple translation tools.",
+  "main": "dist/translater.min.js",
+  "homepage": "http://jaywcjlove.github.io/translater.js/",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:min": "umd Translater src/translater.js | uglifyjs -mc | bannerjs -o > dist/translater.min.js",
+    "build:dist": "umd Translater src/translater.js | bannerjs -m | uglifyjs -b beautify=true --comments 'all' > dist/translater.js ",
+    "build": "npm run build:min && npm run build:dist",
+    "watch": "onchange 'src/translater.js' -v -- npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaywcjlove/translater.js"
+  },
+  "author": "kenny wong <wowohoo@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "bannerjs": "^1.0.1",
+    "onchange": "^2.4.0",
+    "uglify-js": "^2.6.2",
+    "umd": "^3.0.1"
+  }
+}

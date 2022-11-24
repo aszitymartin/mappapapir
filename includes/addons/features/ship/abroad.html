@@ -1,0 +1,22 @@
+<div class="flex flex-col gap-1" id="panel__main">
+    <div class="flex flex-row flex-align-c flex-justify-con-sb">
+        <span class="text-primary bold">Szállítás külföldre</span>
+        <span class="button button-secondary small-med" id="bc__box">Vissza</span>
+    </div>
+    <div class="flex flex-col gap-1 feat__body" id="feature__body">
+        <div class="flex flex-row flex-align-c flex-justify-con-c">
+            <span class="text-secondary small">Külföldre történő szállítás esetén a 30.000 Ft feletti vásárlás szállítási díj átvállalására vonatkozó akciónk <b>nem érvényes</b>.</span>
+        </div>
+        <div class="flex flex-col gap-1 flex-justify-con-c">
+            <div class="flex flex-col">
+                <span class="text-primary bold small">Külföldre történő szállítással kapcsolatos információk</span>
+                <ul>
+                    <li class="text-secondary capitalize"><span class="small-med">A külföldre történő szállítási idő országonként eltérő lehet.</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">A szállítás ideje akár két hét vagy több is lehet.</span></li>
+                    <li class="text-secondary capitalize"><span class="small-med">A termékek külföldről <b>nem téríthetők vissza</b>.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script> $('#bc__box').click(function () { $('#panel__main').load('/includes/addons/features/ship.html'); }); </script>

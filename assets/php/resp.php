@@ -1,0 +1,1 @@
+<?php session_start(); $_SESSION['e__width'] = $_POST['width']; die ($_SESSION['e__width']); ?>

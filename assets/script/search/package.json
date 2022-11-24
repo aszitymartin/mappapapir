@@ -1,0 +1,81 @@
+{
+  "name": "search-index",
+  "version": "3.0.2",
+  "description": "A network resilient, persistent full-text search library for the browser and Node.js",
+  "keywords": [
+    "search",
+    "elasticsearch",
+    "elastic",
+    "lunr.js",
+    "flexsearch",
+    "norch",
+    "solr"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "main": "src/node.js",
+  "browser": "src/browser.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "directories": {
+    "lib": "src"
+  },
+  "scripts": {
+    "build": "npm run empty-sandbox && rm -rf ./dist/* && webpack && cp dist/search-index-$npm_package_version.js dist/search-index.js",
+    "demo-export": "node demo/generate-index/export.js",
+    "demo-fetch": "node demo/generate-index/fetch.js",
+    "demo-process": "node demo/generate-index/process.js",
+    "demo-rebuild": "npm run demo-fetch && npm run demo-process && npm run demo-export && npm run demo-link-lib",
+    "demo-start": "http-server -c-1 demo & open-cli http://127.0.0.1:8080",
+    "demo-link-lib": "cd demo/lib &&  ln -sf ../../dist/search-index.js && cd ../../",
+    "empty-sandbox": "rm -rf fii && rm -rf test/sandbox && mkdir test/sandbox",
+    "lint": "standard --fix test/src/* src/* demo/src/* demo/generate-index/*.js",
+    "test": "npm run empty-sandbox && npm run test-node && npm run test-browser && npm run lint",
+    "test-browser": "npm run build && cat test/sandbox/browser-tests.js | tape-run",
+    "test-node": "npm run empty-sandbox && tape test/src/*-test.js",
+    "toc": "doctoc docs/API.md --title '# API Documentation for search-index' && doctoc docs/FAQ.md --title '# FAQ'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fergiemcdowall/search-index.git"
+  },
+  "author": "Fergus McDowall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fergiemcdowall/search-index/issues"
+  },
+  "homepage": "https://fergiemcdowall.github.io/search-index/",
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "doctoc": "^2.1.0",
+    "fuzzyset": "1.0.5",
+    "http-server": "14.0.0",
+    "level-out": "^1.0.1",
+    "memdown": "^6.1.1",
+    "open-cli": "^7.0.1",
+    "path": "^0.12.7",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "standard": "^16.0.4",
+    "stemmer": "^1.0.5",
+    "stopword": "^1.0.11",
+    "stream-browserify": "^3.0.0",
+    "tape": "^5.4.1",
+    "tape-run": "^9.0.0",
+    "webpack": "^5.67.0",
+    "webpack-cli": "^4.9.2",
+    "world-bank-dataset": "^1.0.0"
+  },
+  "dependencies": {
+    "fergies-inverted-index": "10.0.5",
+    "level-js": "^6.1.0",
+    "leveldown": "^6.1.0",
+    "lru-cache": "^6.0.0",
+    "ngraminator": "^2.0.6",
+    "p-queue": "^7.1.0",
+    "term-vector": "^1.0.0"
+  }
+}

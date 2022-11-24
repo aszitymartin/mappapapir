@@ -1,0 +1,53 @@
+{
+  "head": {
+    "title": "Mappa Papír"
+  },
+  ".header_title_desc": {
+    "header-title-desc": "Alles ist Schreibwaren."
+  }, ".header-input-con": {
+    "header-search-holder": "Suche nach Produkten.."
+  }, "#tooltipProfile": {
+    "tooltipProfile": "Anmeldung"
+  }, "#tooltipBasket": {
+    "tooltipBasket": "Einkaufswagen ansehen"
+  }, ".menuPriv": {
+    "menuPriv": "Fortgeschrittener Modus"
+  }, ".menuHelp": {
+    "menuHelp": "Hilfe und Unterstützung"
+  }, ".menuPrivacy": {
+    "menuPrivacy": "Privatsphäre"
+  }, ".menuTerms": {
+    "menuTerms": "Bedingungen"
+  }, ".menuSettings": {
+    "menuSettings": "Einstellungen"
+  }, ".menuFeedback": {
+    "menuFeedback": "Feedback abschicken"
+  }, ".menuLogout": {
+    "menuLogout": "Ausloggen"
+  }, ".menuProfileSettings": {
+    "menuProfileSettings": "Profileinstellungen"
+  }, ".menuWebshopSettings": {
+    "menuWebshopSettings": "Webshop-Einstellungen"
+  }, ".menuThemeSettings": {
+    "menuThemeSettings": "Themen Einstellungen"
+  }, ".menuLanguageSettings": {
+    "menuLanguageSettings": "Spracheinstellungen"
+  },
+
+
+  ".menuThemeDesc": {
+    "menuThemeDesc": "Ändern Sie das Aussehen der Seite, um Blendeffekte zu reduzieren und Ihre Augen zu entspannen."
+  },".menuLanguageDesc": {
+    "menuLanguageDesc": "Wählen Sie die für Sie geeignete Anzeigesprache aus, die die Standardsprache auf der Seite sein wird."
+  },
+
+
+  ".themeDark": {
+    "themeDark": "Dunkler Modus"
+  }, ".themeLight": {
+    "themeLight": "Lichtmodus"
+  }, ".themeAuto": {
+    "themeAuto": "Automatisch"
+  }
+
+}

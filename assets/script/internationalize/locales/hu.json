@@ -1,0 +1,53 @@
+{
+  "head": {
+    "title": "Mappa Papír"
+  },
+  ".header_title_desc": {
+    "header-title-desc": "Minden ami írószer."
+  }, ".header-input-con": {
+    "header-search-holder": "Keresés termékeink között.."
+  }, "#tooltipProfile": {
+    "tooltipProfile": "Bejelentkezés"
+  }, "#tooltipBasket": {
+    "tooltipBasket": "Kosár megtekintése"
+  }, ".menuPriv": {
+    "menuPriv": "Emelt szintű mód"
+  }, ".menuHelp": {
+    "menuHelp": "Segítség és támogatás"
+  }, ".menuPrivacy": {
+    "menuPrivacy": "Privacy"
+  }, ".menuTerms": {
+    "menuTerms": "Feltételek"
+  }, ".menuSettings": {
+    "menuSettings": "Beállítások"
+  }, ".menuFeedback": {
+    "menuFeedback": "Visszajelzés küldése"
+  }, ".menuLogout": {
+    "menuLogout": "Kijelentkezés"
+  }, ".menuProfileSettings": {
+    "menuProfileSettings": "Profil beállítások"
+  }, ".menuWebshopSettings": {
+    "menuWebshopSettings": "Webshop beállítások"
+  }, ".menuThemeSettings": {
+    "menuThemeSettings": "Téma beállítása"
+  }, ".menuLanguageSettings": {
+    "menuLanguageSettings": "Nyelv kiválasztása"
+  },
+
+
+  ".menuThemeDesc": {
+    "menuThemeDesc": "Módosítsa az oldal megjelenését, hogy csökkentse a rikító fényt, és pihentesse a szemét."
+  },".menuLanguageDesc": {
+    "menuLanguageDesc": "Válassza ki az önnek megfelelő megjelenési a nyelvet, ami a továbbiakban az alapértelmezett nyelv lesz az oldalon."
+  },
+
+  ".themeDark": {
+    "themeDark": "Sötét mód"
+  }, ".themeLight": {
+    "themeLight": "Fényes mód"
+  }, ".themeAuto": {
+    "themeAuto": "Automatikus"
+  }
+
+
+}
