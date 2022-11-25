@@ -1,4 +1,4 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); ?>
 <script> const html = document.querySelector('html');function switchTheme(theme) {html.dataset.theme = `theme-${theme}`;localStorage.setItem('theme', `theme-${theme}`);} </script>
 <script>var formatter = new Intl.NumberFormat('hu-HU', {style: 'currency',currency: 'HUF',maximumFractionDigits: 0,minimumFractionDigits: 0});</script>
 <main id="main">
@@ -67,76 +67,23 @@
         <div class='section_body flex flex-justify-con-sb overflow-auto'>
             <div class="swiper-news">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative flex flex-col flex-align-c relative' id='main_news_no_1'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Hibajavítók</span>
-                                    <span class='news_desc_info'>Hibajavító folyadékok, rollerek, tollak a hibák javításához. A folyadék gyors száradást és kiváló lefedettséget biztosít. A rollerek a gyakori felhasználók számára ideális megoldás. A toll kézhez álló apró hibák, kis területek, vonalak javításához.</span>
+                    <?php $sql = "SELECT * FROM def__news WHERE 1"; $res = $con->query($sql);
+                        while ($dt = $res->fetch_assoc()) {
+                            echo '
+                            <div class="swiper-slide">
+                                <div class="news_container flex flex-col flex-align-c relative flex flex-col flex-align-c relative" id="main_news_no_'.$dt['id'].'">
+                                    <div class="news_con_wrapper">
+                                        <div class="news_desc_con flex flex-col absolute text-align-j flex flex-col absolute text-align-j">
+                                            <span class="news_desc_title">'.$dt['title'].'</span>
+                                            <span class="news_desc_info">'.$dt['description'].'</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative' id='main_news_no_2'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Írószerek</span>
-                                    <span class='news_desc_info'>Írószerek és betétek több mint ezer típusból álló palettáját kínáljuk készletről a legolcsóbbtól a prémium termékekig bezárólag.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative' id='main_news_no_3'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Iratrendezők</span>
-                                    <span class='news_desc_info'>Több mint 500 féle iratrendező, iratgyűjtő, iratpapucs, irattasak és iratrendezési kellék érhető el kínálatunkban széles színválasztékban.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative' id='main_news_no_4'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Adathordozók</span>
-                                    <span class='news_desc_info'>Írható és újraírható CD, DVD, pendrive, memóriakártya többféle márkában, kiszerelésben és változatos tárolási kapacitással az Ön igényei szerint.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative' id='main_news_no_5'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Irodai kisgépek</span>
-                                    <span class='news_desc_info'>Az irodai munkát, elsősorban a vágást, tűzést, lyukasztást segítő egyszerű eszközök. Megkönnyítik az iratok összefűzését, szétválasztását, tárolását, kényelmesebbé teszik a munkavégzést.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative' id='main_news_no_6'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Kreatív termékek</span>
-                                    <span class='news_desc_info'>Tinták, kartonok, ragasztók, rajzeszközök és már kreatív kellékanyagok széles választékát találja meg szaküzletünkben és egyéni megrendelések beszerzését is vállaljuk.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class='news_container flex flex-col flex-align-c relative' id='main_news_no_7'>
-                            <div class='news_con_wrapper'>
-                                <div class='news_desc_con flex flex-col absolute text-align-j'>
-                                    <span class='news_desc_title'>Irodaszerek</span>
-                                    <span class='news_desc_info'>Bélyegzők, adathordozók, táskák, fémhálós termékek és további irodai kiegészítők elérhetőek webáruházunkban valamint szaküzletünkben azonnal, készletről.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            ';
+                        }
+                    ?>
+                    
                 </div>
                 <div class="swiper-pagination" style='bottom: 92% !important;'></div>
             </div>

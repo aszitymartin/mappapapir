@@ -222,7 +222,7 @@ a { color: unset; text-decoration: none; }
 .secondary { color:var(--secondary-light-color); }
 .danger { color: #F64E60; }
 .text-white { color: #FAFAFA; }
-.text-primary { color: var(--section-title) !important; }
+.text-primary, .text-primary-hover:hover { color: var(--section-title) !important; }
 .text-primary-light { color: #3699FF; }
 .text-secondary { color: var(--secondary-light-color); }
 .text-muted, .te__ftstyle { color: #A1A5B7; }
