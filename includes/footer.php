@@ -4,7 +4,7 @@
             function openHeaderProfileActionLogged () {cC++;
                 if (cC % 2 == 0) {document.getElementById('header_con').classList.add('relative');document.body.append(transWrapper);
                     document.getElementById('header_con').append(profileActionsContainer);showProfileActionPanel();
-                } else {profileActionsContainer.remove();transWrapper.remove();cC = 1;}
+                } else {profileActionsContainer.remove();transWrapper.remove();cC = 1; document.getElementsByTagName('html')[0].classList.remove('stop-scroll', 'stop-scroll-mobile'); }
             }
             function showProfileActionPanel () { document.getElementsByTagName('html')[0].classList.add('stop-scroll', 'stop-scroll-mobile'); $('#profileHeaderContainer').load('/includes/header-menu/header-menu.php');}
             function profileActionPanel (panel) {
@@ -159,7 +159,7 @@
             }
             function b__load () { $('#hib__container').load('/includes/header-menu/basket.php'); subt = 0; }
             function cl__basket () { hib__container.remove();transWrapper.remove();hib__c = 1; }
-            window.onclick = function(event) {if (event.target == transWrapper) {profileActionsContainer.remove();transWrapper.remove(); hib__container.remove(); hib__c = 1; cC = 1;}}
+            window.onclick = function(event) {if (event.target == transWrapper) {profileActionsContainer.remove();transWrapper.remove(); hib__container.remove(); hib__c = 1; cC = 1; document.getElementsByTagName('html')[0].classList.remove('stop-scroll', 'stop-scroll-mobile'); }}
         </script>
         <footer class="flex flex-col w-fa padding-tb-1">
             <div class="flex flex-row-d-col-m flex-justify-con-c gap-1 footer-inner">

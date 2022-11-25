@@ -1,4 +1,11 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); ?>
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php');
+function get_time_ago( $time ) {
+    $time_difference = time() - $time;
+    if( $time_difference < 1 ) { return '< 1mp'; }
+    $condition = array( 12 * 30 * 24 * 60 * 60 =>  'éve',30 * 24 * 60 * 60 => 'hónapja',24 * 60 * 60 => 'napja',60 * 60 =>  'órája',60 =>  'perce',1 =>  'másodperce');
+    foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
+}
+?>
 <script> const html = document.querySelector('html');function switchTheme(theme) {html.dataset.theme = `theme-${theme}`;localStorage.setItem('theme', `theme-${theme}`);} </script>
 <script>var formatter = new Intl.NumberFormat('hu-HU', {style: 'currency',currency: 'HUF',maximumFractionDigits: 0,minimumFractionDigits: 0});</script>
 <main id="main">
@@ -67,15 +74,21 @@
         <div class='section_body flex flex-justify-con-sb overflow-auto'>
             <div class="swiper-news">
                 <div class="swiper-wrapper">
-                    <?php $sql = "SELECT * FROM def__news WHERE 1"; $res = $con->query($sql);
+                    <?php $sql = "SELECT def__news.*, customers.fullname FROM def__news INNER JOIN customers ON customers.id = def__news.uid WHERE 1"; $res = $con->query($sql);
                         while ($dt = $res->fetch_assoc()) {
                             echo '
                             <div class="swiper-slide">
                                 <div class="news_container flex flex-col flex-align-c relative flex flex-col flex-align-c relative" id="main_news_no_'.$dt['id'].'">
                                     <div class="news_con_wrapper">
-                                        <div class="news_desc_con flex flex-col absolute text-align-j flex flex-col absolute text-align-j">
-                                            <span class="news_desc_title">'.$dt['title'].'</span>
-                                            <span class="news_desc_info">'.$dt['description'].'</span>
+                                        <div class="news_desc_con flex flex-col absolute flex flex-col absolute gap-1">
+                                            <div class="flex flex-col text-align-j gap-05">
+                                                <span class="news_desc_title">'.$dt['title'].'</span>
+                                                <span class="news_desc_info">'.$dt['description'].'</span>
+                                            </div>
+                                            <div class="flex flex-row flex-align-c flex-justify-con-sb gap-1 news_desc_info small-med">
+                                                <span>'.$dt['fullname'].'</span>
+                                                <span>'. get_time_ago(strtotime($dt['date'])) .'</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -48,9 +48,9 @@
                     </a>
                     <div id='header_middle' class='header_middle_con flex flex-col'>
                         <div class="flex flex-row flex-align-c gap-2 small text-primary">
-                            <span class="pointer link"><a href="/browse">Webáruház</a></span>
-                            <span class="pointer link">Fórum</span>
-                            <span class="pointer link">Rólunk</span>
+                            <?php $dhsql = "SELECT links FROM def__header"; $dhres = $con->query($dhsql); $dhdt = $dhres->fetch_assoc(); $ha = explode(";", $dhdt['links']);
+                                for ($i = 0; $i < count($ha); $i++) { echo '<span class="pointer link"><a href="'. explode('=', $ha[$i])[1] .'">'.explode('=', $ha[$i])[0].'</a></span>'; }
+                            ?>
                         </div>
                     </div>
                     <div id="header-search" class="user_action_button pointer flex flex-align-c flex-justify-con-c has-tooltip padding-05 relative" aria-describedby="tooltip-search">
