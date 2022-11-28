@@ -2,18 +2,34 @@
 <!DOCTYPE html>
 <html lang="HU">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" /><meta charset="utf-8" />
-        <meta name="keywords" content="tuzogép,fénymásolópapír,békéscsaba,eagle,kiszállítás,békéscsaba,írószer,irodaszer,nagyker, nagykereskedelem,ingyen,cd,dvd,zebra,boríték,füzet,dosszié,toll, golyóstoll,papír,atbt,iratrendezo,verbatim,import" />
-        <meta name="rights" content="Mappa Papír" /><meta name="description" content="Mappa Papír Irodaszer nagykereskedelem. Kiskunhalason és környékén ingyenes kiszállítás." />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <?php
+            $sql = "SELECT meta, webmester, email FROM def__page"; $res = $con->query($sql);
+            while ($hdt = $res->fetch_assoc()) {
+                $ma = explode(";", $hdt['meta']);
+                for ($i = 0; $i < count($ma); $i++) {
+                    if (explode("=",$ma[$i])[0] == 'charset') {
+                        echo '<meta '. explode("=",$ma[$i])[0] .'="'.explode("=",$ma[$i])[1].'" />';
+                    } else {
+                        echo '<meta name="'. explode("=",$ma[$i])[0] .'" content"'.explode("=",$ma[$i])[1].'" />';
+                    }
+                }
+                echo '<meta name="description" content="'. $hdt['description'] .'" />';
+                echo '<meta name="webmaster" content="'. $hdt['webmester'] .'" />';
+                echo '<meta name="contact" content="'. $hdt['email'] .'" />';
+            } $hsql = "SELECT title, icon FROM def__page"; $hres = $con->query($hsql); $hsdt = $hres->fetch_assoc();
+        ?>
+                
         <link rel="stylesheet" href="/assets/style/main.css" content-type="text/css" />
-        <link href="/assets/icons/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+        <link href="/assets/icons/<?= $hsdt['icon']; ?>" rel="shortcut icon" type="image/vnd.microsoft.icon" />
         <link rel="stylesheet" href="/assets/script/swiper/swiper-bundle.min.css" content-type="text/css" />
         <link href="/assets/script/quill/dist/quill.snow.css" rel="stylesheet">
         <link href="/assets/script/tagify/dist/tagify.css" rel="stylesheet">
         <script src="/assets/script/jquery/jquery.js" content-type="application/javascript"></script>
         <script src="/assets/script/hammer.js"></script>
-        <title>Mappa Papír</title>
+        <title><?= $hsdt['title']; ?></title>
     </head>
     <body>
         <?php

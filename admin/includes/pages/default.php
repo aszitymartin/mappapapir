@@ -9,6 +9,7 @@ function get_time_ago( $time ) {
     foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
 }
 ?>
+<script src="/assets/script/quill/dist/quill.js"></script>
 <div class="flex flex-col gap-1">
     <?php $dsql = "SELECT * FROM def__page"; $dres = $con->query($dsql); $ddt = $dres->fetch_assoc(); ?>
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
@@ -77,11 +78,12 @@ function get_time_ago( $time ) {
             <span class="text-primary large bold">Meta tagok</span>
             <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer">Mentés</span>
         </div><hr style="border: 1px solid var(--background);" class="w-100">
-        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 padding-1">
+        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 padding-1 w-fa">
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 w-fa" id="mt-it-con">
             <?php $ma = explode(";", $ddt['meta']);
                 for ($i = 0; $i < count($ma); $i++) {
                     echo '
-                    <div class="flex flex-col gap-1 w-fa" id="meta-cons-item-'.$i.'">
+                    <div class="flex flex-col gap-1 w-fa mt-it-sl" id="meta-cons-item-'.$i.'">
                         <div class="flex flex-row gap-05 w-fa cst-var-con">
                             <div class="flex flex-col w-30 gap-025">
                                 <input type="text" value="'. explode("=",$ma[$i])[0] .'" class="cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary" placeholder="Meta tag neve">
@@ -97,6 +99,7 @@ function get_time_ago( $time ) {
                     ';
                 }
             ?>
+            </div>
             <div class="flex flex-col w-fa gap-1" id="meta-cons"></div>
             <div class="flex flex-row w-fa">
                 <span id="add-meta" class="primary-bg primary-bg-hover border-soft pointer user-select-none small w-fc" style="padding: .65rem;">Meta hozzáadása</span>
@@ -134,9 +137,14 @@ function get_time_ago( $time ) {
                                                 }
                                             echo '
                                         </div>
-                                        <span class="flex flex-col flex-align-c padding-025 text-muted text-primary-hover border-soft pointer">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M2 4.63158C2 3.1782 3.1782 2 4.63158 2H13.47C14.0155 2 14.278 2.66919 13.8778 3.04006L12.4556 4.35821C11.9009 4.87228 11.1726 5.15789 10.4163 5.15789H7.1579C6.05333 5.15789 5.15789 6.05333 5.15789 7.1579V16.8421C5.15789 17.9467 6.05333 18.8421 7.1579 18.8421H16.8421C17.9467 18.8421 18.8421 17.9467 18.8421 16.8421V13.7518C18.8421 12.927 19.1817 12.1387 19.7809 11.572L20.9878 10.4308C21.3703 10.0691 22 10.3403 22 10.8668V19.3684C22 20.8218 20.8218 22 19.3684 22H4.63158C3.1782 22 2 20.8218 2 19.3684V4.63158Z" fill="currentColor"/><path d="M10.9256 11.1882C10.5351 10.7977 10.5351 10.1645 10.9256 9.77397L18.0669 2.6327C18.8479 1.85165 20.1143 1.85165 20.8953 2.6327L21.3665 3.10391C22.1476 3.88496 22.1476 5.15129 21.3665 5.93234L14.2252 13.0736C13.8347 13.4641 13.2016 13.4641 12.811 13.0736L10.9256 11.1882Z" fill="currentColor"/><path d="M8.82343 12.0064L8.08852 14.3348C7.8655 15.0414 8.46151 15.7366 9.19388 15.6242L11.8974 15.2092C12.4642 15.1222 12.6916 14.4278 12.2861 14.0223L9.98595 11.7221C9.61452 11.3507 8.98154 11.5055 8.82343 12.0064Z" fill="currentColor"/></svg>
-                                        </span>
+                                        <div class="flex flex-row flex-align-c gap-05">
+                                            <span class="flex flex-col flex-align-c padding-025 text-muted text-primary-hover border-soft pointer" title="Eltávolítás" onclick="__deletenews('.$dt['id'].');">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z" fill="currentColor"/><path opacity="0.5" d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z" fill="currentColor"/><path opacity="0.5" d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z" fill="currentColor"/></svg>
+                                            </span>
+                                            <span class="flex flex-col flex-align-c padding-025 text-muted text-primary-hover border-soft pointer" title="Szerkesztés" onclick="__editnews('.$dt['id'].');">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M2 4.63158C2 3.1782 3.1782 2 4.63158 2H13.47C14.0155 2 14.278 2.66919 13.8778 3.04006L12.4556 4.35821C11.9009 4.87228 11.1726 5.15789 10.4163 5.15789H7.1579C6.05333 5.15789 5.15789 6.05333 5.15789 7.1579V16.8421C5.15789 17.9467 6.05333 18.8421 7.1579 18.8421H16.8421C17.9467 18.8421 18.8421 17.9467 18.8421 16.8421V13.7518C18.8421 12.927 19.1817 12.1387 19.7809 11.572L20.9878 10.4308C21.3703 10.0691 22 10.3403 22 10.8668V19.3684C22 20.8218 20.8218 22 19.3684 22H4.63158C3.1782 22 2 20.8218 2 19.3684V4.63158Z" fill="currentColor"/><path d="M10.9256 11.1882C10.5351 10.7977 10.5351 10.1645 10.9256 9.77397L18.0669 2.6327C18.8479 1.85165 20.1143 1.85165 20.8953 2.6327L21.3665 3.10391C22.1476 3.88496 22.1476 5.15129 21.3665 5.93234L14.2252 13.0736C13.8347 13.4641 13.2016 13.4641 12.811 13.0736L10.9256 11.1882Z" fill="currentColor"/><path d="M8.82343 12.0064L8.08852 14.3348C7.8655 15.0414 8.46151 15.7366 9.19388 15.6242L11.8974 15.2092C12.4642 15.1222 12.6916 14.4278 12.2861 14.0223L9.98595 11.7221C9.61452 11.3507 8.98154 11.5055 8.82343 12.0064Z" fill="currentColor"/></svg>
+                                            </span>
+                                        </div>
                                     </div>
                                     <div class="flex flex-row flex-align-c gap-1 text-muted small-med user-select-none">
                                         <span>'. $dt['fullname'] .'</span>
@@ -168,13 +176,14 @@ function get_time_ago( $time ) {
             <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer">Mentés</span>
         </div><hr style="border: 1px solid var(--background);" class="w-100">
         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 w-fa">
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 w-fa" id="ln-it-con">
             <?php
                 $hsql = "SELECT * FROM def__header"; $hres = $con->query($hsql);
                 $hdt = $hres->fetch_assoc();
                 $ha = explode(";",$hdt['links']);
                 for ($i = 0; $i < count($ha); $i++) {
                     echo '
-                    <div class="flex flex-col gap-1 w-fa" id="link-cons-item-'.$i.'">
+                    <div class="flex flex-col gap-1 w-fa ln-it-sl" id="link-cons-item-'.$i.'">
                         <div class="flex flex-row gap-05 w-fa cst-var-con">
                             <div class="flex flex-col w-30 gap-025">
                                 <input type="text" value="'. explode("=",$ha[$i])[0] .'" class="cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary" placeholder="Meta tag neve">
@@ -190,6 +199,7 @@ function get_time_ago( $time ) {
                     ';
                 }
             ?>
+            </div>
             <div class="flex flex-col w-fa gap-1" id="link-cons"></div>
             <div class="flex flex-row w-fa">
                 <span id="add-links" class="primary-bg primary-bg-hover border-soft pointer user-select-none small w-fc" style="padding: .65rem;">Link hozzáadása</span>
@@ -210,10 +220,9 @@ function get_time_ago( $time ) {
         </div>
     </div>
 </div>
-<script>var metacount = <?= count($ma); ?>; var linkcount = <?= count($ha); ?>;
-    $('#add-meta').click(() => { metacount++;
-        var cstitem = document.createElement('div'); cstitem.id = "meta-cons-item-"+metacount; cstitem.classList = "flex flex-col gap-1";
-        document.getElementById('meta-cons').append(cstitem);
+<script>var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1"; var metacount = <?= count($ma); ?>; var linkcount = <?= count($ha); ?>;
+    $('#add-meta').click(() => { if (document.getElementById('mt-cn-it-em-in')) { document.getElementById('mt-cn-it-em-in').remove(); }
+        metacount++; var cstitem = document.createElement('div'); cstitem.id = "meta-cons-item-"+metacount; cstitem.classList = "flex flex-col gap-1 w-fa mt-it-sl"; document.getElementById('meta-cons').append(cstitem);
         document.getElementById('meta-cons-item-'+metacount).innerHTML = `
         <div class="flex flex-row gap-05 w-fa cst-var-con" id="cst-var-${metacount}">
             <div class="flex flex-col w-30 gap-025">
@@ -227,10 +236,10 @@ function get_time_ago( $time ) {
             </div>
         </div>
         `;
-    });
-    function __removemeta (index) { document.getElementById('meta-cons-item-'+index).remove(); }
-    $('#add-links').click(() => { linkcount++;
-        var cstitem = document.createElement('div'); cstitem.id = "link-cons-item-"+linkcount; cstitem.classList = "flex flex-col gap-1";
+    }); function __removemeta (index) { document.getElementById('meta-cons-item-'+index).remove(); var mdiv = document.getElementsByClassName('mt-it-sl');
+        if (mdiv.length < 1) { document.getElementById('mt-it-con').innerHTML = `<span class="text-muted user-select-none text-align-c" id="mt-cn-it-em-in">Egy meta tag sem található, vagy el lett távolítva. Amennyiben fel szeretne venni új meta tagokat, kattintson a <strong>Meta hozzáadása</strong> gombra.</span>`; }
+    } $('#add-links').click(() => { if (document.getElementById('ln-cn-it-em-in')) { document.getElementById('ln-cn-it-em-in').remove(); }
+        linkcount++; var cstitem = document.createElement('div'); cstitem.id = "link-cons-item-"+linkcount; cstitem.classList = "flex flex-col gap-1 ln-it-sl";
         document.getElementById('link-cons').append(cstitem);
         document.getElementById('link-cons-item-'+linkcount).innerHTML = `
         <div class="flex flex-row gap-05 w-fa cst-var-con" id="cst-var-${linkcount}">
@@ -245,8 +254,9 @@ function get_time_ago( $time ) {
             </div>
         </div>
         `;
-    });
-    function __removelinks (index) { document.getElementById('link-cons-item-'+index).remove(); }
+    }); function __removelinks (index) { document.getElementById('link-cons-item-'+index).remove(); var ldiv = document.getElementsByClassName('ln-it-sl');
+        if (ldiv.length < 1) { document.getElementById('ln-it-con').innerHTML = `<span class="text-muted user-select-none text-align-c" id="ln-cn-it-em-in">Egy link sem található, vagy el lett távolítva. Amennyiben fel szeretne venni új linket, kattintson a <strong>Link hozzáadása</strong> gombra.</span>`; }
+    }
 
     let minActive = 0; let miniArr = [];
     function __inituploader () { var minIndex = document.getElementsByClassName('miniature-upload').length;  minActive++; minIndex++; 
@@ -308,5 +318,82 @@ function get_time_ago( $time ) {
             </div>
             `;
         }
+    }
+
+
+    function __deletenews (nid) {
+        c__wrapper.classList.add('fadein'); c__wrapper.classList.remove('fadeout'); c__box.classList.add('padding-t-0'); c__box.classList.add('popup'); c__box.classList.remove('popout'); document.body.append(c__wrapper); c__wrapper.append(c__box); $('html').css("overflow-y", "hidden");
+        c__box.innerHTML = `
+            <div class="flex flex-col gap-1">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb padding-t-1" id="cbh__con">
+                    <span class="text-primary small bold">Hír eltávolítása</span>
+                    <div class="flex flex-row flex-align-c gap-05">
+                        <span class="text-primary pointer" aria-label="Bezárás" id="cl__box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg></span>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted">
+                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    <span class="text-muted small text-align-c">A hír eltávolítása után már nem lesz lehetősége visszavonni a törlést.</span>
+                    <span class="flex flex-col flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft small-med pointer" style="padding: .65rem;" aria-label="Eltávolítás" role="button" title="Eltávolítás">Eltávolítás</span>
+                </div>
+            </div>
+        `; var con = document.getElementById('cbh__con'); var mc = new Hammer(con);mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });mc.on("pandown", function(ev) { $('#cl__box').click(); });
+        $('#cl__box').click(function () { c__wrapper.classList.add('fadeout'); c__box.classList.add('popout'); setTimeout(() => { c__wrapper.remove(); $('html').css("overflow-y", "unset"); }, 200); });
+    } function __editnews (nid) {
+        c__wrapper.classList.add('fadein'); c__wrapper.classList.remove('fadeout'); c__box.classList.add('padding-t-0'); c__box.classList.add('popup'); c__box.classList.remove('popout'); document.body.append(c__wrapper); c__wrapper.append(c__box); $('html').css("overflow-y", "hidden");
+        c__box.innerHTML = `
+            <div class="flex flex-col gap-1">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb padding-t-1" id="cbh__con">
+                    <span class="text-primary small bold">Hír szerkesztése</span>
+                    <div class="flex flex-row flex-align-c gap-05">
+                        <span class="text-primary pointer" aria-label="Bezárás" id="cl__box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg></span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-05">
+                    <span class="text-primary bold small-med">Hír képe</span>
+                    <div class="flex flex-row-d-col-m flex-align-c flex-justify-con-c gap-1 w-fa">
+                        <div class="flex flex-row flex-align-c flex-justify-con-c w-50d-100m">
+                            <div class="flex flex-col flex-align-c flex-justify-con-c w-fa relative">
+                                <div class="news_container flex flex-col flex-align-c relative flex flex-col flex-align-c relative w-fa border-soft" id="main_news_no_2" style="background-image: url(&quot;/assets/images/news/2.jpg&quot;); height: 6rem !important;"></div>
+                            </div>
+                        </div>
+                        <div class="flex flex-row w-50d-100m gap-1">
+                            <div class="flex flex-row gap-1" id="miniatures-con"></div>
+                            <div id="min-upl-con">
+                                <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed" onclick="__inituploader()">
+                                    <div class="flex flex-row-d-col-m flex-align-c gap-1">
+                                        <div class="flex flex-row flex-align-c gap-1">
+                                            <div class="flex flex-col flex-align-c flex-justify-con-c">
+                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor"></path><path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor"></path></svg>
+                                                <span class="text-muted w-fa text-align-c" style="font-size: .9rem !important;">Hozzáadás</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-05">
+                    <span class="text-primary bold small-med">Hír státusza</span>
+                    <div class="flex flex-row flex-align-c gap-1 w-fa">
+                        <span>aktiv</span>
+                        <span>inaktiv</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-05">
+                    <span class="text-primary bold small-med">Hír tartalma</span>
+                    <div id="prod-del-editor" class="background-bg border-soft" style="height: 10rem;"></div>
+                </div>
+                <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 w-fa">
+                    <span error-data="delete"></span>
+                    <div id="cnf-pd-del" class="flex flex-row flex-align-c flex-justify-con-sb gap-1 primary-bg primary-bg-hover pointer user-select-none padding-05 border-soft-light">
+                        <span class="smaller-light">Mentés</span>
+                    </div>
+                </div>
+            </div>
+        `; var quill = new Quill('#prod-del-editor', { modules: { toolbar: false }, placeholder: 'Ide írja a hír tartalmát...', theme: 'snow' });
+        var con = document.getElementById('cbh__con'); var mc = new Hammer(con);mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });mc.on("pandown", function(ev) { $('#cl__box').click(); });
+        $('#cl__box').click(function () { c__wrapper.classList.add('fadeout'); c__box.classList.add('popout'); setTimeout(() => { c__wrapper.remove(); $('html').css("overflow-y", "unset"); }, 200); });
     }
 </script>
