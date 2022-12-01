@@ -13,7 +13,7 @@
                     if (explode("=",$ma[$i])[0] == 'charset') {
                         echo '<meta '. explode("=",$ma[$i])[0] .'="'.explode("=",$ma[$i])[1].'" />';
                     } else {
-                        echo '<meta name="'. explode("=",$ma[$i])[0] .'" content"'.explode("=",$ma[$i])[1].'" />';
+                        echo '<meta name="'. explode("=",$ma[$i])[0] .'" content="'.explode("=",$ma[$i])[1].'" />';
                     }
                 }
                 echo '<meta name="description" content="'. $hdt['description'] .'" />';
