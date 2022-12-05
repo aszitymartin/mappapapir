@@ -2,6 +2,8 @@
 $route = new Route();
 $route->add("/","home.php");
 $route->add("/browse","webshop/browse.php");
+$route->add("/checkout/{term}","webshop/checkout.php");
+$route->add("/checkout/{id}","webshop/checkout.php");
 $route->add("/search/{term}","webshop/search.php");
 $route->add("/product/{id}/{productname}","webshop/index.php");
 $route->add("/admin/products/edit/{id}/{productname}","admin/products/edit/index.php");
