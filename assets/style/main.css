@@ -290,6 +290,7 @@ a { color: unset; text-decoration: none; }
 .border-trans-bold { border: 2px solid transparent; }
 .border-none { border: none; }
 .border-white-bold-hover:hover { border: 2px solid #FAFAFA !important; }
+.border-primary-dk { border: 1px solid #0380fd24 !important; }
 .border-primary, .border-primary-hover:hover { border: 1px solid var(--section-title) !important; }
 .border-primary-bold, .border-primary-bold-hover:hover { border: 2px solid var(--section-title) !important; }
 .border-primary-light-dotted, .border-sec-hov-prim-dotted:hover { border: 1px dashed #3699FF; }

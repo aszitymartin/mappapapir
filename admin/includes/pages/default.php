@@ -9,6 +9,7 @@ function get_time_ago( $time ) {
     foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
 }
 ?>
+<h3 class="text-primary">/admin/includes/pages/default.php</h3>
 <script src="/assets/script/quill/dist/quill.js"></script>
 <div class="flex flex-col gap-1">
     <?php $dsql = "SELECT * FROM def__page"; $dres = $con->query($dsql); $ddt = $dres->fetch_assoc(); ?>
@@ -195,6 +196,7 @@ function get_time_ago( $time ) {
                                 </span>
                             </div>
                         </div>
+                        <div class="hd-ln-el-er-cn" id="hd-ln-el-er-cn-'.$i.'"></div>
                     </div>      
                     ';
                 }
@@ -229,7 +231,7 @@ function get_time_ago( $time ) {
         linkcount++; var cstitem = document.createElement('div'); cstitem.id = "link-cons-item-"+linkcount; cstitem.classList = "flex flex-col gap-1 ln-it-sl";
         document.getElementById('link-cons').append(cstitem);
         document.getElementById('link-cons-item-'+linkcount).innerHTML = `
-        <div class="flex flex-row gap-05 w-fa cst-var-con" id="cst-var-${linkcount}">
+        <div class="flex flex-row gap-05 w-fa cst-var-con hd-ln-df" id="cst-var-${linkcount}">
             <div class="flex flex-col w-30 gap-025">
                 <input type="text" id="link-name-${linkcount}" class='cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary' placeholder='Link neve'>
             </div>
@@ -240,6 +242,7 @@ function get_time_ago( $time ) {
                 </span>
             </div>
         </div>
+        <div class="hd-ln-el-er-cn" id="hd-ln-el-er-cn-${(linkcount-1)}"></div>
         `;
     }); function __removelinks (index) { document.getElementById('link-cons-item-'+index).remove(); var ldiv = document.getElementsByClassName('ln-it-sl');
         if (ldiv.length < 1) { document.getElementById('ln-it-con').innerHTML = `<span class="text-muted user-select-none text-align-c" id="ln-cn-it-em-in">Egy link sem található, vagy el lett távolítva. Amennyiben fel szeretne venni új linket, kattintson a <strong>Link hozzáadása</strong> gombra.</span>`; }
@@ -359,8 +362,8 @@ function get_time_ago( $time ) {
                 <div class="flex flex-col gap-05">
                     <span class="text-primary bold small-med">Hír státusza</span>
                     <div class="flex flex-row flex-align-c gap-1 w-fa user-select-none" style="font-size: .65rem !important;">
-                        <span class="flex flex-row flex-align-c flex-justify-con-c border-soft padding-05 primary-bg text-primary border-primary-hover border-trans pointer prim-bg-hover">Aktiv</span>
-                        <span class="flex flex-row flex-align-c flex-justify-con-c border-soft padding-05 primary-bg text-primary border-primary-hover border-trans pointer prim-bg-hover">Inaktiv</span>
+                        <span class="flex flex-row flex-align-c flex-justify-con-c border-soft padding-05 primary-bg text-primary border-primary-hover border-primary-dk pointer prim-bg-hover">Aktiv</span>
+                        <span class="flex flex-row flex-align-c flex-justify-con-c border-soft padding-05 primary-bg text-primary border-primary-hover border-primary-dk pointer prim-bg-hover">Inaktiv</span>
                     </div>
                 </div>
                 <div class="flex flex-col gap-05">
@@ -438,10 +441,11 @@ function get_time_ago( $time ) {
         }
     }
 
+    // Linkek mentese
     $('#sv-hd-ln').click(() => {
         let dec = <?= count($ha); ?>;
         var de = document.getElementsByClassName('hd-ln-df');
-        const a = [
+        const defl = [
             <?php
                 for ($i = 0; $i < count($ha); $i++) {
                     echo "
@@ -452,9 +456,57 @@ function get_time_ago( $time ) {
                     ";
                 }
             ?>
-        ];
+        ]; var adefla = [];
 
-        console.log(a);
+        for (let i = 0; i < de.length; i++) {
+            adefla.push(
+                {
+                    name: de[i].querySelector('#link-name-'+(i+1)).value,
+                    link: de[i].querySelector('#link-val-'+(i+1)).value
+                }
+            );
+        }
+        
+        var adefle = [];
 
+        for (let i = 0; i < defl.length; i++) {
+            for (let j = 0; j < adefla.length; j++) {
+                if (defl[i].name == adefla[j].name) {
+                    adefle.push(
+                        {
+                            id: j,
+                            name: adefla[j].name
+                        }
+                    );
+                } if (defl[i].link == adefla[j].link) {
+                    adefle.push(
+                        {
+                            id: j,
+                            link: adefla[j].link
+                        }
+                    );
+                }
+            }
+        }
+
+        const groupAdefle = (adefle = []) => { let result = [];
+        result = adefle.reduce((r, a) => {
+            r[a.id] = r[a.id] || []; r[a.id].push(a); return r;
+        }, Object.create(null)); return result;
+        }; const gadefle = [{items: groupAdefle(adefle)}];
+
+        var ec = document.getElementsByClassName('hd-ln-el-er-cn'); for (let i = 0; i < ec.length; i++) { ec[i].innerHTML = ``; } var cnid = Object.keys(gadefle[0].items);
+
+        for (let i = 0; i < cnid.length; i++) {
+            console.log(cnid[i]);
+            var gname = gadefle[0].items[cnid[i]][0]?.name ? 'név (<em>' + gadefle[0].items[cnid[i]][0]?.name + '</em>)' : '';
+            var glink = gadefle[0].items[cnid[i]][1]?.link ? 'link (<em>' + gadefle[0].items[cnid[i]][1]?.link + '</em>)' : '';
+            document.getElementById('hd-ln-el-er-cn-'+cnid[i]).innerHTML = `
+            <div class="flex flex-row flex-align-c w-fa gap-1 user-select-none small-med text-danger">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                <span>A megadott ${gname} ${glink}</span>
+            </div>
+            `;
+        }
     });
 </script>
