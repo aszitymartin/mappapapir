@@ -152,4 +152,5 @@
     .small-d-smallmed-m { font-size: .9rem !important; }
     .smallmed-d-smallerlight-m { font-size: .75rem !important; }
     .text-align-c-m { text-align: unset !important; }
+    .border-primary-right-d { border-right: 1px solid var(--section-title) !important; }
 }
