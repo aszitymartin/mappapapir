@@ -36,6 +36,7 @@ p { margin: 0; }
 /* Hide elements */
 .hide-desktop { display: flex; }
 .hidden { display: none !important; }
+.ch-tab { display: none; }
 .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 .hide-scroll::-webkit-scrollbar { display: none; }
 
