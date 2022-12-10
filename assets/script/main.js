@@ -306,3 +306,9 @@ else { const notifParams = JSON.parse(getNotifLocal); const now = new Date();
     if (now.getTime() > notifParams.expiry) { localStorage.removeItem('NP');}
     else {notificationSystem(Number(notifParams.notifType), Number(notifParams.notifIcon), Number(notifParams.notifTheme), notifParams.notifTitle, notifParams.notifDesc);setTimeout(function () { localStorage.removeItem('NP'); },5000);}
 } // notificationSystem(0, 0, 0, 'Ertesites', 'Leiras');
+
+var btn = document.querySelectorAll('.splash'); for (let i = 0; i < btn.length; i++) { btn[i].addEventListener('click', createRipple); }
+function createRipple(e) { let btn = e.target; let boundingBox = btn.getBoundingClientRect();
+    let x = e.clientX - boundingBox.left; let y = e.clientY - boundingBox.top; let ripple = document.createElement('span'); ripple.classList.add('ripple');
+    ripple.style.left = `${x}px`; ripple.style.top = `${y}px`; btn.appendChild(ripple); ripple.addEventListener('animationend', () => { ripple.remove() });
+}

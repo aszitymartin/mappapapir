@@ -68,7 +68,7 @@ if (isset($_SESSION['loggedin'])) {
             } else { echo 'nincs ilyen termek'; }
             $stmt->close();
         }
-        echo '
+        echo '<hr style="border: 1px solid var(--background); width: 100%;">
         <div class="flex flex-col flex-align-fe flex-justify-con-fe text-muted padding-05 gap-1">
             <div class="flex flex-col gap-025 small">
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">

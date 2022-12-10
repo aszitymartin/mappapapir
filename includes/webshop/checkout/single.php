@@ -12,11 +12,11 @@ if (isset($_SESSION['loggedin'])) {
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1">
                             <img src="/assets/images/uploads/'.$thumbnail.'" class="drop-shadow" style="width: 10rem; height: 10rem; object-fit: contain;" />
                             <div class="flex flex-row flex-align-c gap-1 user-select-none">
-                                <span title="Csökkentés" aria-label="Csökkentés" class="flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                <span title="Csökkentés" aria-label="Csökkentés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
                                 </span>
                                 <span class="text-secondary">1</span>
-                                <span title="Növelés" aria-label="Növelés" class="flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                <span title="Növelés" aria-label="Növelés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="1" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor"/><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
                                 </span>
                             </div>
@@ -61,7 +61,7 @@ if (isset($_SESSION['loggedin'])) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div><hr style="border: 1px solid var(--background); width: 100%;">
                     <div class="flex flex-col flex-align-fe flex-justify-con-fe text-muted padding-05 gap-1">
                         <div class="flex flex-col gap-025 small">
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
@@ -94,6 +94,14 @@ if (isset($_SESSION['loggedin'])) {
                             </div>
                         </div>
                     </div>
+                    <script>
+                    var btn = document.querySelectorAll(".splash");
+                    for (let i = 0; i < btn.length; i++) { btn[i].addEventListener("click", createRipple); }
+                    function createRipple(e) { let btn = e.target; if (btn.tagName == "svg") { btn = btn.parentNode; } if (btn.tagName == "rect") { btn = btn.parentNode.parentNode; }
+                        let boundingBox = btn.getBoundingClientRect(); let x = e.clientX - boundingBox.left; let y = e.clientY - boundingBox.top; let ripple = document.createElement("span"); ripple.classList.add("ripple");
+                        ripple.style.left = `${x}px`; ripple.style.top = `${y}px`; btn.appendChild(ripple); ripple.addEventListener("animationend", () => { ripple.remove() });
+                    }
+                    </script>
                 ';
             } else { echo 'nincs ilyen termek'; }
             $stmt->close();

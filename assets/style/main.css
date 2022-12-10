@@ -939,3 +939,6 @@ input:checked + .slider-smaller:before { -webkit-transform: translateX(24px);-ms
 .mn-ctg-sh .product-miniature-variation { filter: brightness(35%); }
 .mn-ctg-sh:hover > .product-miniature-variation { filter: brightness(100%); }
 .object-fit-contain { object-fit: contain; }
+.splash { position: relative; overflow: hidden; }
+.ripple { position: absolute; transform: translate(-50%, -50%);width: 0;height: 0;border-radius: 50%;background-color: white;pointer-events: none;opacity: .5;animation: ripple .5s linear; }
+@keyframes ripple { to { width: 15rem; height: 15rem; opacity: 0; } }
