@@ -58,18 +58,18 @@
                         <div class="ch-tab flex-col gap-2 w-fa text-primary">
                             <div class="flex flex-col gap-1 w-fa">
                                 <span class="text-primary bold">Szállítási mód kiválasztása</span>
-                                <div class="flex flex-col gap-1 outline-none border-none small text-muted" style="accent-color: #3699FF;">
+                                <div class="flex flex-col gap-1 outline-none border-none small text-muted user-select-none" style="accent-color: #3699FF;">
                                     <div class="flex flex-row flex-align-c gap-1">
-                                        <input type="radio" id="gls" name="ship" value="gls" />
+                                        <input type="radio" id="gls" name="ship" ship-price="2000" value="gls" checked />
                                         <label for="gls">GLS - A csomag közvetlenül az otthonáig lesz szállítva - 2 000 Ft</label>
                                     </div>
                                     <div class="flex flex-row flex-align-c gap-1">
-                                        <input type="radio" id="fedex" name="ship" value="fedex" />
+                                        <input type="radio" id="fedex" name="ship" ship-price="2000" value="fedex" />
                                         <label for="fedex">FedEx - A csomag közvetlenül az otthonáig lesz szállítva - 2 000 Ft</label>
                                     </div>
                                     <div class="flex flex-row flex-align-c gap-1">
-                                        <input type="radio" id="dhl" name="ship" value="dhl" />
-                                        <label for="dhl">DHL - A csomag közvetlenül az otthonáig lesz szállítva - 2 500 Ft</label>
+                                        <input type="radio" id="dhl" name="ship" ship-price="2000" value="dhl" />
+                                        <label for="dhl">DHL - A csomag közvetlenül az otthonáig lesz szállítva - 2 000 Ft</label>
                                     </div>
                                 </div>
                             </div>
@@ -232,13 +232,13 @@
                         </div>
                         <div class="flex flex-row flex-align-c flex-justify-con-sb gap-1 small margin-top-a">
                             <span id="ch-ac-pv">
-                                <span onclick="__chAction(-1)" id="ch-prev" class="flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
+                                <span onclick="__chAction(-1)" id="ch-prev" class="splash flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor"/></svg>
                                     <span>Előző</span>
                                 </span>
                             </span>
                             <span id="ch-ac-nx">
-                                <span onclick="__chAction(1)" id="ch-next" class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
+                                <span onclick="__chAction(1)" id="ch-next" class="splash flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
                                     <span>Következő</span>
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
                                 </span>
@@ -305,5 +305,6 @@
     }
     x[n].className += " pr__item__active";
     }
+
 </script>
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footer.php'); ?>

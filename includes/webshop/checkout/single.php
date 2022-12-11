@@ -3,20 +3,20 @@
 if (isset($_SESSION['loggedin'])) {
     if (isset($_GET['id'])) {
         if (is_numeric($_GET['id'])) {
-            $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id WHERE products.id = ?');
+            $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model, unit FROM products INNER JOIN products__inventory ON products__inventory.pid = products.id INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id WHERE products.id = ?');
             $stmt->bind_param('i', $_GET['id']);$stmt->execute(); $stmt -> store_result();
-            $stmt->bind_result($pid, $name, $thumbnail, $base, $discount, $color, $style, $brand, $model); $stmt->fetch();
+            $stmt->bind_result($pid, $name, $thumbnail, $base, $discount, $color, $style, $brand, $model, $unit); $stmt->fetch();
             if ($stmt->num_rows > 0) {
                 echo '
                     <div class="flex flex-row-d-col-m gap-1 text-align-c-m">
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1">
                             <img src="/assets/images/uploads/'.$thumbnail.'" class="drop-shadow" style="width: 10rem; height: 10rem; object-fit: contain;" />
                             <div class="flex flex-row flex-align-c gap-1 user-select-none">
-                                <span title="Csökkentés" aria-label="Csökkentés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                <span onclick="remSingle()" title="Csökkentés" aria-label="Csökkentés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
                                 </span>
-                                <span class="text-secondary">1</span>
-                                <span title="Növelés" aria-label="Növelés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                <span class="text-secondary" id="sq-in">1</span>
+                                <span onclick="addSingle()" title="Növelés" aria-label="Növelés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="1" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor"/><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
                                 </span>
                             </div>
@@ -29,7 +29,7 @@ if (isset($_SESSION['loggedin'])) {
                                         if ($discount > 0) {
                                             echo '
                                                 <div class="flex flex-row flex-align-c gap-05">
-                                                    <span class="text-secondary fbe" data-value="'. (($base * $discount) / 100) .'"></span>
+                                                    <span class="text-secondary fbe" data-value="'. $base - (($base * $discount) / 100) .'"></span>
                                                     <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg border-soft-light padding-025 bold user-select-none smaller">-'.$discount.'%</span>
                                                 </div>
                                                 <span class="text-secondary fbe linethrough small-med" data-value="'.$base.'"></span>
@@ -66,31 +66,50 @@ if (isset($_SESSION['loggedin'])) {
                         <div class="flex flex-col gap-025 small">
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                                 <span class="bold">Mennyiség:</span>
-                                <span class="text-secondary">1 darab</span>
+                                <span class="text-secondary"><span id="pd-qn-cn">1</span> '.$unit.'</span>
                             </div>
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                                 <span class="bold">Alapár:</span>
-                                <span class="text-secondary">3 720 Ft</span>
+                                <span class="text-secondary fbe" id="pd-def-val" data-value="'.$base.'"></span>
                             </div>
                         </div>
                         <div class="flex flex-col gap-025 small">
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                                 <span class="bold">Szállítási díj:</span>
-                                <span class="text-secondary">0 Ft</span>
+                                <span class="text-secondary fbe" data-value="2000" id="pd-sh-cn"></span>
                             </div>
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                                 <span class="bold">Kezelési költség:</span>
-                                <span class="text-secondary">0 Ft</span>
+                                <span class="text-secondary fbe" data-value="1000"></span>
                             </div>
                         </div>
                         <div class="flex flex-col gap-025 small">
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                                 <span class="bold">Levonások:</span>
-                                <span class="text-secondary">0 Ft</span>
+                                <span class="text-secondary fbe" id="pd-dc-cn">0 Ft</span>
                             </div>
                             <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                                 <span class="bold">Fizetendő:</span>
-                                <span class="text-secondary">0 Ft</span>
+                                <span class="text-secondary fbe" id="pd-st-cn">0 Ft</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1 w-fa">
+                            <div class="flex flex-row flex-justify-con-fs w-fa">
+                                <span class="text-primary bold small">Levonások</span>
+                            </div>
+                            <div class="flex flex-col gap-05">
+                                <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden">
+                                    <span class="flex flex-row flex-align-c text-align-c padding-05 background-bg text-primary w-20">Szállítási díj</span>
+                                    <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">30 000 Ft után átvállaljuk a szállítás díját.</span>
+                                </div>
+                                <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden">
+                                    <span class="flex flex-row flex-align-c text-align-c padding-05 background-bg text-primary w-20">Kedvezmény</span>
+                                    <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">A termék, amit várásolni szeretne, le van árazva, így levonjuk az összeg 16%-át.</span>
+                                </div>
+                                <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden">
+                                    <span class="flex flex-row flex-align-c text-align-c padding-05 background-bg text-primary w-20">Kuponkód</span>
+                                    <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">A használt kuponkód miatt elegnedünk 2 000 Ft-ot.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,16 +122,62 @@ if (isset($_SESSION['loggedin'])) {
                     }
                     </script>
                 ';
-            } else { echo 'nincs ilyen termek'; }
-            $stmt->close();
+            } else { echo 'nincs ilyen termek'; } $stmt->close();
         } else { echo '<script>window.location.href = "/404"</script>'; }
     } else { echo '<script>window.location.href = "/404"</script>'; }
 } else { echo '<script>window.location.href = "/"</script>'; }
 
 ?>
 <script>
-    let fbe = document.getElementsByClassName('fbe');
-    for (let i = 0; i < fbe.length; i++) {
-        fbe[i].innerHTML = formatter.format(fbe[i].getAttribute('data-value'));
+    let fbe = document.getElementsByClassName('fbe'); for (let i = 0; i < fbe.length; i++) { fbe[i].innerHTML = formatter.format(fbe[i].getAttribute('data-value')); }
+    let dval = 1; let csubt = <?= $base; ?>; let cdisc = <?= $discount; ?>;
+    document.getElementById('pd-dc-cn').textContent = formatter.format(<?= ( $base * $discount) / 100 ?>);
+    document.getElementById('pd-st-cn').textContent = formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000);
+    function addSingle () {
+        dval++; csubt = dval * <?= $base; ?>;
+        document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
+        document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
+        document.getElementById('pd-st-cn').textContent = formatter.format((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval + 1000);
+        document.getElementById('pd-def-val').setAttribute('data-value', dval * <?= $base; ?>);
+        document.getElementById('pd-def-val').textContent = formatter.format(dval * <?= $base; ?>);
+        if (csubt >= 30000) {
+            document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000);
+            document.getElementById('pd-sh-cn').textContent = formatter.format(ship[i].getAttribute('ship-price'));
+            document.getElementById('pd-sh-cn').classList.add('linethrough');
+        } else {
+            document.getElementById('pd-sh-cn').classList.remove('linethrough');
+        }
     }
+
+    function remSingle () {
+        if (dval > 1) {
+            dval--; csubt = dval * <?= $base; ?>;
+            document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
+            document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
+            document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
+            document.getElementById('pd-st-cn').textContent = formatter.format((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval + 1000);
+            document.getElementById('pd-def-val').setAttribute('data-value', dval * <?= $base; ?>);
+            document.getElementById('pd-def-val').textContent = formatter.format(dval * <?= $base; ?>);
+            if (csubt >= 30000) {
+                document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000);
+                document.getElementById('pd-sh-cn').textContent = formatter.format(ship[i].getAttribute('ship-price'));
+                document.getElementById('pd-sh-cn').classList.add('linethrough');
+            } else {
+                document.getElementById('pd-sh-cn').classList.remove('linethrough');
+            }
+        }
+    }
+
+    var ship = document.getElementsByName('ship'); let sfa = false;
+    for(let i = 0; i < ship.length; i++) {
+        ship[i].addEventListener('click', () => {
+            if (csubt < 30000) {
+                if (sfa = false) { csubt += Number(ship[i].getAttribute('ship-price')); } sfa = true;
+                console.log(ship[i].getAttribute('ship-price'));
+            } else { document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000); }
+            document.getElementById('pd-sh-cn').textContent = formatter.format(ship[i].getAttribute('ship-price'));
+            document.getElementById('pd-st-cn').textContent = formatter.format(csubt);
+        });
+    }
+
 </script>

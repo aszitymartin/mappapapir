@@ -83,19 +83,19 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
                 </div>
             </div>
             <div class="flex flex-col gap-05">
-                <div class="csts-select w-fa relative">
+                <!-- <div class="csts-select w-fa relative">
                     <?php 
-                        if ($product['status'] == 1) {
-                            if ($product['quantity'] > 0 || $product['q__warehouse'] > 0) {
-                                echo '<select class="hidden relative" id="product-quantity">
-                                    <option value="0">Mennyiség</option>';
-                                    for ($i = 1; $i <= $product['quantity']; $i++) { echo '<option value="'.$i.'">'.$i.' '.$product['unit'].'</option>'; }
-                                    echo '</select>';
-                                    echo '<script src="/assets/script/cst-drd.js"></script>';
-                            } else { if ($product['backorder']) { echo '<input type="number" min="1" name="product-quantity" class="adm__input item-bg border-soft w-fa text-secondary outline-none small" id="product-quantity" placeholder="Mennyiség">'; } }
-                        }
+                        // if ($product['status'] == 1) {
+                        //     if ($product['quantity'] > 0 || $product['q__warehouse'] > 0) {
+                        //         echo '<select class="hidden relative" id="product-quantity">
+                        //             <option value="0">Mennyiség</option>';
+                        //             for ($i = 1; $i <= $product['quantity']; $i++) { echo '<option value="'.$i.'">'.$i.' '.$product['unit'].'</option>'; }
+                        //             echo '</select>';
+                        //             echo '<script src="/assets/script/cst-drd.js"></script>';
+                        //     } else { if ($product['backorder']) { echo '<input type="number" min="1" name="product-quantity" class="adm__input item-bg border-soft w-fa text-secondary outline-none small" id="product-quantity" placeholder="Mennyiség">'; } }
+                        // }
                     ?>
-                </div>
+                </div> -->
                 <div class="flex flex-row w-fa">
                     <?php
                     if ($product['status'] == 1) {
@@ -230,7 +230,11 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
 <script src="/assets/script/webshop/item.js" content-type="application/javascript"></script>
 <script>var urlpid = <?php echo $params['id']; ?>; var urlmodel = '<?= $model ?>';</script>
 <script>
-    function __ch (pid) { window.location.href = "/webshop/checkout?item="+pid; }
+    function __ch (pid) { 
+        // let sq = document.getElementById('product-quantity').value > 0 ? Number(document.getElementById('product-quantity').value) : 1;
+        // console.log("/webshop/checkout/"+pid + "/?q="+sq);
+        window.location.href = "/webshop/checkout/"+pid;
+    }
     var product_card = document.getElementsByClassName('product-link');
     for (let i = 0; i < product_card.length; i++) {product_card[i].addEventListener("click", function () { window.location.href = "/webshop/?id=" + product_card[i].getAttribute('auid')+"&method=52"; /* A termek az ajanlasokbol szekciobol lett megnyitva */});}
     var product_bookmark = document.getElementsByClassName('product__bm__trig'); var svg_size; var form_data = new FormData();
