@@ -170,15 +170,18 @@
                             </div>
                             <div class="flex flex-col gap-1">
                                 <span class="text-primary bold">Utalványok</span>
-                                <div class="flex flex-row gap-05 w-fa">
-                                    <input type="text" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="XXXXXXXX">
-                                    <span  class="splash flex flex-row flex-align-c w-fc gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
-                                        <div class="flex flex-row flex-align-c flex-justify-con-c gap-1 w-fa">
-                                            <span></span>
-                                            <span>Beváltás</span>
-                                            <span></span>
-                                        </div>
-                                    </span>
+                                <div class="flex flex-col flex-align-fs flex-justify-con-c gap-025 w-fa">
+                                    <div class="flex flex-row gap-05 w-fa">
+                                        <input type="text" id="voucher-input" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="XXXXXXXX">
+                                        <span  class="splash flex flex-row flex-align-c w-fc gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
+                                            <div class="flex flex-row flex-align-c flex-justify-con-c gap-1 w-fa" id="vd-vc-ac-cn" onclick="validateVoucher()">
+                                                <span></span>
+                                                <span class="flex flex-row flex-align-c gap-05" id="av-ac-ic-cn">Beváltás</span>
+                                                <span></span>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <span id="vc-ec-cn"></span>
                                 </div>
                             </div>
                         </div>
