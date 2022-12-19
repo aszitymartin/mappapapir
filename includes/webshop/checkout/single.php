@@ -100,7 +100,7 @@ if (isset($_SESSION['loggedin'])) {
                     <script>
                     var btn = document.querySelectorAll(".splash");
                     for (let i = 0; i < btn.length; i++) { btn[i].addEventListener("click", createRipple); }
-                    function createRipple(e) { let btn = e.target; if (btn.tagName == "svg") { btn = btn.parentNode; } if (btn.tagName == "rect") { btn = btn.parentNode.parentNode; }
+                    function createRipple(e) { let btn = e.target; if (btn?.tagName == "svg") { btn = btn.parentNode; } if (btn?.tagName == "rect") { btn = btn.parentNode.parentNode; }
                         let boundingBox = btn.getBoundingClientRect(); let x = e.clientX - boundingBox.left; let y = e.clientY - boundingBox.top; let ripple = document.createElement("span"); ripple.classList.add("ripple");
                         ripple.style.left = `${x}px`; ripple.style.top = `${y}px`; btn.appendChild(ripple); ripple.addEventListener("animationend", () => { ripple.remove() });
                     }
@@ -220,6 +220,10 @@ if (isset($_SESSION['loggedin'])) {
 
                         console.log(vova + ' vova');
                         console.log(vope + ' vope');
+
+                        document.getElementById('vc-rm-cn').innerHTML = `
+                        <span class="text-primary small-med pointer user-select-none link">Kupon eltávolítása</span>
+                        `;
 
                         dcCon.classList.replace('hidden', 'flex');
                         dciCon.innerHTML += `

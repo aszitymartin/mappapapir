@@ -309,7 +309,7 @@ else { const notifParams = JSON.parse(getNotifLocal); const now = new Date();
 
 var btn = document.querySelectorAll(".splash");
 for (let i = 0; i < btn.length; i++) { btn[i].addEventListener("click", createRipple); }
-function createRipple(e) { let btn = e.target; if (btn.tagName == "svg") { btn = btn.parentNode; } if (btn.tagName == "rect") { btn = btn.parentNode.parentNode; }
+function createRipple(e) { let btn = e.target; if (btn?.tagName == "svg") { btn = btn.parentNode; } if (btn?.tagName == "rect") { btn = btn.parentNode.parentNode; }
     let boundingBox = btn.getBoundingClientRect(); let x = e.clientX - boundingBox.left; let y = e.clientY - boundingBox.top; let ripple = document.createElement("span"); ripple.classList.add("ripple");
     ripple.style.left = `${x}px`; ripple.style.top = `${y}px`; btn.appendChild(ripple); ripple.addEventListener("animationend", () => { ripple.remove() });
 }
