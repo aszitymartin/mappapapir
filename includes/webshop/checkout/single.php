@@ -94,9 +94,6 @@ if (isset($_SESSION['loggedin'])) {
                             </div>
                         </div>
                         <div class="hidden flex-col gap-1 w-fa" id="st-dc-cn">
-                            <div class="flex flex-row flex-justify-con-fs w-fa">
-                                <span class="text-primary bold small">Levonások</span>
-                            </div>
                             <div class="flex flex-col gap-05" id="st-dc-in-cn"></div>
                         </div>
                     </div>
@@ -117,10 +114,10 @@ if (isset($_SESSION['loggedin'])) {
 ?>
 <script>
     let fbe = document.getElementsByClassName('fbe'); for (let i = 0; i < fbe.length; i++) { fbe[i].innerHTML = formatter.format(fbe[i].getAttribute('data-value')); }
-    let dval = 1; let csubt = <?= $base; ?>; let cdisc = <?= $discount; ?>;
+    let dval = 1; let csubt = <?= $base; ?>; let cdisc = <?= $discount; ?>; let vova = 0; let vope = 0; let gt = 0;
     var dcCon = document.getElementById('st-dc-cn'); var dciCon = document.getElementById('st-dc-in-cn');
     document.getElementById('pd-dc-cn').textContent = formatter.format(<?= ( $base * $discount) / 100 ?>);
-    document.getElementById('pd-st-cn').textContent = formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000);
+    document.getElementById('pd-st-cn').textContent = csubt >= 30000 ? formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000) : formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 3000);
     <?php
         if ($discount > 0) {
             echo '
@@ -135,10 +132,15 @@ if (isset($_SESSION['loggedin'])) {
         }
     ?>
     function addSingle () {
-        dval++; csubt = dval * <?= $base; ?>;
+        dval++; vova > 0 ? csubt = (vova * dval) + (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100) : csubt = dval * <?= $base; ?>;
+        // console.log('vova: ' + vova);
+        // console.log("gt : " + (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100));
+        console.log('vd csubt: ' + csubt);
         document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
         document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
-        document.getElementById('pd-st-cn').textContent = formatter.format((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval + 1000);
+        
+        gt = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * vope) / 100)+1000;
+
         document.getElementById('pd-def-val').setAttribute('data-value', dval * <?= $base; ?>);
         document.getElementById('pd-def-val').textContent = formatter.format(dval * <?= $base; ?>);
         if (csubt >= 30000) {
@@ -154,49 +156,70 @@ if (isset($_SESSION['loggedin'])) {
             document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000);
             document.getElementById('pd-sh-cn').textContent = formatter.format(ship[i].getAttribute('ship-price'));
             document.getElementById('pd-sh-cn').classList.add('linethrough');
-        } else {
-            if (document.getElementById('pd-dc-it-sh')) {
-                document.getElementById('pd-dc-it-sh').remove();
-            }
+        } else { gt+= 2000;
+            document.getElementById('pd-dc-it-sh')?.remove();
             document.getElementById('pd-sh-cn').classList.remove('linethrough');
         }
+        console.log(csubt);
+        document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
     }
 
     function remSingle () {
         if (dval > 1) {
-            dval--; csubt = dval * <?= $base; ?>;
+            dval--; vova > 0 ? csubt = (vova * dval) - (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100) : csubt = dval * <?= $base; ?>;
+            gt = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * vope) / 100)+1000;
             document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
             document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
             document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
-            document.getElementById('pd-st-cn').textContent = formatter.format((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval + 1000);
             document.getElementById('pd-def-val').setAttribute('data-value', dval * <?= $base; ?>);
             document.getElementById('pd-def-val').textContent = formatter.format(dval * <?= $base; ?>);
+            console.log(csubt);
             if (csubt >= 30000) {
                 dcCon.classList.replace('hidden', 'flex');
                 document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000);
                 document.getElementById('pd-sh-cn').textContent = formatter.format(ship[i].getAttribute('ship-price'));
                 document.getElementById('pd-sh-cn').classList.add('linethrough');
-            } else {
-                if (cdisc == 0) {
-                    dcCon.classList.replace('flex', 'hidden');
-                }
-                document.getElementById('pd-dc-it-sh').remove();
-                document.getElementById('pd-sh-cn').classList.remove('linethrough');
-            }
+            } else { gt+= 2000;
+                document.getElementById('pd-dc-it-sh')?.remove(); document.getElementById('pd-sh-cn').classList.remove('linethrough');
+            } document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
         }
     }
 
-    function validateVoucher() { var vData = new FormData(); vData.append("pid", <?= $pid; ?>);
+    function validateVoucher() { csubt = dval * <?= $base; ?>; var vData = new FormData(); vData.append("pid", <?= $pid; ?>); vData.append("code", document.getElementById('voucher-input').value);
         if (document.getElementById('voucher-input').value.length > 0) {
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/includes/webshop/checkout/assets/vouchers/get.php", data: vData, dataType: 'json', contentType: false, processData: false,
                 beforeSend: function () { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás <svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>`; },
-                success: function(data) {
+                success: function(data) { console.log(data);
                     if (document.getElementById('voucher-input').value == data.code) {
                         document.getElementById('av-ac-ic-cn').innerHTML = `Beváltva`;
 
                         document.getElementById('vd-vc-ac-cn').removeAttribute('onclick');
                         document.getElementById('vd-vc-ac-cn').classList.remove('primary-bg-hover');
+                        document.getElementById('vd-vc-ac-cn').classList.remove('splash');
                         document.getElementById('vd-vc-ac-cn').classList.replace('pointer', 'not-allowed');
+                        
+                        gt = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * data.value) / 100) + 1000;
+                        
+                        console.log('dd csubt: ' + csubt);
+                        
+                        if (csubt < 30000) { gt += 2000; document.getElementById('pd-dc-it-sh')?.remove(); document.getElementById('pd-sh-cn').classList.remove('linethrough'); }
+                        else {
+                            if (!dciCon.contains(document.getElementById('pd-dc-it-sh'))) {
+                                dciCon.innerHTML += `
+                                <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden" id="pd-dc-it-sh">
+                                    <span class="flex flex-row flex-align-c text-align-c padding-05 background-bg text-primary w-20">Szállítási díj</span>
+                                    <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">30 000 Ft után átvállaljuk a szállítás díját.</span>
+                                </div>
+                                `;
+                            }
+                        }
+                        document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
+
+                        vova = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * data.value) / 100);
+                        vope = data.value;
+
+                        console.log(vova + ' vova');
+                        console.log(vope + ' vope');
 
                         dcCon.classList.replace('hidden', 'flex');
                         dciCon.innerHTML += `
@@ -209,7 +232,7 @@ if (isset($_SESSION['loggedin'])) {
                         document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-success small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg><span>Kuponkód sikeresen hozzáadva.</span></span>`;
                     } else { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás`; document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>Érvénytelen kuponkódot adott meg.</span></span>`; }
                 },
-                error: function (data) { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás`; document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>${data.responseText}</span></span>`; }
+                error: function (data) { console.log(data); document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás`; document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>${data.responseText}</span></span>`; }
             });
         } else { document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>A kupon beváltásához adja meg a kuponkódot.</span></span>`; }
     }
