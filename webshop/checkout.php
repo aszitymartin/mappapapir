@@ -36,23 +36,23 @@
                             <span>Betöltés folyamatban</span>
                         </div>
                     </div>
-                    <div class="flex flex-col gap-1 w-fa">
+                    <div class="flex flex-col gap-1 w-fa" id="ch-tb-cn">
                         <div class="ch-tab flex-col gap-2 w-fa text-primary">
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Teljes név</span>
-                                <input type="text" value="<?= $fullname; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a teljes nevét" autocomplete="fullname">
+                                <input id="ch-fullname" type="text" value="<?= $fullname; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a teljes nevét" autocomplete="fullname" onInput="document.getElementById('inv_fullname').textContent = this.value; document.getElementById('shp_fullname').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary"><strong>Cég</strong> <em class="small-med">(opcionális)</em></span>
-                                <input type="text" value="<?= $company; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a cége megnevezését" autocomplete="organization">
+                                <input id="ch-company" type="text" value="<?= $company; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a cége megnevezését" autocomplete="organization" onInput="document.getElementById('inv_company').textContent = this.value; document.getElementById('shp_company').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">E-mail cím</span>
-                                <input type="email" value="<?= $email; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg az e-mail címét" autocomplete="email">
+                                <input id="ch-email" type="email" value="<?= $email; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg az e-mail címét" autocomplete="email" onInput="document.getElementById('inv_email').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Telefonszám</span>
-                                <input type="tel" value="<?= $phone; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a telefonszámát" autocomplete="tel">
+                                <input id="ch-phone" type="tel" value="<?= $phone; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a telefonszámát" autocomplete="tel" onInput="document.getElementById('inv_phone').textContent = this.value;">
                             </div>
                         </div>
                         <div class="ch-tab flex-col gap-2 w-fa text-primary">
@@ -75,37 +75,37 @@
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Irányítószám</span>
-                                <input type="number" value="<?= $postal; ?>" max="9999" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg az irányítószámát" autocomplete="postal-code">
+                                <input id="ch-shp-zip" type="number" value="<?= $postal; ?>" max="9999" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg az irányítószámát" autocomplete="postal-code" onInput="document.getElementById('shp_zip').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Település</span>
-                                <input type="text" value="<?= $settlement; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a települését" autocomplete="country-name">
+                                <input id="ch-shp-settlement" type="text" value="<?= $settlement; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a települését" autocomplete="country-name" onInput="document.getElementById('shp_settlement').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Utca, házszám</span>
-                                <input type="text" value="<?= $address ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a címet, ahova kiszállítsuk a terméket" autocomplete="street-address">
+                                <input id="ch-shp-address" type="text" value="<?= $address ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a címet, ahova kiszállítsuk a terméket" autocomplete="street-address" onInput="document.getElementById('shp_address').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Megjegyzés</span>
-                                <textarea class="background-bg text-primary border-none outline-none border-soft w-fa resize-none mx-height-un height-un padding-05" rows="6" maxlength="2048" placeholder="Írja le röviden a futárnak a megjegyzését. Pl: 2. emelet"></textarea>
+                                <textarea id="ch-shp-note" class="background-bg text-primary border-none outline-none border-soft w-fa resize-none mx-height-un height-un padding-05" rows="6" maxlength="2048" placeholder="Írja le röviden a futárnak a megjegyzését. Pl: 2. emelet" onInput="document.getElementById('shp_note').textContent = this.value;"></textarea>
                             </div>
                         </div>
                         <div class="ch-tab flex-col gap-2 w-fa text-primary">
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Irányítószám</span>
-                                <input type="number" value="<?= $inv_postal; ?>" max="9999" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a számlázási irányítószámát" autocomplete="postal-code">
+                                <input id="ch-inv-zip" type="number" value="<?= $inv_postal; ?>" max="9999" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a számlázási irányítószámát" autocomplete="postal-code" onInput="document.getElementById('inv_zip').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Település</span>
-                                <input type="text" value="<?= $inv_settlement; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg számlázási települését" autocomplete="country-name">
+                                <input id="ch-inv-settlement" type="text" value="<?= $inv_settlement; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg számlázási települését" autocomplete="country-name" onInput="document.getElementById('inv_settlement').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Utca, házszám</span>
-                                <input type="text" value="<?= $inv_address; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a számlázási címét" autocomplete="address-line1">
+                                <input id="ch-inv-address" type="text" value="<?= $inv_address; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a számlázási címét" autocomplete="address-line1" onInput="document.getElementById('inv_address').textContent = this.value;">
                             </div>
                             <div class="flex flex-col gap-05 w-fa">
                                 <span class="text-primary bold">Adószám</span>
-                                <input type="number" value="<?= $inv_tax; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a számlázási adószámát">
+                                <input id="ch-inv-tax" type="number" value="<?= $inv_tax; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Adja meg a számlázási adószámát" onInput="document.getElementById('inv_tax').textContent = this.value;">
                             </div>
                         </div>
                         <div class="ch-tab flex-col gap-2 w-fa text-primary">
@@ -143,10 +143,12 @@
                                                     <div class="flex flex-row flex-align-c gap-1">
                                                         <div class="flex flex-row flex-align-c gap-1">
                                                             ';
-                                                            if ($stmt = $con->prepare('SELECT * FROM customers__card__primary WHERE uid = ? AND cid LIKE ?')) {
-                                                                $stmt->bind_param('is', $uid, $card['cid']);$stmt->execute();$stmt->store_result(); 
+                                                            if ($stmt = $con->prepare('SELECT cid FROM customers__card__primary WHERE uid = ? AND cid LIKE ?')) {
+                                                                $stmt->bind_param('is', $uid, $card['cid']);$stmt->execute();$stmt->store_result();
                                                                 if ($stmt->num_rows < 1) { echo '<div class="flex flex-col flex-align-c flex-justify-con-c border-soft item-bg padding-05 box-shadow-sh">'; }
-                                                                else { echo '<div class="flex flex-col flex-align-c flex-justify-con-c border-soft item-bg padding-05 box-shadow-sh">'; }
+                                                                else { echo '<div class="flex flex-col flex-align-c flex-justify-con-c border-soft item-bg padding-05 box-shadow-sh">
+                                                                    <script>var pcid = "'.$card['cid'].'";</script>
+                                                                '; }
                                                             }
                                                             if ($card['cardname'] == 'Mappa+ kártya') { echo '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 24 24" fill="none"><path d="M22 7H2V11H22V7Z" class="svg"></path><path opacity="0.3" d="M21 19H3C2.4 19 2 18.6 2 18V6C2 5.4 2.4 5 3 5H21C21.6 5 22 5.4 22 6V18C22 18.6 21.6 19 21 19ZM14 14C14 13.4 13.6 13 13 13H5C4.4 13 4 13.4 4 14C4 14.6 4.4 15 5 15H13C13.6 15 14 14.6 14 14ZM16 15.5C16 16.3 16.7 17 17.5 17H18.5C19.3 17 20 16.3 20 15.5C20 14.7 19.3 14 18.5 14H17.5C16.7 14 16 14.7 16 15.5Z" class="svg"></path></svg>'; }
                                                             if ($card['cardname'] == 'Mastercard') { echo '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 80 48" fill="none"><rect width="80" height="48" rx="6"></rect><g clip-path="url(#clip0)"><path d="M47.129 35.9651H33.8779V12.2273H47.1292L47.129 35.9651Z" fill="#FF5F00"></path><path d="M34.718 24.096C34.718 19.2808 36.9798 14.9914 40.502 12.2271C37.8359 10.1316 34.5384 8.99434 31.1432 8.99935C22.7796 8.99935 16 15.7583 16 24.096C16 32.4338 22.7796 39.1927 31.1432 39.1927C34.5385 39.1978 37.8361 38.0605 40.5022 35.9649C36.9803 33.2011 34.718 28.9115 34.718 24.096Z" fill="#EB001B"></path><path d="M65.0061 24.0967C65.0061 32.4345 58.2265 39.1934 49.8629 39.1934C46.4673 39.1984 43.1693 38.0611 40.5027 35.9656C44.0258 33.2013 46.2876 28.9121 46.2876 24.0967C46.2876 19.2813 44.0258 14.9921 40.5027 12.2278C43.1693 10.1324 46.4671 8.9951 49.8627 9.00002C58.2263 9.00002 65.0059 15.7589 65.0059 24.0967" fill="#F79E1B"></path></g><defs><clipPath id="clip0"><rect width="49" height="38" fill="white" transform="translate(16 9)"></rect></clipPath></defs></svg>'; }
@@ -172,7 +174,7 @@
                                 <span class="text-primary bold">Utalványok</span>
                                 <div class="flex flex-col flex-align-fs flex-justify-con-c gap-025 w-fa">
                                     <div class="flex flex-row gap-05 w-fa">
-                                        <input type="text" id="voucher-input" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="XXXXXXXX">
+                                        <input type="text" id="voucher-input" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="XX-XX-XXXXXX">
                                         <span id="vd-vc-ac-cn" onclick="validateVoucher()" class="splash flex flex-row flex-align-c w-fc gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none relative overflow-hidden">
                                             <div class="flex flex-row flex-align-c flex-justify-con-c gap-1 w-fa">
                                                 <span></span>
@@ -198,23 +200,24 @@
                                 <div class="flex flex-col gap-05 w-50d-fam ">
                                     <span class="bold small">Számlázás</span>
                                     <div class="flex flex-col gap-025 small-med">
-                                        <span>Ászity Martin</span>
-                                        <span>Minta Kft</span>
-                                        <span>Minta utca 3</span>
-                                        <span>6000 Kecskemet</span>
-                                        <span>123456789</span>
-                                        <span>martinaszity@icloud.com</span>
-                                        <span>06301234567</span>
+                                        <span id="inv_fullname"><?= $fullname; ?></span>
+                                        <span id="inv_company"><?= $company; ?></span>
+                                        <span id="inv_address"><?= $inv_address; ?></span>
+                                        <div><span id="inv_zip"><?= $inv_postal; ?></span> <span id="inv_settlement"><?= $inv_settlement; ?></span></div>
+                                        <span id="inv_tax"><?= $inv_tax; ?></span>
+                                        <span id="inv_email"><?= $email; ?></span>
+                                        <span id="inv_phone">+36 <?= $phone; ?></span>
                                     </div>
                                 </div>
                                 <div class="flex flex-col gap-05 w-50d-fam ">
                                     <span class="bold small">Szállítás</span>
                                     <div class="flex flex-col gap-025 small-med">
-                                        <span>Aszity Martin</span>
-                                        <span>Minta Kft</span>
-                                        <span>Minta utca 3</span>
-                                        <span>6000 Kecskemet</span>
-                                        <span class="italic text-muted">Rovid megjegyzes amit a futarnak irtam hogy ne tevedjen el a panelrengeteg kozott.</span>
+                                        <span id="shp_fullname"><?= $fullname; ?></span>
+                                        <span id="shp_company"><?= $company; ?></span>
+                                        <span id="shp_address"><?= $address; ?></span>
+                                        <div><span id="shp_zip"><?= $postal; ?></span> <span id="shp_settlement"><?= $settlement; ?></span></div>
+                                        <span id="shp_method">GLS</span>
+                                        <span class="italic text-muted" id="shp_note"></span>
                                     </div>
                                 </div>
                             </div>
@@ -222,7 +225,7 @@
                                 <div class="flex flex-col">
                                     <div class="flex flex-row flex-align-c gap-1">
                                         <label class="cst-chb-lbl">
-                                            <input type="checkbox" class="absolute" name="product-review-auth" id="product-review-auth">
+                                            <input type="checkbox" class="absolute" id="ch-sb-nw">
                                             <span class="cst-checkbox"></span>
                                         </label>
                                         <span class="text-primary small" style="line-height: 2rem;">Hírlevél</span>
@@ -232,16 +235,16 @@
                                 <div class="flex flex-col">
                                     <div class="flex flex-row flex-align-c gap-1">
                                         <label class="cst-chb-lbl">
-                                            <input type="checkbox" class="absolute" name="product-review-auth" id="product-review-auth">
+                                            <input type="checkbox" class="absolute" id="ch-ac-tc">
                                             <span class="cst-checkbox"></span>
                                         </label>
                                         <span class="text-primary small" style="line-height: 2rem;">Általános Szerződési Feltételek</span>
                                     </div>
-                                    <span class="text-muted small-med">Ezúton megerősítem, hogy az általam megadott információk helyesek, és elfogadom az általános szerődési feltételeket</span>
+                                    <span class="text-muted small-med">Ezúton megerősítem, hogy az általam megadott információk helyesek, és elfogadom az <a class="text-primary pointer user-select-none link" href="/hc/aszf" target="_blank">általános szerődési feltételeket</a>.</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-row flex-align-c flex-justify-con-sb gap-1 small margin-top-a">
+                        <div class="flex flex-row flex-align-c flex-justify-con-sb gap-1 small margin-top-a" id="ch-ac-bn-cn">
                             <span id="ch-ac-pv">
                                 <span onclick="__chAction(-1)" id="ch-prev" class="splash flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 pointer user-select-none">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor"/></svg>
@@ -286,7 +289,50 @@
     x[currentTab].style.display = "none";
     currentTab = currentTab + n;
     if (currentTab >= x.length) {
-        console.log('submitted');
+        document.getElementById('ch-ac-bn-cn').remove();
+        const orderData = [
+            no1 = {
+                fullname: document.getElementById('ch-fullname').value,
+                company: document.getElementById('ch-company').value,
+                email: document.getElementById('ch-email').value,
+                phone: document.getElementById('ch-phone').value
+            }, no2 = {
+                shpMethod: shpMethod,
+                zip: document.getElementById('ch-shp-zip').value,
+                settlement: document.getElementById('ch-shp-settlement').value,
+                address: document.getElementById('ch-shp-address').value,
+                note: document.getElementById('ch-shp-note').value
+            }, no3 = {
+                zip: document.getElementById('ch-inv-zip').value,
+                settlement: document.getElementById('ch-inv-settlement').value,
+                address: document.getElementById('ch-inv-address').value,
+                tax: document.getElementById('ch-inv-tax').value
+            }, no4 = {
+                paymentMethod: pcid,
+                voucher: svc,
+                code: document.getElementById('voucher-input').value
+            }, no5 = {
+                newsletter: document.getElementById('ch-sb-nw').checked
+            }, extras = {
+                quantity: dval,
+                base: base,
+
+                isFreeShip: false,
+                isDiscounted: cdisc > 0 ? true : false,
+                discountPercentage: cdisc,
+                isVoucherUsed: svc,
+                voucherPercentage: vope
+            }
+        ];
+        
+        console.log(orderData[0]);
+
+        document.getElementById('ch-tb-cn').innerHTML += `
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                <svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>
+                <span>Megrendelés megkezdése</span>
+            </div>
+        `;
         // document.getElementById("regForm").submit();
         return false;
     }
@@ -315,6 +361,30 @@
         x[i].className = x[i].className.replace(" pr__item__active", "");
     }
     x[n].className += " pr__item__active";
+    }
+
+    function setPaymentMethod (cid) { var credid = cid.split('_')[1]; var cid__data = new FormData(); cid__data.append('cid', credid);
+        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/profile/setp__card.php", data: cid__data, dataType: 'json', contentType: false, processData: false,
+            success: function(data) {
+                if (data === 200) { pcid = cid; var actcid = cid; var paycon = document.getElementsByClassName('paymnt__con');                    
+                    for (let i = 0; i < paycon.length; i++) {
+                        if (paycon[i].id.split('_')[1] != credid) { paycon[i].classList.remove("primary-bg"); paycon[i].classList.replace("border-primary-light-dotted", "border-secondary-dotted");
+                            paycon[i].lastElementChild.firstElementChild.firstElementChild.classList.replace("item-bg", "primary-bg");
+                            var crtsetbtn = document.createElement('span'); crtsetbtn.classList = "primary-bg primary-bg-hover padding-025 border-soft-light text-secondary smaller user-select-none pointer";
+                            crtsetbtn.id = "card_"+paycon[i].id.split('_')[1]; crtsetbtn.setAttribute('onclick', 'setPaymentMethod(this.id)'); crtsetbtn.textContent = "Használ"; 
+                            var payb = document.getElementsByClassName('paymbtn__con'); var paycbtn = document.getElementById("card_"+paycon[i].id.split('_')[1]);
+                            if (!paycon[i].contains(paycbtn)) { paycon[i].firstElementChild.lastElementChild.append(crtsetbtn); } paycon[i].setAttribute('item-status', 'inactive');
+                        }
+                    } document.getElementById(cid).parentNode.parentNode.parentNode.setAttribute('item-status', 'active'); document.getElementById(cid).parentNode.parentNode.parentNode.classList.replace("border-secondary-dotted", "border-primary-light-dotted");document.getElementById(cid).parentNode.parentNode.parentNode.classList.add("primary-bg");document.getElementById(cid).parentNode.parentNode.parentNode.lastElementChild.lastElementChild.firstElementChild.classList.replace("primary-bg", "item-bg"); document.getElementById(cid).remove();
+                } else { var ce__wrapper = document.createElement('div'); ce__wrapper.classList = "wrapper_dark fadein"; var ce__box = document.createElement('div'); ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1"; document.body.append(ce__wrapper); ce__wrapper.append(ce__box); $('html').css("overflow-y", "hidden");
+                    ce__box.innerHTML = `<div class="flex flex-col gap-1 feat__body prs__con" id="prs__con"><div class="flex flex-col flex-align-c flex-justify-con-c"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="8rem" height="8rem" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#F64E60" opacity="0.3" cx="12" cy="12" r="10"></circle><path d="M12.0355339,10.6213203 L14.863961,7.79289322 C15.2544853,7.40236893 15.8876503,7.40236893 16.2781746,7.79289322 C16.6686989,8.18341751 16.6686989,8.81658249 16.2781746,9.20710678 L13.4497475,12.0355339 L16.2781746,14.863961 C16.6686989,15.2544853 16.6686989,15.8876503 16.2781746,16.2781746 C15.8876503,16.6686989 15.2544853,16.6686989 14.863961,16.2781746 L12.0355339,13.4497475 L9.20710678,16.2781746 C8.81658249,16.6686989 8.18341751,16.6686989 7.79289322,16.2781746 C7.40236893,15.8876503 7.40236893,15.2544853 7.79289322,14.863961 L10.6213203,12.0355339 L7.79289322,9.20710678 C7.40236893,8.81658249 7.40236893,8.18341751 7.79289322,7.79289322 C8.18341751,7.40236893 8.81658249,7.40236893 9.20710678,7.79289322 L12.0355339,10.6213203 Z" fill="#F64E60"></path></g></svg><span class="bold small" style="color: #F64E60;">Sikertelen művelet!</span></div><div class="flex flex-col flex-align-c flex-justify-con-c"><span class="text-secondary w-100 text-align-c small-med"></span><span class="button button-secondary" style="font-size: .75rem !important;" id="cl__ebox">Bezárás</span></div></div>`;
+                    $('#cl__ebox').click(function () { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove(); $("#tab-credit").load('/includes/profile/credit.php'); $('html').css("overflow-y", "unset");},235); });
+                }
+            }, error: function (data) { var ce__wrapper = document.createElement('div'); ce__wrapper.classList = "wrapper_dark fadein"; var ce__box = document.createElement('div'); ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1"; document.body.append(ce__wrapper); ce__wrapper.append(ce__box); $('html').css("overflow-y", "hidden");
+                ce__box.innerHTML = `<div class="flex flex-col gap-1 feat__body prs__con" id="prs__con"><div class="flex flex-col flex-align-c flex-justify-con-c"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="8rem" height="8rem" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#F64E60" opacity="0.3" cx="12" cy="12" r="10"></circle><path d="M12.0355339,10.6213203 L14.863961,7.79289322 C15.2544853,7.40236893 15.8876503,7.40236893 16.2781746,7.79289322 C16.6686989,8.18341751 16.6686989,8.81658249 16.2781746,9.20710678 L13.4497475,12.0355339 L16.2781746,14.863961 C16.6686989,15.2544853 16.6686989,15.8876503 16.2781746,16.2781746 C15.8876503,16.6686989 15.2544853,16.6686989 14.863961,16.2781746 L12.0355339,13.4497475 L9.20710678,16.2781746 C8.81658249,16.6686989 8.18341751,16.6686989 7.79289322,16.2781746 C7.40236893,15.8876503 7.40236893,15.2544853 7.79289322,14.863961 L10.6213203,12.0355339 L7.79289322,9.20710678 C7.40236893,8.81658249 7.40236893,8.18341751 7.79289322,7.79289322 C8.18341751,7.40236893 8.81658249,7.40236893 9.20710678,7.79289322 L12.0355339,10.6213203 Z" fill="#F64E60"></path></g></svg><span class="bold small" style="color: #F64E60;">Sikertelen művelet!</span></div><div class="flex flex-col flex-align-c flex-justify-con-c"><span class="text-secondary w-100 text-align-c small-med"></span><span class="button button-secondary" style="font-size: .75rem !important;" id="cl__ebox">Bezárás</span></div></div>`;
+                $('#cl__ebox').click(function () { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove(); $("#tab-credit").load('/includes/profile/credit.php'); $('html').css("overflow-y", "unset");},235); });
+            }
+        });
     }
 
 </script>

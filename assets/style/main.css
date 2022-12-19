@@ -151,6 +151,8 @@ a { color: unset; text-decoration: none; }
 .relative { position: relative; }
 .fixed { position: fixed; }
 .right-5 { right: 5% !important; }
+.right { right: 0%; }
+.top { top: 0; }
 .center-y { top: 50% !important; transform: translateY(-50%); }
 .z-99 { z-index: 99; }
 .z-90 { z-index: 90; }

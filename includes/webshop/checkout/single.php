@@ -101,8 +101,8 @@ if (isset($_SESSION['loggedin'])) {
                     var btn = document.querySelectorAll(".splash");
                     for (let i = 0; i < btn.length; i++) { btn[i].addEventListener("click", createRipple); }
                     function createRipple(e) { let btn = e.target; if (btn?.tagName == "svg") { btn = btn.parentNode; } if (btn?.tagName == "rect") { btn = btn.parentNode.parentNode; }
-                        let boundingBox = btn.getBoundingClientRect(); let x = e.clientX - boundingBox.left; let y = e.clientY - boundingBox.top; let ripple = document.createElement("span"); ripple.classList.add("ripple");
-                        ripple.style.left = `${x}px`; ripple.style.top = `${y}px`; btn.appendChild(ripple); ripple.addEventListener("animationend", () => { ripple.remove() });
+                        let boundingBox = btn?.getBoundingClientRect(); let x = e.clientX - boundingBox?.left; let y = e.clientY - boundingBox?.top; let ripple = document.createElement("span"); ripple.classList.add("ripple");
+                        ripple.style.left = `${x}px`; ripple.style.top = `${y}px`; btn?.appendChild(ripple); ripple.addEventListener("animationend", () => { ripple.remove() });
                     }
                     </script>
                 ';
@@ -114,10 +114,11 @@ if (isset($_SESSION['loggedin'])) {
 ?>
 <script>
     let fbe = document.getElementsByClassName('fbe'); for (let i = 0; i < fbe.length; i++) { fbe[i].innerHTML = formatter.format(fbe[i].getAttribute('data-value')); }
-    let dval = 1; let csubt = <?= $base; ?>; let cdisc = <?= $discount; ?>; let vova = 0; let vope = 0; let gt = 0;
-    var dcCon = document.getElementById('st-dc-cn'); var dciCon = document.getElementById('st-dc-in-cn');
+    let dval = 1; let csubt = <?= $base; ?>; let cdisc = <?= $discount; ?>; let base = <?= $base; ?>; let vova = 0; let vope = 0; let gt = 0;
+    var dcCon = document.getElementById('st-dc-cn'); var dciCon = document.getElementById('st-dc-in-cn'); var svc = false;
     document.getElementById('pd-dc-cn').textContent = formatter.format(<?= ( $base * $discount) / 100 ?>);
-    document.getElementById('pd-st-cn').textContent = csubt >= 30000 ? formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000) : formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 3000);
+    let fpc = csubt >= 30000 ? formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000) : formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 3000);
+    document.getElementById('pd-st-cn').textContent = fpc;
     <?php
         if ($discount > 0) {
             echo '
@@ -133,9 +134,6 @@ if (isset($_SESSION['loggedin'])) {
     ?>
     function addSingle () {
         dval++; vova > 0 ? csubt = (vova * dval) + (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100) : csubt = dval * <?= $base; ?>;
-        // console.log('vova: ' + vova);
-        // console.log("gt : " + (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100));
-        console.log('vd csubt: ' + csubt);
         document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
         document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
         
@@ -159,9 +157,7 @@ if (isset($_SESSION['loggedin'])) {
         } else { gt+= 2000;
             document.getElementById('pd-dc-it-sh')?.remove();
             document.getElementById('pd-sh-cn').classList.remove('linethrough');
-        }
-        console.log(csubt);
-        document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
+        } document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
     }
 
     function remSingle () {
@@ -173,7 +169,6 @@ if (isset($_SESSION['loggedin'])) {
             document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
             document.getElementById('pd-def-val').setAttribute('data-value', dval * <?= $base; ?>);
             document.getElementById('pd-def-val').textContent = formatter.format(dval * <?= $base; ?>);
-            console.log(csubt);
             if (csubt >= 30000) {
                 dcCon.classList.replace('hidden', 'flex');
                 document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000);
@@ -185,23 +180,15 @@ if (isset($_SESSION['loggedin'])) {
         }
     }
 
-    function validateVoucher() { csubt = dval * <?= $base; ?>; var vData = new FormData(); vData.append("pid", <?= $pid; ?>); vData.append("code", document.getElementById('voucher-input').value);
+    function validateVoucher () { csubt = dval * <?= $base; ?>; var vData = new FormData(); vData.append("pid", <?= $pid; ?>); vData.append("code", document.getElementById('voucher-input').value);
         if (document.getElementById('voucher-input').value.length > 0) {
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/includes/webshop/checkout/assets/vouchers/get.php", data: vData, dataType: 'json', contentType: false, processData: false,
                 beforeSend: function () { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás <svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>`; },
-                success: function(data) { console.log(data);
-                    if (document.getElementById('voucher-input').value == data.code) {
-                        document.getElementById('av-ac-ic-cn').innerHTML = `Beváltva`;
-
-                        document.getElementById('vd-vc-ac-cn').removeAttribute('onclick');
-                        document.getElementById('vd-vc-ac-cn').classList.remove('primary-bg-hover');
-                        document.getElementById('vd-vc-ac-cn').classList.remove('splash');
-                        document.getElementById('vd-vc-ac-cn').classList.replace('pointer', 'not-allowed');
-                        
+                success: function(data) { svc = true;
+                    if (document.getElementById('voucher-input').value == data.code) { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltva`;
+                        document.getElementById('vd-vc-ac-cn').removeAttribute('onclick'); document.getElementById('vd-vc-ac-cn').classList.remove('primary-bg-hover');
+                        document.getElementById('vd-vc-ac-cn').classList.remove('splash'); document.getElementById('vd-vc-ac-cn').classList.replace('pointer', 'not-allowed');
                         gt = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * data.value) / 100) + 1000;
-                        
-                        console.log('dd csubt: ' + csubt);
-                        
                         if (csubt < 30000) { gt += 2000; document.getElementById('pd-dc-it-sh')?.remove(); document.getElementById('pd-sh-cn').classList.remove('linethrough'); }
                         else {
                             if (!dciCon.contains(document.getElementById('pd-dc-it-sh'))) {
@@ -212,24 +199,19 @@ if (isset($_SESSION['loggedin'])) {
                                 </div>
                                 `;
                             }
-                        }
-                        document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
-
+                        } document.getElementById('pd-st-cn').innerHTML = formatter.format(gt); vope = data.value;
                         vova = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * data.value) / 100);
-                        vope = data.value;
-
-                        console.log(vova + ' vova');
-                        console.log(vope + ' vope');
-
-                        document.getElementById('vc-rm-cn').innerHTML = `
-                        <span class="text-primary small-med pointer user-select-none link">Kupon eltávolítása</span>
-                        `;
-
+                        document.getElementById('vc-rm-cn').innerHTML = `<span class="text-primary small-med pointer user-select-none link" onclick="removeVoucher()">Kupon eltávolítása</span>`;
                         dcCon.classList.replace('hidden', 'flex');
                         dciCon.innerHTML += `
-                        <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden">
+                        <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden relative" id="st-dc-vc-cn">
                             <span class="flex flex-row flex-align-c text-align-c padding-05 background-bg text-primary w-20">Kuponkód</span>
-                            <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">${data.description}</span>
+                            <div class="flex flex-row flex-align-c flex-justify-con-sa gap-1 w-fa">
+                                <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">${data.description}</span>
+                                <span class="background-bg background-bg-hover text-primary pointer user-select-none box-shadow" onclick="removeVoucher()" title="Kupon eltávolítása">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg>
+                                </span>
+                            </div>
                         </div>
                         `;
 
@@ -239,14 +221,18 @@ if (isset($_SESSION['loggedin'])) {
                 error: function (data) { console.log(data); document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás`; document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>${data.responseText}</span></span>`; }
             });
         } else { document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>A kupon beváltásához adja meg a kuponkódot.</span></span>`; }
+    } function removeVoucher () { svc = false; vova = 0; vope = 0; csubt = dval * <?= $base; ?>;
+        document.getElementById('pd-st-cn').textContent = csubt >= 30000 ? formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000) : formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 3000);
+        document.getElementById('st-dc-vc-cn')?.remove(); document.getElementById('voucher-input').value = '';
+        document.getElementById('vc-rm-cn').innerHTML = ``; document.getElementById('vc-ec-cn').innerHTML = ``;
     }
 
-    var ship = document.getElementsByName('ship'); let sfa = false;
+    var ship = document.getElementsByName('ship'); let sfa = false; var shpMethod = 'gls';
     for(let i = 0; i < ship.length; i++) {
-        ship[i].addEventListener('click', () => {
+        ship[i].addEventListener('click', () => { shpMethod = ship[i].value;
+            document.getElementById('shp_method').textContent = ship[i].value.toUpperCase();
             if (csubt < 30000) {
                 if (sfa = false) { csubt += Number(ship[i].getAttribute('ship-price')); } sfa = true;
-                console.log(ship[i].getAttribute('ship-price'));
             } else { document.getElementById('pd-dc-cn').textContent = formatter.format(((<?= ( $base * $discount) / 100 ?>) * dval) + 2000); }
             document.getElementById('pd-sh-cn').textContent = formatter.format(ship[i].getAttribute('ship-price'));
             document.getElementById('pd-st-cn').textContent = formatter.format(csubt);

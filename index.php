@@ -8,5 +8,7 @@ $route->add("/search/{term}","webshop/search.php");
 $route->add("/product/{id}/{productname}","webshop/index.php");
 $route->add("/admin/products/edit/{id}/{productname}","admin/products/edit/index.php");
 $route->add("/admin/moderate/{id}/","admin/users/index.php");
+
+$route->add("/hc/{term}","/index.php");
 $route->notFound("404.php");
 ?>

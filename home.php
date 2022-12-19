@@ -74,7 +74,7 @@ function get_time_ago( $time ) {
         <div class='section_body flex flex-justify-con-sb overflow-auto'>
             <div class="swiper-news">
                 <div class="swiper-wrapper">
-                    <?php $sql = "SELECT def__news.*, customers.fullname FROM def__news INNER JOIN customers ON customers.id = def__news.uid WHERE 1"; $res = $con->query($sql);
+                    <?php $sql = "SELECT def__news.*, customers.fullname FROM def__news INNER JOIN customers ON customers.id = def__news.uid WHERE 1 ORDER BY NO ASC"; $res = $con->query($sql);
                         while ($dt = $res->fetch_assoc()) {
                             echo '
                             <div class="swiper-slide">
