@@ -12,11 +12,11 @@ if (isset($_SESSION['loggedin'])) {
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1">
                             <img src="/assets/images/uploads/'.$thumbnail.'" class="drop-shadow" style="width: 10rem; height: 10rem; object-fit: contain;" />
                             <div class="flex flex-row flex-align-c gap-1 user-select-none">
-                                <span onclick="remSingle()" title="Csökkentés" aria-label="Csökkentés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                <span onclick="remSingle()" title="Csökkentés" aria-label="Csökkentés" class="qb splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
                                 </span>
                                 <span class="text-secondary" id="sq-in">1</span>
-                                <span onclick="addSingle()" title="Növelés" aria-label="Növelés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                <span onclick="addSingle()" title="Növelés" aria-label="Növelés" class="qb splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="1" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor"/><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
                                 </span>
                             </div>
@@ -132,6 +132,19 @@ if (isset($_SESSION['loggedin'])) {
             ';
         }
     ?>
+    if (<?= $base; ?> > 30000) {
+        dcCon.classList.replace('hidden', 'flex');
+        if (!dciCon.contains(document.getElementById('pd-dc-it-sh'))) {
+            dciCon.innerHTML += `
+            <div class="flex flex-row w-fa small-med border-secondary border-soft-light overflow-hidden" id="pd-dc-it-sh">
+                <span class="flex flex-row flex-align-c text-align-c padding-05 background-bg text-primary w-20">Szállítási díj</span>
+                <span class="flex flex-row flex-align-c padding-05 text-secondary w-80">30 000 Ft után átvállaljuk a szállítás díját.</span>
+            </div>
+            `;
+        }
+        document.getElementById('pd-sh-cn').classList.add('linethrough');
+        document.getElementById('pd-dc-cn').textContent = formatter.format(2000);
+    }
     function addSingle () {
         dval++; vova > 0 ? csubt = (vova * dval) + (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100) : csubt = dval * <?= $base; ?>;
         document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
