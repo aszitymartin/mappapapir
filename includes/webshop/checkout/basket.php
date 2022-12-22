@@ -4,7 +4,7 @@ if (isset($_SESSION['loggedin'])) {
     if (!isset($_GET['id'])) {
         $sql = "SELECT pid FROM cart WHERE uid = " . $_SESSION['id'];
         $res = $con->query($sql);
-        echo '<div class="flex flex-col prio__con gap-025">';
+        echo '<div class="flex flex-col prio__con gap-025" style="max-height: 290px !important;">';
         while ($dt = $res->fetch_assoc()) {
             $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id WHERE products.id = ?');
             $stmt->bind_param('i', $dt['pid']);$stmt->execute(); $stmt -> store_result();

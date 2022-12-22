@@ -311,23 +311,25 @@
                     tax: document.getElementById('ch-inv-tax').value
                 }, payment : {
                     paymentMethod: pcid,
-                    voucher: svc,
-                    code: document.getElementById('voucher-input').value
                 }, extras : {
                     newsletter: document.getElementById('ch-sb-nw').checked,
-                    quantity: dval,
-                    base: base,
-                    isFreeShip: false,
-                    isDiscounted: cdisc > 0 ? true : false,
-                    discountPercentage: cdisc,
-                    isVoucherUsed: svc,
-                    voucherPercentage: vope
                 }, required : {
                     general : ['ch-fullname', 'ch-email', 'ch-phone'],
                     shipping : ['ch-shp-zip', 'ch-shp-settlement', 'ch-shp-address'],
                     invoice : ['ch-inv-zip', 'ch-inv-settlement', 'ch-inv-address', 'ch-inv-tax'],
                 }
-            };       
+            };
+            
+            // dynamical model
+            const itemData = {
+                voucher : {
+                    voucherUsed : itemDataVoucer_VoucherUsed,
+                    voucherCode : itemDataVoucer_VoucherCode,
+                    voucherPercentage : itemDataVoucer_VoucherPercentage
+                }
+            };
+
+            Object.assign(itemData, dynamicItemsObject);
 
             // Check emptiness on required fields
             var emptyRequiredFields = [];
@@ -355,33 +357,34 @@
             `;
             if (emptyRequiredFields.length == 0) {
                 console.log('order ok');
+                postCheckOutDatas(orderData, itemData);
             } else {
                 document.getElementById('ch-tb-cn').innerHTML = `
-                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
-                    <div class="flex flex-col flex-justify-con-c flex-align-c gap-025 w-fa">
-                        <strong class="small">Megrendelés megszakítva</strong>
-                        <span class="small-med text-align-c">Néhány mezőt nem töltött ki, így nem tudtuk megkezdeni a rendelésének feldolgozását. Amennyiben mégis le szeretné adni a rendelését, kérjük a lent megjelenő mezőket töltse ki.<br><strong>Figyelem!</strong> Az eddig megadott adatok nem fognak módosulni és nincs lehetősége módosítani a rendelésén. Amennyiben mégis szeretne módosítani, kérjük frissítse az oldalt.</span>
+                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                        <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                        <div class="flex flex-col flex-justify-con-c flex-align-c gap-025 w-fa">
+                            <strong class="small">Megrendelés megszakítva</strong>
+                            <span class="small-med text-align-c">Néhány mezőt nem töltött ki, így nem tudtuk megkezdeni a rendelésének feldolgozását. Amennyiben mégis le szeretné adni a rendelését, kérjük a lent megjelenő mezőket töltse ki.<br><strong>Figyelem!</strong> Az eddig megadott adatok nem fognak módosulni és nincs lehetősége módosítani a rendelésén. Amennyiben mégis szeretne módosítani, kérjük frissítse az oldalt.</span>
+                        </div>
+                    </div><hr style="border: 1px solid var(--background);" class="w-100"><br>
+                    <div class="flex flex-col w-fa gap-1" id="ch-er-ip-cn"></div>
+                    <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa">
+                        <span id="ch-ea-rt-bt" class="flex flex-row flex-align-c gap-1 primary-bg border-soft-light padding-05 not-allowed user-select-none">
+                            <span>Megrendelés</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
+                        </span>
                     </div>
-                </div><hr style="border: 1px solid var(--background);" class="w-100"><br>
-                <div class="flex flex-col w-fa gap-1" id="ch-er-ip-cn"></div>
-                <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa">
-                    <span id="ch-ea-rt-bt" class="flex flex-row flex-align-c gap-1 primary-bg border-soft-light padding-05 not-allowed user-select-none">
-                        <span>Megrendelés</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
-                    </span>
-                </div>
                 `;
                 for (let i = 0; i < emptyRequiredFields.length; i++) {
                     document.getElementById('ch-er-ip-cn').innerHTML += `
-                    <div class="flex flex-col gap-05 w-fa">
-                        <span class="text-primary bold">${emptyRequiredFields[i].name}</span>
-                        <input id="re-${emptyRequiredFields[i].id}" type="${emptyRequiredFields[i].type}" class="re-generated-checkout-field w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="${emptyRequiredFields[i].placeholder}" autocomplete="${emptyRequiredFields[i].autocomplete}">
-                    </div>
+                        <div class="flex flex-col gap-05 w-fa">
+                            <span class="text-primary bold">${emptyRequiredFields[i].name}</span>
+                            <input id="re-${emptyRequiredFields[i].id}" type="${emptyRequiredFields[i].type}" class="re-generated-checkout-field w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="${emptyRequiredFields[i].placeholder}" autocomplete="${emptyRequiredFields[i].autocomplete}">
+                        </div>
                     `;
-                } var rod = { ...orderData }; var caller = false;
+                } var rod = { ...orderData }; var caller = false; var rid = { ... itemData };
                 $(".re-generated-checkout-field").keyup(function() { var $emptyFields = $('.re-generated-checkout-field').filter(function() { return $.trim(this.value) === ""; });
-                    if (!$emptyFields.length) { caller = true; callCheckOutReSubmit(caller, rod);
+                    if (!$emptyFields.length) { caller = true; callCheckOutReSubmit(caller, rod, rid);
                         document.getElementById('ch-ea-rt-bt').classList.replace('not-allowed', 'pointer'); document.getElementById('ch-ea-rt-bt').classList.add('primary-bg-hover', 'splash');
                     } else { caller = false; callCheckOutReSubmit(caller);
                         document.getElementById('ch-ea-rt-bt').classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt').classList.remove('primary-bg-hover', 'splash');
@@ -393,19 +396,19 @@
     }
 
     function __chValidateForm() {
-    var x, y, i, valid = true;
-    //   x = document.getElementsByClassName("ch-tab");
-    //   y = x[currentTab].getElementsByTagName("input");
-    //   for (i = 0; i < y.length; i++) {
-    //     if (y[i].value == "") {
-    //       y[i].className += " invalid";
-    //       valid = false;
-    //     }
-    //   }
-    //   if (valid) {
-    //     document.getElementsByClassName("ch-step")[currentTab].className += " finish";
-    //   }
-    return valid;
+        var x, y, i, valid = true;
+        //   x = document.getElementsByClassName("ch-tab");
+        //   y = x[currentTab].getElementsByTagName("input");
+        //   for (i = 0; i < y.length; i++) {
+        //     if (y[i].value == "") {
+        //       y[i].className += " invalid";
+        //       valid = false;
+        //     }
+        //   }
+        //   if (valid) {
+        //     document.getElementsByClassName("ch-step")[currentTab].className += " finish";
+        //   }
+        return valid;
     } function __chfixStepIndicator(n) { var i, x = document.getElementsByClassName("ch-step"); for (i = 0; i < x.length; i++) { x[i].className = x[i].className.replace(" pr__item__active", ""); } x[n].className += " pr__item__active"; }
     function setPaymentMethod (cid) { var credid = cid.split('_')[1]; var cid__data = new FormData(); cid__data.append('cid', credid);
         $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/profile/setp__card.php", data: cid__data, dataType: 'json', contentType: false, processData: false,
@@ -430,24 +433,26 @@
             }
         });
     } var reSubmitCalled = false;
-    function reSubmitCheckOutPost (o) {
+    function postCheckOutDatas (ud, pd) {
+        console.log(pd);
+        var postData = new FormData(); postData.append("user", JSON.stringify(ud)); postData.append("items", JSON.stringify(pd));
+        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
+            beforeSend: function () {
+                document.getElementById('ch-tb-cn').innerHTML = `
+                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                        <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                        <span>Adatok feldolgozása</span>
+                    </div>
+                `;
+            }, success: function(data) {
+                console.log(data);
+            }, error: function (data) { console.log(data); }
+        });
+    } function reSubmitCheckOutPost (o, i) {
         if (!reSubmitCalled) {
-            document.getElementById('ch-tb-cn').innerHTML = `
-                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                    <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
-                    <span>Adatok feldolgozása</span>
-                </div>
-            `;
-            var postData = new FormData(); postData.append("data", JSON.stringify(o));
-            $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
-                success: function(data) {
-                    console.log(data);
-                }, error: function (data) { console.log(data); }
-            });
-
-
+            postCheckOutDatas(o, i);
         } else { callCheckOutReSubmit(false); }
-    } function reSubmitCheckOut (od) {
+    } function reSubmitCheckOut (od, id) {
         // orderData objektum manipulalasa a hianyzo adatok alapjan
         var ri = document.getElementsByClassName('re-generated-checkout-field'); var rid = [];
         for (let i = 0; i < ri.length; i++) { rid.push(ri[i].id); }
@@ -458,9 +463,9 @@
                     if (rid[i].split('re-ch-')[1].split('-')[0] == 'shp') { od.shipping[rid[i].split('re-ch-')[1].split('-')[1]] = document.getElementById(rid[i]).value; }
                 } else { od.general[rid[i].split('re-ch-')[1].split('-')] = document.getElementById(rid[i]).value; }
             }
-        } reSubmitCheckOutPost(od); reSubmitCalled = true;
-    } function callCheckOutReSubmit (caller, o = 0) {
-        if (caller == true) { var eventHandler = function () { reSubmitCheckOut(o); };
+        } reSubmitCheckOutPost(od, id); reSubmitCalled = true;
+    } function callCheckOutReSubmit (caller, o = 0, i = 0) {
+        if (caller == true) { var eventHandler = function () { reSubmitCheckOut(o, i); };
             document.getElementById('ch-ea-rt-bt').addEventListener('click', eventHandler, false);
         } else { document.getElementById('ch-ea-rt-bt')?.classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt')?.classList.remove('primary-bg-hover', 'splash'); $('#ch-ea-rt-bt').off(); $('#ch-ea-rt-bt').unbind(); document.getElementById('ch-ea-rt-bt')?.removeEventListener("click", eventHandler , false); }
     }

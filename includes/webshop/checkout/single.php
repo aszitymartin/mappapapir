@@ -119,6 +119,21 @@ if (isset($_SESSION['loggedin'])) {
     document.getElementById('pd-dc-cn').textContent = formatter.format(<?= ( $base * $discount) / 100 ?>);
     let fpc = csubt >= 30000 ? formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000) : formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 3000);
     document.getElementById('pd-st-cn').textContent = fpc;
+
+    var dynamicItemsObject = {
+        item_<?= $pid; ?>: {
+            general : {
+                id : <?= $pid ?>,
+                quantity : 1,
+                price : <?= $base; ?>
+            },
+            discount : {
+                isDiscounted : <?= $discount ?> > 0 ? true : false,
+                discountPercentage : <?= $discount ?>,
+                discountedPrice : <?= ( $base - (($base * $discount)/100) ); ?>
+            }
+        }
+    };
     <?php
         if ($discount > 0) {
             echo '
@@ -150,6 +165,8 @@ if (isset($_SESSION['loggedin'])) {
         document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
         document.getElementById('pd-dc-cn').textContent = formatter.format((<?= ( $base * $discount) / 100 ?>) * dval);
         
+        dynamicItemsObject['item_<?= $pid; ?>']['general'].quantity = dval;
+
         gt = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * vope) / 100)+1000;
 
         document.getElementById('pd-def-val').setAttribute('data-value', dval * <?= $base; ?>);
@@ -176,6 +193,7 @@ if (isset($_SESSION['loggedin'])) {
     function remSingle () {
         if (dval > 1) {
             dval--; vova > 0 ? csubt = (vova * dval) - (((<?= $base - ( $base * $discount) / 100 ?>) * vope) / 100) : csubt = dval * <?= $base; ?>;
+            dynamicItemsObject['item_<?= $pid; ?>']['general'].quantity = dval;
             gt = ((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) - ((((<?= $base ?> * dval) - (<?= ($base * $discount) / 100 ?>) * dval) * vope) / 100)+1000;
             document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
             document.getElementById('sq-in').textContent = dval; document.getElementById('pd-qn-cn').textContent = dval;
@@ -192,12 +210,12 @@ if (isset($_SESSION['loggedin'])) {
             } document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
         }
     }
-
+    var itemDataVoucer_VoucherUsed = false; var itemDataVoucer_VoucherCode; var itemDataVoucer_VoucherPercentage;
     function validateVoucher () { csubt = dval * <?= $base; ?>; var vData = new FormData(); vData.append("pid", <?= $pid; ?>); vData.append("code", document.getElementById('voucher-input').value);
         if (document.getElementById('voucher-input').value.length > 0) {
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/includes/webshop/checkout/assets/vouchers/get.php", data: vData, dataType: 'json', contentType: false, processData: false,
                 beforeSend: function () { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás <svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>`; },
-                success: function(data) { svc = true;
+                success: function(data) { svc = true; itemDataVoucer_VoucherUsed = true; itemDataVoucer_VoucherCode = data.code; itemDataVoucer_VoucherPercentage = data.value;
                     if (document.getElementById('voucher-input').value == data.code) { document.getElementById('av-ac-ic-cn').innerHTML = `Beváltva`;
                         document.getElementById('vd-vc-ac-cn').removeAttribute('onclick'); document.getElementById('vd-vc-ac-cn').classList.remove('primary-bg-hover');
                         document.getElementById('vd-vc-ac-cn').classList.remove('splash'); document.getElementById('vd-vc-ac-cn').classList.replace('pointer', 'not-allowed');
@@ -234,7 +252,7 @@ if (isset($_SESSION['loggedin'])) {
                 error: function (data) { console.log(data); document.getElementById('av-ac-ic-cn').innerHTML = `Beváltás`; document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>${data.responseText}</span></span>`; }
             });
         } else { document.getElementById('vc-ec-cn').innerHTML = `<span class="flex flex-align-c flex-row gap-05 w-fa text-danger small-med"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg><span>A kupon beváltásához adja meg a kuponkódot.</span></span>`; }
-    } function removeVoucher () { svc = false; vova = 0; vope = 0; csubt = dval * <?= $base; ?>;
+    } function removeVoucher () { svc = false; itemDataVoucer_VoucherUsed = false; vova = 0; vope = 0; csubt = dval * <?= $base; ?>;
         document.getElementById('pd-st-cn').textContent = csubt >= 30000 ? formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 1000) : formatter.format(<?= $base - ( $base * $discount) / 100 ?> + 3000);
         document.getElementById('st-dc-vc-cn')?.remove(); document.getElementById('voucher-input').value = '';
         document.getElementById('vc-rm-cn').innerHTML = ``; document.getElementById('vc-ec-cn').innerHTML = ``;
