@@ -320,7 +320,6 @@
                 }
             };
             
-            // dynamical model
             const itemData = {
                 voucher : {
                     voucherUsed : itemDataVoucer_VoucherUsed,

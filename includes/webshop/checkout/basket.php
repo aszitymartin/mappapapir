@@ -4,6 +4,7 @@ if (isset($_SESSION['loggedin'])) {
     if (!isset($_GET['id'])) {
         $sql = "SELECT pid FROM cart WHERE uid = " . $_SESSION['id'];
         $res = $con->query($sql);
+        echo '<script>var dynamicItemsObject = {};</script>';
         echo '<div class="flex flex-col prio__con gap-025" style="max-height: 290px !important;">';
         while ($dt = $res->fetch_assoc()) {
             $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id WHERE products.id = ?');
@@ -11,17 +12,29 @@ if (isset($_SESSION['loggedin'])) {
             $stmt->bind_result($pid, $name, $thumbnail, $base, $discount, $color, $style, $brand, $model); $stmt->fetch();
             if ($stmt->num_rows > 0) {
                 echo '
+                    <script>
+                    dynamicItemsObject["item_'.$pid.'"] = {
+                        general : {
+                            id : '.$pid.',
+                            quantity : 1
+                        }
+                    };
+                    </script>
                     <div class="flex flex-row-d-col-m gap-1 text-align-c-m">
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1">
                             <img src="/assets/images/uploads/'.$thumbnail.'" class="drop-shadow" style="width: 5rem; height: 5rem; object-fit: contain;" />
                             <div class="flex flex-row flex-align-c gap-1 user-select-none">
-                                <span title="Csökkentés" aria-label="Csökkentés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
-                                </span>
+                                <!--
+                                    <span onclick="remMultiple('.$pid.')" title="Csökkentés" aria-label="Csökkentés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
+                                    </span>
+                                -->
                                 <span class="text-secondary">1</span>
-                                <span title="Növelés" aria-label="Növelés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="1" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor"/><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
-                                </span>
+                                <!--
+                                    <span onclick="addMultiple('.$pid.')" title="Növelés" aria-label="Növelés" class="splash flex flex-col flex-align-c padding-025 text-muted primary-bg primary-bg-hover border-soft pointer" id="load-card">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="1" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor"/><rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor"/></svg>
+                                    </span>
+                                -->
                             </div>
                         </div>
                         <div class="flex flex-col w-fa gap-1 text-primary">
@@ -77,31 +90,31 @@ if (isset($_SESSION['loggedin'])) {
             <div class="flex flex-col gap-025 small">
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                     <span class="bold">Mennyiség:</span>
-                    <span class="text-secondary">1 darab</span>
+                    <span class="text-secondary" id="ch-mt-qt">1 darab</span>
                 </div>
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                     <span class="bold">Alapár:</span>
-                    <span class="text-secondary">3 720 Ft</span>
+                    <span class="text-secondary" id="ch-mt-bs-st">3 720 Ft</span>
                 </div>
             </div>
             <div class="flex flex-col gap-025 small">
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                     <span class="bold">Szállítási díj:</span>
-                    <span class="text-secondary">0 Ft</span>
+                    <span class="text-secondary" id="ch-mt-sh-fe">2 000 Ft</span>
                 </div>
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                     <span class="bold">Kezelési költség:</span>
-                    <span class="text-secondary">0 Ft</span>
+                    <span class="text-secondary">1 000 Ft</span>
                 </div>
             </div>
             <div class="flex flex-col gap-025 small">
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                     <span class="bold">Levonások:</span>
-                    <span class="text-secondary">0 Ft</span>
+                    <span class="text-secondary" id="ch-mt-su">0 Ft</span>
                 </div>
                 <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
                     <span class="bold">Fizetendő:</span>
-                    <span class="text-secondary">0 Ft</span>
+                    <span class="text-secondary" id="ch-mt-st">0 Ft</span>
                 </div>
             </div>
         </div>
@@ -122,5 +135,10 @@ if (isset($_SESSION['loggedin'])) {
     let fbe = document.getElementsByClassName('fbe');
     for (let i = 0; i < fbe.length; i++) {
         fbe[i].innerHTML = formatter.format(fbe[i].getAttribute('data-value'));
+    }
+    function remMultiple (p) {
+        console.log('-- ' + p);
+    } function addMultiple (p) {
+        console.log('++ ' + p);
     }
 </script>

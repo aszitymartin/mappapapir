@@ -124,13 +124,7 @@ if (isset($_SESSION['loggedin'])) {
         item_<?= $pid; ?>: {
             general : {
                 id : <?= $pid ?>,
-                quantity : 1,
-                price : <?= $base; ?>
-            },
-            discount : {
-                isDiscounted : <?= $discount ?> > 0 ? true : false,
-                discountPercentage : <?= $discount ?>,
-                discountedPrice : <?= ( $base - (($base * $discount)/100) ); ?>
+                quantity : 1
             }
         }
     };
