@@ -9,10 +9,14 @@ if ($cc = $con->prepare('SELECT category, cf FROM `vouchers` WHERE code LIKE ? A
                 $obj = new stdClass(); $obj->description = $description; $obj->value = $value; $obj->code = $_POST['code']; die(json_encode($obj));
             } else { die ("Hiba történt a kuponkód beváltása közben. Próbálja újra később."); } $ccf->close();
         } else {
-            if ($ccd = $con->prepare('SELECT value, description FROM `vouchers` WHERE (SELECT category FROM products__category WHERE pid = ?) LIKE category AND code LIKE ?')) {
-                $ccd->bind_param('is', $_POST['pid'] ,$_POST['code']); $ccd->execute(); $ccd->store_result(); $ccd->bind_result($value, $description); $ccd->fetch();
-                $obj = new stdClass(); $obj->description = $description; $obj->value = $value; $obj->code = $_POST['code']; die(json_encode($obj));
-            } else { die ("Hiba történt a kuponkód beváltása közben. Próbálja újra később."); } $ccd->close();
+            if ($_POST['checkout'] == 'single') {
+                if ($ccd = $con->prepare('SELECT value, description FROM `vouchers` WHERE (SELECT category FROM products__category WHERE pid = ?) LIKE category AND code LIKE ?')) {
+                    $ccd->bind_param('is', $_POST['pid'] ,$_POST['code']); $ccd->execute(); $ccd->store_result(); $ccd->bind_result($value, $description); $ccd->fetch();
+                    $obj = new stdClass(); $obj->description = $description; $obj->value = $value; $obj->code = $_POST['code']; die(json_encode($obj));
+                } else { die ("Hiba történt a kuponkód beváltása közben. Próbálja újra később."); } $ccd->close();
+            } else {
+                die ('Csak kategória független kuponkódokat használhat fel, amikor a kosár tartalmát szeretné megvásárolni.');
+            }
         }
     } else { die ('Érvénytelen kuponkódot adott meg.'); }
 } else { die ("Hiba történt a kuponkód beváltása közben. Próbálja újra később."); } $cc->close();

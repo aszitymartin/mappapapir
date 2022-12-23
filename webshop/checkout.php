@@ -445,7 +445,7 @@
                 `;
             }, success: function(data) {
                 console.log(data);
-            }, error: function (data) { console.log(data); }
+            }, error: function (data) { console.log(data); document.getElementById('ch-tb-cn').innerHTML = data.responseText; }
         });
     } function reSubmitCheckOutPost (o, i) {
         if (!reSubmitCalled) {
