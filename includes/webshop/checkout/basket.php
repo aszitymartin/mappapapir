@@ -10,7 +10,7 @@ if (isset($_SESSION['loggedin'])) {
             $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model, cart.quantity, unit FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id INNER JOIN cart ON cart.pid = products.id INNER JOIN products__inventory ON products__inventory.pid = products.id WHERE products.id = ?');
             $stmt->bind_param('i', $dt['pid']);$stmt->execute(); $stmt -> store_result();
             $stmt->bind_result($pid, $name, $thumbnail, $base, $discount, $color, $style, $brand, $model, $quantity, $unit); $stmt->fetch();
-            if ($stmt->num_rows > 0) { $sumQuantity += $quantity; $sumBasePrice += $base; $sumPriceByProduct += ($base * $quantity); $sumDeductions += (($base * $discount) / 100); $subTotal += ($base - (($base * $discount) / 100)) * $quantity;
+            if ($stmt->num_rows > 0) { $sumQuantity += $quantity; $sumBasePrice += $base; $sumPriceByProduct += ($base - (($base * $discount) / 100)) * $quantity; $sumDeductions += (($base * $discount) / 100);
                 echo '
                     <script>
                     dynamicItemsObject["item_'.$pid.'"] = {
@@ -85,7 +85,8 @@ if (isset($_SESSION['loggedin'])) {
             $stmt->close();
         }
         echo '</div>';
-        if ($sumPriceByProduct > 30000) { $subTotal -= 2000; }
+        $subTotal += $sumPriceByProduct;
+        if ($sumPriceByProduct < 30000) { $subTotal += 2000; }
         echo '
         <div class="flex flex-col flex-align-fe flex-justify-con-fe text-muted padding-05 gap-1">
             <div class="flex flex-col gap-025 small">

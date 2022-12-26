@@ -294,6 +294,7 @@
             }
             const orderData = {
                 general : {
+                    uid : <?= $_SESSION['id']; ?>,
                     fullname: document.getElementById('ch-fullname').value,
                     company: document.getElementById('ch-company').value,
                     email: document.getElementById('ch-email').value,
@@ -320,13 +321,15 @@
                 }
             };
             
-            const itemData = {
+            const itemData = {};
+
+            const voucherData = {
                 voucher : {
                     voucherUsed : itemDataVoucer_VoucherUsed,
                     voucherCode : itemDataVoucer_VoucherCode,
                     voucherPercentage : itemDataVoucer_VoucherPercentage
                 }
-            };
+            }
 
             Object.assign(itemData, dynamicItemsObject);
 
@@ -356,7 +359,7 @@
             `;
             if (emptyRequiredFields.length == 0) {
                 console.log('order ok');
-                postCheckOutDatas(orderData, itemData);
+                postCheckOutDatas(orderData, itemData, voucherData);
             } else {
                 document.getElementById('ch-tb-cn').innerHTML = `
                     <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
@@ -381,9 +384,9 @@
                             <input id="re-${emptyRequiredFields[i].id}" type="${emptyRequiredFields[i].type}" class="re-generated-checkout-field w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="${emptyRequiredFields[i].placeholder}" autocomplete="${emptyRequiredFields[i].autocomplete}">
                         </div>
                     `;
-                } var rod = { ...orderData }; var caller = false; var rid = { ... itemData };
+                } var rod = { ...orderData }; var caller = false; var rid = { ... itemData }; var vid = { ... voucherData };
                 $(".re-generated-checkout-field").keyup(function() { var $emptyFields = $('.re-generated-checkout-field').filter(function() { return $.trim(this.value) === ""; });
-                    if (!$emptyFields.length) { caller = true; callCheckOutReSubmit(caller, rod, rid);
+                    if (!$emptyFields.length) { caller = true; callCheckOutReSubmit(caller, rod, rid, vid);
                         document.getElementById('ch-ea-rt-bt').classList.replace('not-allowed', 'pointer'); document.getElementById('ch-ea-rt-bt').classList.add('primary-bg-hover', 'splash');
                     } else { caller = false; callCheckOutReSubmit(caller);
                         document.getElementById('ch-ea-rt-bt').classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt').classList.remove('primary-bg-hover', 'splash');
@@ -432,9 +435,10 @@
             }
         });
     } var reSubmitCalled = false;
-    function postCheckOutDatas (ud, pd) {
-        console.log(pd);
-        var postData = new FormData(); postData.append("user", JSON.stringify(ud)); postData.append("items", JSON.stringify(pd));
+    function postCheckOutDatas (ud, pd, vd) {
+        // console.log(pd);
+        // console.log(vd);
+        var postData = new FormData(); postData.append("user", JSON.stringify(ud)); postData.append("items", JSON.stringify(pd)); postData.append("voucher", JSON.stringify(vd));
         $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
             beforeSend: function () {
                 document.getElementById('ch-tb-cn').innerHTML = `
@@ -445,13 +449,15 @@
                 `;
             }, success: function(data) {
                 console.log(data);
-            }, error: function (data) { console.log(data); document.getElementById('ch-tb-cn').innerHTML = data.responseText; }
+            }, error: function (data) { 
+                console.log(data); document.getElementById('ch-tb-cn').innerHTML = data.responseText;
+            }
         });
-    } function reSubmitCheckOutPost (o, i) {
+    } function reSubmitCheckOutPost (o, i, v) {
         if (!reSubmitCalled) {
-            postCheckOutDatas(o, i);
+            postCheckOutDatas(o, i, v);
         } else { callCheckOutReSubmit(false); }
-    } function reSubmitCheckOut (od, id) {
+    } function reSubmitCheckOut (od, id, vd) {
         // orderData objektum manipulalasa a hianyzo adatok alapjan
         var ri = document.getElementsByClassName('re-generated-checkout-field'); var rid = [];
         for (let i = 0; i < ri.length; i++) { rid.push(ri[i].id); }
@@ -462,9 +468,9 @@
                     if (rid[i].split('re-ch-')[1].split('-')[0] == 'shp') { od.shipping[rid[i].split('re-ch-')[1].split('-')[1]] = document.getElementById(rid[i]).value; }
                 } else { od.general[rid[i].split('re-ch-')[1].split('-')] = document.getElementById(rid[i]).value; }
             }
-        } reSubmitCheckOutPost(od, id); reSubmitCalled = true;
-    } function callCheckOutReSubmit (caller, o = 0, i = 0) {
-        if (caller == true) { var eventHandler = function () { reSubmitCheckOut(o, i); };
+        } reSubmitCheckOutPost(od, id, vd); reSubmitCalled = true;
+    } function callCheckOutReSubmit (caller, o = 0, i = 0, v = 0) {
+        if (caller == true) { var eventHandler = function () { reSubmitCheckOut(o, i, v); };
             document.getElementById('ch-ea-rt-bt').addEventListener('click', eventHandler, false);
         } else { document.getElementById('ch-ea-rt-bt')?.classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt')?.classList.remove('primary-bg-hover', 'splash'); $('#ch-ea-rt-bt').off(); $('#ch-ea-rt-bt').unbind(); document.getElementById('ch-ea-rt-bt')?.removeEventListener("click", eventHandler , false); }
     }
