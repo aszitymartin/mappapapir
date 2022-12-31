@@ -5,7 +5,7 @@ if (isset($_SESSION['loggedin'])) {
         $sql = "SELECT pid FROM cart WHERE uid = " . $_SESSION['id'];
         $res = $con->query($sql);
         echo '<script>var dynamicItemsObject = {};</script>';
-        echo '<div id="checkout-basket-prio-con-out" class="relative"><div id="checkout-basket-prio-con" class="flex flex-col prio__con gap-025 relative" style="max-height: 290px !important;">';
+        echo '<div id="checkout-basket-prio-con-out" class="relative box-shadow-inset-bottom"><div id="checkout-basket-prio-con" class="flex flex-col prio__con gap-025 relative" style="max-height: 290px !important;">';
         while ($dt = $res->fetch_assoc()) {
             $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model, cart.quantity, unit FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id INNER JOIN cart ON cart.pid = products.id INNER JOIN products__inventory ON products__inventory.pid = products.id WHERE products.id = ?');
             $stmt->bind_param('i', $dt['pid']);$stmt->execute(); $stmt -> store_result();
@@ -79,7 +79,7 @@ if (isset($_SESSION['loggedin'])) {
                                 </div>
                             </div>
                         </div>
-                    </div><hr style="border: 1px solid var(--background);" class="w-100">
+                    </div><hr style="border: 1px solid var(--background);" class="w-fa">
                 ';
             } else { echo 'nincs ilyen termek'; }
             $stmt->close();
@@ -210,21 +210,14 @@ if (isset($_SESSION['loggedin'])) {
             `;
         }
     }
-    // $('#checkout-basket-prio-con').on("scroll", function() {
-    //     var scrollHeight = $('#checkout-basket-prio-con').height();
-    //     var scrollPosition = $('#checkout-basket-prio-con').height() + $('#checkout-basket-prio-con').scrollTop();
-    //     if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
-    //         $("#basket-item-scroll-indicator").delay(1000).show(0);
-    //     }
-    //     console.log((scrollPosition - scrollHeight) / scrollPosition);
-    // });
-
 
     document.getElementById('checkout-basket-prio-con').addEventListener('scroll', event => {
         const {scrollHeight, scrollTop, clientHeight} = event.target;
 
         if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
             document.getElementById("basket-item-scroll-indicator").style.opacity = 0;
-        } else { document.getElementById("basket-item-scroll-indicator").style.opacity = 1; }
+            document.getElementById('checkout-basket-prio-con-out').classList.remove('box-shadow-inset-bottom');
+            document.getElementById('checkout-basket-prio-con-out').classList.add('box-shadow-inset-top');
+        } else { document.getElementById("basket-item-scroll-indicator").style.opacity = 1; document.getElementById('checkout-basket-prio-con-out').classList.add('box-shadow-inset-bottom'); document.getElementById('checkout-basket-prio-con-out').classList.remove('box-shadow-inset-top'); }
     });
 </script>

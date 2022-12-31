@@ -4,21 +4,24 @@ $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
 $jsonVoucherData = json_decode($_POST['voucher'], true);
 
+$jsonInventoryCheck = isset($_POST['inventory']) ? json_decode($_POST['inventory'], true) : null;
+
+// die(print_r($jsonInventoryCheck));
 
 // die(print_r($jsonUserData['general']));
 
 // die('SUID : ' . $_SESSION['id'] . ' PUID : ' . $jsonUserData['general']['uid']);
 
 /*
-    session ellenorzese
-    felhasznalo ellenorzese
-    kartyak ellenorzese
-    kartya ervenyessege
-    egyenleg ellenorzese
-        fedezethiany eseten tobbi kartya ajanlasa ha van
+    [*] session ellenorzese
+    [*] felhasznalo ellenorzese
+    [*] kartyak ellenorzese
+    [*] kartya ervenyessege
+    [*] egyenleg ellenorzese
+        [X] fedezethiany eseten tobbi kartya ajanlasa ha van
     
-    keszlet ellenorzese (ratkaron levo termekek szama, backorder engedelyezve van-e)
-        ha a termek nincsen keszleten, hasonlo termekek ajanlasa helyette
+    [] keszlet ellenorzese (ratkaron levo termekek szama, backorder engedelyezve van-e)
+        [] ha a termek nincsen keszleten, hasonlo termekek ajanlasa helyette
     
 */
 function dieProcess ($msg) { die($msg); }
@@ -49,93 +52,157 @@ if (isset($_SESSION['id'])) {
                                 } $grossTotal <= 30000 ? $grossTotal += 2000 : $grossTotal;
                                 if ($userCardBalance >= round($grossTotal)) {
                                     // keszlet megtekintese
-                                    $warehouseItemsArray = array();
-                                    $unavailableItemsArray = array();
-                                    $backorderItemsArray = array();
-                                    for ($i = 0; $i < count($itemsArray); $i++) {
-                                        // print_r($itemsArray[$i]);
-                                        // echo '<br>';
-
-                                        if ($checkAvailableItemsSQL = $con->prepare('SELECT name, quantity, q__warehouse, backorder FROM products__inventory INNER JOIN products ON products.id = products__inventory.pid WHERE pid = ?')) {
-                                            $checkAvailableItemsSQL->bind_param('i', $itemsArray[$i]['id']); $checkAvailableItemsSQL->execute(); $checkAvailableItemsSQL->store_result(); $checkAvailableItemsSQL->bind_result($itemName, $itemQuantity, $itemQuantityWarehouse, $itemQuantityBackorder); $checkAvailableItemsSQL->fetch();
-                                            if ($itemQuantityBackorder == 0) {
-                                                if ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse < $itemsArray[$i]['quantity']) {
-                                                    array_push($unavailableItemsArray,
-                                                        [
-                                                            "pid" => $itemsArray[$i]['id'],
-                                                            "name" => $itemName,
-                                                            "orderedQuantity" => $itemsArray[$i]['quantity'],
-                                                            "inventoryQuantity" => $itemQuantity,
-                                                            "warehouseQuantity" => $itemQuantityWarehouse
-                                                        ]
-                                                    );
+                                    $warehouseItemsArray = array(); $unavailableItemsArray = array(); $backorderItemsArray = array();
+                                    if (is_null($jsonInventoryCheck)) {
+                                        for ($i = 0; $i < count($itemsArray); $i++) {
+                                            if ($checkAvailableItemsSQL = $con->prepare('SELECT name, quantity, q__warehouse, backorder FROM products__inventory INNER JOIN products ON products.id = products__inventory.pid WHERE pid = ?')) {
+                                                $checkAvailableItemsSQL->bind_param('i', $itemsArray[$i]['id']); $checkAvailableItemsSQL->execute(); $checkAvailableItemsSQL->store_result(); $checkAvailableItemsSQL->bind_result($itemName, $itemQuantity, $itemQuantityWarehouse, $itemQuantityBackorder); $checkAvailableItemsSQL->fetch();
+                                                if ($itemQuantityBackorder == 0) {
+                                                    if ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse < $itemsArray[$i]['quantity']) {
+                                                        array_push($unavailableItemsArray,
+                                                            [
+                                                                "pid" => $itemsArray[$i]['id'],
+                                                                "name" => $itemName,
+                                                                "orderedQuantity" => $itemsArray[$i]['quantity'],
+                                                                "inventoryQuantity" => $itemQuantity,
+                                                                "warehouseQuantity" => $itemQuantityWarehouse
+                                                            ]
+                                                        );
+                                                    }
+                                                    if ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse > $itemsArray[$i]['quantity']) {
+                                                        array_push($warehouseItemsArray, 
+                                                            [
+                                                                "pid" => $itemsArray[$i]['id'],
+                                                                "name" => $itemName,
+                                                                "orderedQuantity" => $itemsArray[$i]['quantity'],
+                                                                "inventoryQuantity" => $itemQuantity,
+                                                                "warehouseQuantity" => $itemQuantityWarehouse
+                                                            ]
+                                                        );
+                                                    }
+                                                } else {
+                                                    if (
+                                                        ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse < $itemsArray[$i]['quantity'])
+                                                        ||
+                                                        ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse > $itemsArray[$i]['quantity'])
+                                                    ) {
+                                                        array_push($backorderItemsArray,
+                                                            [
+                                                                "pid" => $itemsArray[$i]['id'],
+                                                                "name" => $itemName,
+                                                                "orderedQuantity" => $itemsArray[$i]['quantity'],
+                                                                "inventoryQuantity" => $itemQuantity,
+                                                                "warehouseQuantity" => $itemQuantityWarehouse
+                                                            ]
+                                                        );
+                                                    }
                                                 }
-                                                if ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse > $itemsArray[$i]['quantity']) {
-                                                    array_push($warehouseItemsArray, 
-                                                        [
-                                                            "pid" => $itemsArray[$i]['id'],
-                                                            "name" => $itemName,
-                                                            "orderedQuantity" => $itemsArray[$i]['quantity'],
-                                                            "inventoryQuantity" => $itemQuantity,
-                                                            "warehouseQuantity" => $itemQuantityWarehouse
-                                                        ]
-                                                    );
-                                                }
-                                            } else {
-                                                if (
-                                                    ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse < $itemsArray[$i]['quantity'])
-                                                    ||
-                                                    ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse > $itemsArray[$i]['quantity'])
-                                                ) {
-                                                    array_push($backorderItemsArray,
-                                                        [
-                                                            "pid" => $itemsArray[$i]['id'],
-                                                            "name" => $itemName,
-                                                            "orderedQuantity" => $itemsArray[$i]['quantity'],
-                                                            "inventoryQuantity" => $itemQuantity,
-                                                            "warehouseQuantity" => $itemQuantityWarehouse
-                                                        ]
-                                                    );
-                                                }
-                                            }
-                                        } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
-
+                                            } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
+                                        }
                                     }
-                                    // echo 'warehouse only : ';
-                                    // print_r($warehouseItemsArray);
-                                    // echo '<br><br>';
-                                    // echo 'not available : ';
-                                    // print_r($unavailableItemsArray);
-                                    // echo '<br><br>';
-
                                     if (count($warehouseItemsArray) === 0 && count($unavailableItemsArray) === 0 && count($backorderItemsArray) === 0) {
-                                        // feldolgozas folytatasa
-                                        die('continue order');
-                                    } else {
-                                        // nem elerheto termekek megjelenitese
-                                        $inventoryExitObject = new stdClass();
+                                        
+                                        /*
+                                            Feldolgozas folytatasa:
+                                                Keszlet frissitese:
+                                                    -> Megnezni hogy van-e keszleten termek
+                                                        -> Van keszleten:
+                                                            -> Keszlet frissitese
+                                                        -> Nincs keszleten:
+                                                            -> Raktar keszlet ellenorzese:
+                                                                -> Van raktaton:
+                                                                    -> Raktrar frissitese:
+                                                                        -> Szallitasi ido: +3 nap
+                                                                -> Nincs raktaton:
+                                                                    -> Elerheto-e a termek
+                                                                    -> Backorder elerheto-e a termeknel:
+                                                                        -> Elerheto backorder:
+                                                                            -> Uj rendeles letrehozasa a backorderes termekeknel
+                                                                                -> Rendeles befagyasztasa, amig nincs keszleten/raktaron a termek
+                                                Egyenleg frissitese
+                                        */
+
+                                        /*
+                                            Adatbazis EK diagramm:
+
+                                            orders [
+                                                id - int -> PRIMARY KEY
+                                                uid - int
+                                                pid - varchar 
+                                                    -> Termekek listaja ';'-vel elvalasztva tobb termek eseten
+                                                    -> Backorderes termekek nem ide kerulnek
+                                                status - int
+                                                    -> 0: Osszekeszites alatt
+                                                    -> 1: Kiszallitas alatt
+                                                    -> 2: Kiszallitva
+                                                    -> 3: Befagyasztott / temp rendeles
+                                                    -> 4: Sikertelen kiszallitas
+                                                date - timestamp
+                                            ]
+                                            orders__user [
+                                                id - int -> PRIMARY KEY
+                                                oid - int -> orders.id
+                                                fullname - varchar
+                                                company - varchar
+                                                email - varchar
+                                                phone - varchar
+                                            ]
+                                            orders__ship [
+                                                id - int -> PRIMARY KEY
+                                                oid - int -> orders.id
+                                                method -> varchar // Szallitasi mod (gls,fedex,dhl)
+                                                zip - int
+                                                settlement - varchar
+                                                address - varchar
+                                                note - varchar
+                                            ]
+                                            orders__invoice [
+                                                id - int -> PRIMARY KEY
+                                                oid - int -> orders.id
+                                                zip - int
+                                                settlement - varchar
+                                                address - varchar
+                                                tax - int
+                                            ]
+                                            orders__payment [
+                                                id - int -> PRIMARY KEY
+                                                oid - int -> orders.id
+                                                cid - varchar -> customers__card.cid
+                                                voucherUsed - tinyint
+                                                    -> 0: Nem hasznalt
+                                                    -> 1: Hasznalt
+                                                voucherCode - varchar
+                                                voucherDiscount - int
+                                            ]
+                                        */
+
+                                        if (!is_null($jsonInventoryCheck)) {
+                                            die('check inventory..');
+                                        } else {
+                                            die('continue order');
+                                        }
+
+                                    } else { $inventoryExitObject = new stdClass();
                                         $inventoryExitObject->data = 
                                             count($warehouseItemsArray) > 0 ? $warehouseItemsArray : 
                                             (count($unavailableItemsArray) > 0 ? $unavailableItemsArray : 
                                             $backorderItemsArray)
-                                        ;
-                                        $inventoryExitObject->status = "error";
-                                        $inventoryExitObject->category = "inventory";
+                                        ; $inventoryExitObject->status = "error"; $inventoryExitObject->category = "inventory";
                                         $inventoryExitObject->alt = 
                                             count($warehouseItemsArray) > 0 ? 'warehouse' : 
                                             (count($unavailableItemsArray) > 0 ? 'unavailable' : 'backorder')
-                                        ;
-                                        die(json_encode($inventoryExitObject));
-                                    }
-
-                                    
+                                        ; die(json_encode($inventoryExitObject));
+                                    } 
                                 } else {
                                     // tobbi kartya ajanlasa
-                                    dieProcess('Nincs elegendő egyenlege ezen a kártyán.'); 
+                                    $cardExitObject = new stdClass();
+                                    $cardExitObject->status = "error"; $cardExitObject->category = "payment";
+                                    $cardExitObject->alt = "notEnoughMoney";
+                                    dieProcess($cardExitObject); 
                                 }
-                                die(round($userCardBalance) . ' Card Balance');
-                                die(round($grossTotal) . ' Gross Total');
-                                die(print_r($itemsArray));
+                                // die(round($userCardBalance) . ' Card Balance');
+                                // die(round($grossTotal) . ' Gross Total');
+                                // die(print_r($itemsArray));
                                 // die(print_r($jsonItemsData));
                             } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
                         } else { dieProcess('A kártájának lejárt az érvényessége, ezért már nem használható tovább fizetéseknél.'); }

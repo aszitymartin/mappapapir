@@ -320,9 +320,7 @@
                     invoice : ['ch-inv-zip', 'ch-inv-settlement', 'ch-inv-address', 'ch-inv-tax'],
                 }
             };
-            
             const itemData = {};
-
             const voucherData = {
                 voucher : {
                     voucherUsed : itemDataVoucer_VoucherUsed,
@@ -330,7 +328,31 @@
                     voucherPercentage : itemDataVoucer_VoucherPercentage
                 }
             }
+            const inventoryData = {
+                inventory : {
+                    item_3 : [
+                        pid = 3,
+                        quantity = 5
+                    ],
+                    item_4 : [
+                        pid = 4,
+                        quantity = 2
+                    ]
+                },
+                warehouse : {
+                    item_1 : [
+                        pid = 1,
+                        quantity = 5
+                    ],
+                    item_2 : [
+                        pid = 2,
+                        quantity = 2
+                    ]
+                },
+                backorder : {
 
+                }
+            };
             Object.assign(itemData, dynamicItemsObject);
 
             // Check emptiness on required fields
@@ -359,7 +381,7 @@
             `;
             if (emptyRequiredFields.length == 0) {
                 console.log('order ok');
-                postCheckOutDatas(orderData, itemData, voucherData);
+                postCheckOutDatas(orderData, itemData, voucherData, inventoryData);
             } else {
                 document.getElementById('ch-tb-cn').innerHTML = `
                     <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
@@ -384,7 +406,7 @@
                             <input id="re-${emptyRequiredFields[i].id}" type="${emptyRequiredFields[i].type}" class="re-generated-checkout-field w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="${emptyRequiredFields[i].placeholder}" autocomplete="${emptyRequiredFields[i].autocomplete}">
                         </div>
                     `;
-                } var rod = { ...orderData }; var caller = false; var rid = { ... itemData }; var vid = { ... voucherData };
+                } var rod = { ...orderData }; var caller = false; var rid = { ... itemData }; var vid = { ... voucherData }; var iid = { ... inventoryData };
                 $(".re-generated-checkout-field").keyup(function() { var $emptyFields = $('.re-generated-checkout-field').filter(function() { return $.trim(this.value) === ""; });
                     if (!$emptyFields.length) { caller = true; callCheckOutReSubmit(caller, rod, rid, vid);
                         document.getElementById('ch-ea-rt-bt').classList.replace('not-allowed', 'pointer'); document.getElementById('ch-ea-rt-bt').classList.add('primary-bg-hover', 'splash');
@@ -435,10 +457,10 @@
             }
         });
     } var reSubmitCalled = false;
-    function postCheckOutDatas (ud, pd, vd) {
+    function postCheckOutDatas (ud, pd, vd, id) {
         // console.log(pd);
         // console.log(vd);
-        var postData = new FormData(); postData.append("user", JSON.stringify(ud)); postData.append("items", JSON.stringify(pd)); postData.append("voucher", JSON.stringify(vd));
+        var postData = new FormData(); postData.append("user", JSON.stringify(ud)); postData.append("items", JSON.stringify(pd)); postData.append("voucher", JSON.stringify(vd)); postData.append("inventory", JSON.stringify(id));
         $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
             beforeSend: function () {
                 document.getElementById('ch-tb-cn').innerHTML = `
@@ -473,33 +495,47 @@
                         switch (data?.alt) {
                             case 'warehouse' :
                                 cer.innerHTML = `
-                                    <div class="flex flex-col gap-1 w-fa">
-                                        <span class="flex text-align-c">Rendelése során észre vettük, hogy a következő terméknél átlépte a készleten lévő darabszámot.</span>
-                                        <span class="flex flex-col w-fa gap-025 text-align-c text-secondary">
-                                            Jelenlegi információnk szerint ${data.data[0].inventoryQuantity} darab ${data.data[0].name} van készleten, Ön pedig ${data.data[0].orderedQuantity} darabot rendelt.<br>
-                                            Raktárunkban jelenleg ${data.data[0].warehouseQuantity} darab ${data.data[0].name} található meg.<br>
-                                            Kérjük válasszon a következő lehetőségek közül a rendelés folytatásához<br><br>
-                                            <div class="flex flex-col gap-05">
-                                                <div class="flex flex-row text-align-l gap-1">
-                                                    <input type="radio" id="orderMinimumInventoryAvailable" name="order-warehouse-option" value="orderMinimumInventoryAvailable" />
-                                                    <label for="orderMinimumInventoryAvailable">Csak ${data.data[0].inventoryQuantity} darab ${data.data[0].name} megrendelése a készletből</label>
-                                                </div>
-                                                <div class="flex flex-row text-align-l gap-1">
-                                                    <input type="radio" id="orderCurrentOrderedQuantityWarehouse" name="order-warehouse-option" value="orderCurrentOrderedQuantityWarehouse" />
-                                                    <label for="orderCurrentOrderedQuantityWarehouse">Mind a(z) ${data.data[0].orderedQuantity} darab ${data.data[0].name} megrendelése a raktárból</label>
-                                                </div>
-                                                <div class="flex flex-row text-align-l gap-1">
-                                                    <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse" name="order-warehouse-option" value="orderMinimumInventoryAndOrderRestWarehouse" />
-                                                    <label for="orderMinimumInventoryAndOrderRestWarehouse">${data.data[0].inventoryQuantity} darab ${data.data[0].name} megrendelése a készletből, a többi ${(data.data[0].orderedQuantity - data.data[0].inventoryQuantity)} darab megrendelése a raktárból.</label>
-                                                </div>
-                                                <div class="flex flex-row text-align-l gap-1">
-                                                    <input type="radio" id="stopOrderProcess" name="order-warehouse-option" value="stopOrderProcess" />
-                                                    <label for="stopOrderProcess">Rendelés megszakítása</label>
-                                                </div>
-                                            </div>
-                                        </span>
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c text-align-c gap-1 w-fa">
+                                        <span class="flex text-align-c">Rendelése során észre vettük, hogy a következő termék(ek)nél átlépte a készleten lévő darabszámot.</span>
+                                        <span class="flex flex-col w-fa gap-1 text-align-c text-secondary" id="checkout-inventory-error-con"></span>
                                     </div>
                                 `;
+                                for (let i = 0; i < data.data.length; i++) {
+                                    document.getElementById('checkout-inventory-error-con').innerHTML += `
+                                        <hr style="border: 1px solid var(--background);" class="w-100">
+                                        <div class="flex flex-col w-fa text-align-l">
+                                            <span>Jelenlegi információnk szerint ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> van készleten, Ön pedig ${data.data[i].orderedQuantity} darabot rendelt.
+                                            Raktárunkban jelenleg ${data.data[i].warehouseQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> található meg.</span><br>
+                                            <span>Kérjük válasszon a következő lehetőségek közül a rendelés folytatásához</span>
+                                        </div>
+                                        <div class="flex flex-col gap-05">
+                                            <div class="flex flex-col gap-05" id="inventory-error-options-con-${data.data[i].pid}"></div>
+                                            <div class="flex flex-row text-align-l gap-1">
+                                                <input type="radio" id="skipOrderItem-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="skipOrderItem-${data.data[i].pid}" />
+                                                <label for="skipOrderItem-${data.data[i].pid}">Nem rendelem meg ezt a terméket</label>
+                                            </div>
+                                        </div>
+                                    `;
+                                    if (data.data[i].inventoryQuantity > 0) {
+                                        document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
+                                            <div class="flex flex-row text-align-l gap-1">
+                                                <input type="radio" id="orderMinimumInventoryAvailable-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAvailable-${data.data[i].pid}" />
+                                                <label for="orderMinimumInventoryAvailable-${data.data[i].pid}">Csak ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből</label>
+                                            </div>
+                                            <div class="flex flex-row text-align-l gap-1">
+                                                <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAndOrderRestWarehouse" />
+                                                <label for="orderMinimumInventoryAndOrderRestWarehouse">${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből, a többi ${(data.data[i].orderedQuantity - data.data[i].inventoryQuantity)} darab megrendelése a raktárból.</label>
+                                            </div>
+                                        `;
+                                    } if (data.data[i].warehouseQuantity > 0) {
+                                        document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
+                                            <div class="flex flex-row text-align-l gap-1">
+                                                <input type="radio" id="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" />
+                                                <label for="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}">Mind a(z) ${data.data[i].orderedQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a raktárból</label>
+                                            </div>
+                                        `;
+                                    }
+                                }
                             break;
                             case 'unavailable' :
                                 cer.innerHTML = 'unavailable';
@@ -513,6 +549,7 @@
                                 <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="inventory__table">
                                     <tbody>
                                         <tr class="small uppercase sessh__header tr-padding-05" style="line-height: 2;">
+                                            <th>#</th>
                                             <th>Termék</th>
                                             <th>Rendelt mennyiség</th>
                                             <th>Készleten</th>
@@ -525,6 +562,7 @@
                         for (let i = 0; i < data.data.length; i++) {
                             document.getElementById('inventory__table').innerHTML += `
                                 <tr class="sessh__body">
+                                    <td class="padding-tb-1">${data.data[i].pid}</td>
                                     <td class="padding-tb-1 text-primary bold">${data.data[i].name}</td>
                                     <td class="padding-tb-1">${data.data[i].orderedQuantity}</td>
                                     <td class="padding-tb-1">${data.data[i].inventoryQuantity}</td>
@@ -533,7 +571,19 @@
                             `;
                         }
                         cer.innerHTML += `
-                            <span class="section_title">További lehetőségek</span>
+                            <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa gap-1">
+                                <span class="danger-bg danger-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés lemondása</span>
+                                <span class="primary-bg primary-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés folytatása</span>
+                            </div>
+                        `;
+                        document.getElementById('main').innerHTML += `
+                        <div class="card border-soft box-shadow">
+                            <div class="flex flex-col w-fa gap-1">
+                                <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-1">
+                                    <span class="section_title">További lehetőségek</span>
+                                </div>
+                            </div>
+                        </div>
                         `;
                     }
                 }
@@ -550,11 +600,11 @@
                 console.log(data); //document.getElementById('ch-tb-cn').innerHTML += ;
             }
         });
-    } function reSubmitCheckOutPost (o, i, v) {
+    } function reSubmitCheckOutPost (o, i, v, inv) {
         if (!reSubmitCalled) {
-            postCheckOutDatas(o, i, v);
+            postCheckOutDatas(o, i, v, inv);
         } else { callCheckOutReSubmit(false); }
-    } function reSubmitCheckOut (od, id, vd) {
+    } function reSubmitCheckOut (od, id, vd, inv) {
         // orderData objektum manipulalasa a hianyzo adatok alapjan
         var ri = document.getElementsByClassName('re-generated-checkout-field'); var rid = [];
         for (let i = 0; i < ri.length; i++) { rid.push(ri[i].id); }
@@ -565,9 +615,9 @@
                     if (rid[i].split('re-ch-')[1].split('-')[0] == 'shp') { od.shipping[rid[i].split('re-ch-')[1].split('-')[1]] = document.getElementById(rid[i]).value; }
                 } else { od.general[rid[i].split('re-ch-')[1].split('-')] = document.getElementById(rid[i]).value; }
             }
-        } reSubmitCheckOutPost(od, id, vd); reSubmitCalled = true;
-    } function callCheckOutReSubmit (caller, o = 0, i = 0, v = 0) {
-        if (caller == true) { var eventHandler = function () { reSubmitCheckOut(o, i, v); };
+        } reSubmitCheckOutPost(od, id, vd, inv); reSubmitCalled = true;
+    } function callCheckOutReSubmit (caller, o = 0, i = 0, v = 0, inv = 0) {
+        if (caller == true) { var eventHandler = function () { reSubmitCheckOut(o, i, v, inv); };
             document.getElementById('ch-ea-rt-bt').addEventListener('click', eventHandler, false);
         } else { document.getElementById('ch-ea-rt-bt')?.classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt')?.classList.remove('primary-bg-hover', 'splash'); $('#ch-ea-rt-bt').off(); $('#ch-ea-rt-bt').unbind(); document.getElementById('ch-ea-rt-bt')?.removeEventListener("click", eventHandler , false); }
     }
