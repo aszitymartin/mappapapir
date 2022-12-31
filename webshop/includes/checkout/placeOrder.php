@@ -49,6 +49,86 @@ if (isset($_SESSION['id'])) {
                                 } $grossTotal <= 30000 ? $grossTotal += 2000 : $grossTotal;
                                 if ($userCardBalance >= round($grossTotal)) {
                                     // keszlet megtekintese
+                                    $warehouseItemsArray = array();
+                                    $unavailableItemsArray = array();
+                                    $backorderItemsArray = array();
+                                    for ($i = 0; $i < count($itemsArray); $i++) {
+                                        // print_r($itemsArray[$i]);
+                                        // echo '<br>';
+
+                                        if ($checkAvailableItemsSQL = $con->prepare('SELECT name, quantity, q__warehouse, backorder FROM products__inventory INNER JOIN products ON products.id = products__inventory.pid WHERE pid = ?')) {
+                                            $checkAvailableItemsSQL->bind_param('i', $itemsArray[$i]['id']); $checkAvailableItemsSQL->execute(); $checkAvailableItemsSQL->store_result(); $checkAvailableItemsSQL->bind_result($itemName, $itemQuantity, $itemQuantityWarehouse, $itemQuantityBackorder); $checkAvailableItemsSQL->fetch();
+                                            if ($itemQuantityBackorder == 0) {
+                                                if ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse < $itemsArray[$i]['quantity']) {
+                                                    array_push($unavailableItemsArray,
+                                                        [
+                                                            "pid" => $itemsArray[$i]['id'],
+                                                            "name" => $itemName,
+                                                            "orderedQuantity" => $itemsArray[$i]['quantity'],
+                                                            "inventoryQuantity" => $itemQuantity,
+                                                            "warehouseQuantity" => $itemQuantityWarehouse
+                                                        ]
+                                                    );
+                                                }
+                                                if ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse > $itemsArray[$i]['quantity']) {
+                                                    array_push($warehouseItemsArray, 
+                                                        [
+                                                            "pid" => $itemsArray[$i]['id'],
+                                                            "name" => $itemName,
+                                                            "orderedQuantity" => $itemsArray[$i]['quantity'],
+                                                            "inventoryQuantity" => $itemQuantity,
+                                                            "warehouseQuantity" => $itemQuantityWarehouse
+                                                        ]
+                                                    );
+                                                }
+                                            } else {
+                                                if (
+                                                    ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse < $itemsArray[$i]['quantity'])
+                                                    ||
+                                                    ($itemQuantity < $itemsArray[$i]['quantity'] && $itemQuantityWarehouse > $itemsArray[$i]['quantity'])
+                                                ) {
+                                                    array_push($backorderItemsArray,
+                                                        [
+                                                            "pid" => $itemsArray[$i]['id'],
+                                                            "name" => $itemName,
+                                                            "orderedQuantity" => $itemsArray[$i]['quantity'],
+                                                            "inventoryQuantity" => $itemQuantity,
+                                                            "warehouseQuantity" => $itemQuantityWarehouse
+                                                        ]
+                                                    );
+                                                }
+                                            }
+                                        } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
+
+                                    }
+                                    // echo 'warehouse only : ';
+                                    // print_r($warehouseItemsArray);
+                                    // echo '<br><br>';
+                                    // echo 'not available : ';
+                                    // print_r($unavailableItemsArray);
+                                    // echo '<br><br>';
+
+                                    if (count($warehouseItemsArray) === 0 && count($unavailableItemsArray) === 0 && count($backorderItemsArray) === 0) {
+                                        // feldolgozas folytatasa
+                                        die('continue order');
+                                    } else {
+                                        // nem elerheto termekek megjelenitese
+                                        $inventoryExitObject = new stdClass();
+                                        $inventoryExitObject->data = 
+                                            count($warehouseItemsArray) > 0 ? $warehouseItemsArray : 
+                                            (count($unavailableItemsArray) > 0 ? $unavailableItemsArray : 
+                                            $backorderItemsArray)
+                                        ;
+                                        $inventoryExitObject->status = "error";
+                                        $inventoryExitObject->category = "inventory";
+                                        $inventoryExitObject->alt = 
+                                            count($warehouseItemsArray) > 0 ? 'warehouse' : 
+                                            (count($unavailableItemsArray) > 0 ? 'unavailable' : 'backorder')
+                                        ;
+                                        die(json_encode($inventoryExitObject));
+                                    }
+
+                                    
                                 } else {
                                     // tobbi kartya ajanlasa
                                     dieProcess('Nincs elegendő egyenlege ezen a kártyán.'); 

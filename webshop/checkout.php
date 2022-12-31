@@ -449,8 +449,105 @@
                 `;
             }, success: function(data) {
                 console.log(data);
+                if (data?.status == 'success') {
+                    document.getElementById('ch-tb-cn').innerHTML = `
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
+                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c gap-025 w-fa">
+                                <strong>Sikeres megrendelés</strong>
+                                <span class="small" id="checkout-success-message"></span>
+                            </div>
+                        </div>
+                    `;
+                } if (data?.status == 'error') {
+                    document.getElementById('ch-tb-cn').innerHTML = `
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
+                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c gap-025 w-fa">
+                                <strong>Rendelés megszakítva</strong>
+                                <div class="flex flex-col flex-align-c gap-1 w-fa small" id="checkout-error-response"></div>
+                            </div>
+                        </div>
+                    `;
+                    if (data?.category == 'inventory') { var cer = document.getElementById('checkout-error-response');
+                        switch (data?.alt) {
+                            case 'warehouse' :
+                                cer.innerHTML = `
+                                    <div class="flex flex-col gap-1 w-fa">
+                                        <span class="flex text-align-c">Rendelése során észre vettük, hogy a következő terméknél átlépte a készleten lévő darabszámot.</span>
+                                        <span class="flex flex-col w-fa gap-025 text-align-c text-secondary">
+                                            Jelenlegi információnk szerint ${data.data[0].inventoryQuantity} darab ${data.data[0].name} van készleten, Ön pedig ${data.data[0].orderedQuantity} darabot rendelt.<br>
+                                            Raktárunkban jelenleg ${data.data[0].warehouseQuantity} darab ${data.data[0].name} található meg.<br>
+                                            Kérjük válasszon a következő lehetőségek közül a rendelés folytatásához<br><br>
+                                            <div class="flex flex-col gap-05">
+                                                <div class="flex flex-row text-align-l gap-1">
+                                                    <input type="radio" id="orderMinimumInventoryAvailable" name="order-warehouse-option" value="orderMinimumInventoryAvailable" />
+                                                    <label for="orderMinimumInventoryAvailable">Csak ${data.data[0].inventoryQuantity} darab ${data.data[0].name} megrendelése a készletből</label>
+                                                </div>
+                                                <div class="flex flex-row text-align-l gap-1">
+                                                    <input type="radio" id="orderCurrentOrderedQuantityWarehouse" name="order-warehouse-option" value="orderCurrentOrderedQuantityWarehouse" />
+                                                    <label for="orderCurrentOrderedQuantityWarehouse">Mind a(z) ${data.data[0].orderedQuantity} darab ${data.data[0].name} megrendelése a raktárból</label>
+                                                </div>
+                                                <div class="flex flex-row text-align-l gap-1">
+                                                    <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse" name="order-warehouse-option" value="orderMinimumInventoryAndOrderRestWarehouse" />
+                                                    <label for="orderMinimumInventoryAndOrderRestWarehouse">${data.data[0].inventoryQuantity} darab ${data.data[0].name} megrendelése a készletből, a többi ${(data.data[0].orderedQuantity - data.data[0].inventoryQuantity)} darab megrendelése a raktárból.</label>
+                                                </div>
+                                                <div class="flex flex-row text-align-l gap-1">
+                                                    <input type="radio" id="stopOrderProcess" name="order-warehouse-option" value="stopOrderProcess" />
+                                                    <label for="stopOrderProcess">Rendelés megszakítása</label>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                `;
+                            break;
+                            case 'unavailable' :
+                                cer.innerHTML = 'unavailable';
+                            break;
+                            case 'backorder' :
+                                cer.innerHTML = 'backorder';
+                            break;
+                        }
+                        cer.innerHTML += `
+                            <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg padding-05">
+                                <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="inventory__table">
+                                    <tbody>
+                                        <tr class="small uppercase sessh__header tr-padding-05" style="line-height: 2;">
+                                            <th>Termék</th>
+                                            <th>Rendelt mennyiség</th>
+                                            <th>Készleten</th>
+                                            <th>Raktáron</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                        for (let i = 0; i < data.data.length; i++) {
+                            document.getElementById('inventory__table').innerHTML += `
+                                <tr class="sessh__body">
+                                    <td class="padding-tb-1 text-primary bold">${data.data[i].name}</td>
+                                    <td class="padding-tb-1">${data.data[i].orderedQuantity}</td>
+                                    <td class="padding-tb-1">${data.data[i].inventoryQuantity}</td>
+                                    <td class="padding-tb-1">${data.data[i].warehouseQuantity}</td>
+                                </tr>
+                            `;
+                        }
+                        cer.innerHTML += `
+                            <span class="section_title">További lehetőségek</span>
+                        `;
+                    }
+                }
             }, error: function (data) { 
-                console.log(data); document.getElementById('ch-tb-cn').innerHTML = data.responseText;
+                document.getElementById('ch-tb-cn').innerHTML = `
+                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
+                        <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-025 w-fa">
+                            <strong>A rendelés meg lett szakítva</strong>
+                            <span class="small" id="checkout-error-response">${data.responseText}</span>
+                        </div>
+                    </div>
+                `;
+                console.log(data); //document.getElementById('ch-tb-cn').innerHTML += ;
             }
         });
     } function reSubmitCheckOutPost (o, i, v) {
@@ -474,6 +571,7 @@
             document.getElementById('ch-ea-rt-bt').addEventListener('click', eventHandler, false);
         } else { document.getElementById('ch-ea-rt-bt')?.classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt')?.classList.remove('primary-bg-hover', 'splash'); $('#ch-ea-rt-bt').off(); $('#ch-ea-rt-bt').unbind(); document.getElementById('ch-ea-rt-bt')?.removeEventListener("click", eventHandler , false); }
     }
+
 
 </script>
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footer.php'); ?>

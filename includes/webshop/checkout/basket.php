@@ -5,7 +5,7 @@ if (isset($_SESSION['loggedin'])) {
         $sql = "SELECT pid FROM cart WHERE uid = " . $_SESSION['id'];
         $res = $con->query($sql);
         echo '<script>var dynamicItemsObject = {};</script>';
-        echo '<div class="flex flex-col prio__con gap-025" style="max-height: 290px !important;">';
+        echo '<div id="checkout-basket-prio-con-out" class="relative"><div id="checkout-basket-prio-con" class="flex flex-col prio__con gap-025 relative" style="max-height: 290px !important;">';
         while ($dt = $res->fetch_assoc()) {
             $stmt = $con->prepare('SELECT products.id, name, thumbnail, base, discount, color, style, brand, model, cart.quantity, unit FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id INNER JOIN cart ON cart.pid = products.id INNER JOIN products__inventory ON products__inventory.pid = products.id WHERE products.id = ?');
             $stmt->bind_param('i', $dt['pid']);$stmt->execute(); $stmt -> store_result();
@@ -84,7 +84,7 @@ if (isset($_SESSION['loggedin'])) {
             } else { echo 'nincs ilyen termek'; }
             $stmt->close();
         }
-        echo '</div>';
+        echo '</div></div>';
         $subTotal += $sumPriceByProduct;
         if ($sumPriceByProduct < 30000) { $subTotal += 2000; }
         echo '
@@ -200,4 +200,31 @@ if (isset($_SESSION['loggedin'])) {
         document.getElementById('vd-vc-ac-cn').setAttribute('onclick', 'validateVoucher()'); document.getElementById('vd-vc-ac-cn').classList.add('primary-bg-hover');
         document.getElementById('vd-vc-ac-cn').classList.add('splash'); document.getElementById('vd-vc-ac-cn').classList.replace('not-allowed', 'pointer');
     }
+
+    if (document.getElementById('checkout-basket-prio-con')) {
+        if ($('#checkout-basket-prio-con').css('overflow-y') == 'scroll' || $('#checkout-basket-prio-con').css('overflow-y') == 'auto') {
+            document.getElementById('checkout-basket-prio-con-out').innerHTML += `
+                <span id="basket-item-scroll-indicator" class="flex flex-col flex-align-c flex-justify-con-c absolute box-shadow-sh circle primary-dark-bg user-select-none padding-025 center-x" style="bottom: -6%;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z" fill="currentColor"/></svg>
+                </span>
+            `;
+        }
+    }
+    // $('#checkout-basket-prio-con').on("scroll", function() {
+    //     var scrollHeight = $('#checkout-basket-prio-con').height();
+    //     var scrollPosition = $('#checkout-basket-prio-con').height() + $('#checkout-basket-prio-con').scrollTop();
+    //     if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
+    //         $("#basket-item-scroll-indicator").delay(1000).show(0);
+    //     }
+    //     console.log((scrollPosition - scrollHeight) / scrollPosition);
+    // });
+
+
+    document.getElementById('checkout-basket-prio-con').addEventListener('scroll', event => {
+        const {scrollHeight, scrollTop, clientHeight} = event.target;
+
+        if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
+            document.getElementById("basket-item-scroll-indicator").style.opacity = 0;
+        } else { document.getElementById("basket-item-scroll-indicator").style.opacity = 1; }
+    });
 </script>

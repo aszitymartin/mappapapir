@@ -154,6 +154,7 @@ a { color: unset; text-decoration: none; }
 .right { right: 0%; }
 .top { top: 0; }
 .center-y { top: 50% !important; transform: translateY(-50%); }
+.center-x { left: 50% !important; transform: translateX(-50%); }
 .z-99 { z-index: 99; }
 .z-90 { z-index: 90; }
 
