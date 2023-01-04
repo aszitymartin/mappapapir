@@ -1,15 +1,14 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
+// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
 $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
 $jsonVoucherData = json_decode($_POST['voucher'], true);
 
-$jsonInventoryCheck = isset($_POST['inventory']) ? json_decode($_POST['inventory'], true) : null;
-
-// die(print_r($jsonInventoryCheck));
+$jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_POST['inventory'])) > 1 ? json_decode($_POST['inventory'], true) : null) : null;
 
 // die(print_r($jsonUserData['general']));
-
 // die('SUID : ' . $_SESSION['id'] . ' PUID : ' . $jsonUserData['general']['uid']);
 
 /*
@@ -177,6 +176,7 @@ if (isset($_SESSION['id'])) {
                                         */
 
                                         if (!is_null($jsonInventoryCheck)) {
+                                            // Rendeles folytatasa a kivalasztott opciokkal pl. rendeles csak raktarbol, keszletbol es raktarbol vagy adott termek visszavonasa
                                             die('check inventory..');
                                         } else {
                                             die('continue order');

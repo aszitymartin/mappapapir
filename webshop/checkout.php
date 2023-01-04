@@ -292,7 +292,7 @@
                 qb[i].removeAttribute('onclick'); qb[i].classList.replace('pointer', 'not-allowed');
                 qb[i].classList.remove('splash'); qb[i].classList.remove('primary-bg-hover');
             }
-            const orderData = {
+            orderData = {
                 general : {
                     uid : <?= $_SESSION['id']; ?>,
                     fullname: document.getElementById('ch-fullname').value,
@@ -320,38 +320,38 @@
                     invoice : ['ch-inv-zip', 'ch-inv-settlement', 'ch-inv-address', 'ch-inv-tax'],
                 }
             };
-            const itemData = {};
-            const voucherData = {
+            itemData = {};
+            voucherData = {
                 voucher : {
                     voucherUsed : itemDataVoucer_VoucherUsed,
                     voucherCode : itemDataVoucer_VoucherCode,
                     voucherPercentage : itemDataVoucer_VoucherPercentage
                 }
             }
-            const inventoryData = {
-                inventory : {
-                    item_3 : [
-                        pid = 3,
-                        quantity = 5
-                    ],
-                    item_4 : [
-                        pid = 4,
-                        quantity = 2
-                    ]
-                },
-                warehouse : {
-                    item_1 : [
-                        pid = 1,
-                        quantity = 5
-                    ],
-                    item_2 : [
-                        pid = 2,
-                        quantity = 2
-                    ]
-                },
-                backorder : {
+            inventoryData = {
+                // inventory : {
+                //     item_3 : [
+                //         pid = 3,
+                //         quantity = 5
+                //     ],
+                //     item_4 : [
+                //         pid = 4,
+                //         quantity = 2
+                //     ]
+                // },
+                // warehouse : {
+                //     item_1 : [
+                //         pid = 1,
+                //         quantity = 5
+                //     ],
+                //     item_2 : [
+                //         pid = 2,
+                //         quantity = 2
+                //     ]
+                // },
+                // backorder : {
 
-                }
+                // }
             };
             Object.assign(itemData, dynamicItemsObject);
 
@@ -508,10 +508,10 @@
                                             Raktárunkban jelenleg ${data.data[i].warehouseQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> található meg.</span><br>
                                             <span>Kérjük válasszon a következő lehetőségek közül a rendelés folytatásához</span>
                                         </div>
-                                        <div class="flex flex-col gap-05">
+                                        <div class="flex flex-col gap-05 inventory-options-con">
                                             <div class="flex flex-col gap-05" id="inventory-error-options-con-${data.data[i].pid}"></div>
                                             <div class="flex flex-row text-align-l gap-1">
-                                                <input type="radio" id="skipOrderItem-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="skipOrderItem-${data.data[i].pid}" />
+                                                <input type="radio" id="skipOrderItem-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="skipOrderItem-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
                                                 <label for="skipOrderItem-${data.data[i].pid}">Nem rendelem meg ezt a terméket</label>
                                             </div>
                                         </div>
@@ -519,18 +519,18 @@
                                     if (data.data[i].inventoryQuantity > 0) {
                                         document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
                                             <div class="flex flex-row text-align-l gap-1">
-                                                <input type="radio" id="orderMinimumInventoryAvailable-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAvailable-${data.data[i].pid}" />
+                                                <input type="radio" id="orderMinimumInventoryAvailable-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAvailable-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
                                                 <label for="orderMinimumInventoryAvailable-${data.data[i].pid}">Csak ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből</label>
                                             </div>
                                             <div class="flex flex-row text-align-l gap-1">
-                                                <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAndOrderRestWarehouse" />
-                                                <label for="orderMinimumInventoryAndOrderRestWarehouse">${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből, a többi ${(data.data[i].orderedQuantity - data.data[i].inventoryQuantity)} darab megrendelése a raktárból.</label>
+                                                <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
+                                                <label for="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}">${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből, a többi ${(data.data[i].orderedQuantity - data.data[i].inventoryQuantity)} darab megrendelése a raktárból.</label>
                                             </div>
                                         `;
                                     } if (data.data[i].warehouseQuantity > 0) {
                                         document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
                                             <div class="flex flex-row text-align-l gap-1">
-                                                <input type="radio" id="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" />
+                                                <input type="radio" id="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
                                                 <label for="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}">Mind a(z) ${data.data[i].orderedQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a raktárból</label>
                                             </div>
                                         `;
@@ -572,8 +572,8 @@
                         }
                         cer.innerHTML += `
                             <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa gap-1">
-                                <span class="danger-bg danger-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés lemondása</span>
-                                <span class="primary-bg primary-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés folytatása</span>
+                                <span class="splash danger-bg danger-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés lemondása</span>
+                                <span class="splash primary-bg primary-bg-hover pointer user-select-none border-soft-light padding-05" onclick="sendReorderRequest()">Rendelés folytatása</span>
                             </div>
                         `;
                         document.getElementById('main').innerHTML += `
@@ -621,7 +621,56 @@
             document.getElementById('ch-ea-rt-bt').addEventListener('click', eventHandler, false);
         } else { document.getElementById('ch-ea-rt-bt')?.classList.replace('pointer', 'not-allowed'); document.getElementById('ch-ea-rt-bt')?.classList.remove('primary-bg-hover', 'splash'); $('#ch-ea-rt-bt').off(); $('#ch-ea-rt-bt').unbind(); document.getElementById('ch-ea-rt-bt')?.removeEventListener("click", eventHandler , false); }
     }
-
+    function setOrderOptions (p) {
+        // var owo = document.querySelectorAll('input[name="order-warehouse-option-'+p+'"]');
+        // for (o of owo) {
+        //     if (owo[o].checked) {
+        //         console.log('all checked');
+        //     }
+        // }
+        Object.assign(
+            inventoryData, 
+            { 
+                ['item_'+p] : document.querySelector('input[name="order-warehouse-option-'+p+'"]:checked').value 
+            }
+        );
+    }
+    function sendReorderRequest () {
+        var optionsValidated = true;
+        jQuery(".inventory-options-con").each(function(idx, elem) {
+            if ($(this).find('input[type=radio]').length) {
+                if (!$(this).find('input[type=radio]:checked').length) {
+                    optionsValidated = false;
+                }
+            }
+        });
+        if (optionsValidated) {
+            console.log(
+                inventoryData,
+                orderData,
+                itemData,
+                voucherData
+            );
+            var postData = new FormData(); postData.append("user", JSON.stringify(orderData)); postData.append("items", JSON.stringify(itemData)); postData.append("voucher", JSON.stringify(voucherData)); postData.append("inventory", JSON.stringify(inventoryData));
+            $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
+                beforeSend: function () {
+                    document.getElementById('ch-tb-cn').innerHTML = `
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                            <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                            <span>Adatok feldolgozása</span>
+                        </div>
+                    `;
+                },
+                success : function (e) {
+                    console.log('succ');
+                    console.log(e);
+                }, error : function (e) {
+                    console.log('err');
+                    console.log(e);
+                }
+            });
+        }
+    }
 
 </script>
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footer.php'); ?>
