@@ -23,6 +23,61 @@ $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_P
         [] ha a termek nincsen keszleten, hasonlo termekek ajanlasa helyette
     
 */
+
+/*
+    Adatbazis EK diagramm:
+
+    orders [
+        id - int -> PRIMARY KEY
+        uid - int
+        pid - varchar 
+            -> Termekek listaja ';'-vel elvalasztva tobb termek eseten
+            -> Backorderes termekek nem ide kerulnek
+        status - int
+            -> 0: Osszekeszites alatt
+            -> 1: Kiszallitas alatt
+            -> 2: Kiszallitva
+            -> 3: Befagyasztott / temp rendeles
+            -> 4: Sikertelen kiszallitas
+        date - timestamp
+    ]
+    orders__user [
+        id - int -> PRIMARY KEY
+        oid - int -> orders.id
+        fullname - varchar
+        company - varchar
+        email - varchar
+        phone - varchar
+    ]
+    orders__ship [
+        id - int -> PRIMARY KEY
+        oid - int -> orders.id
+        method -> varchar // Szallitasi mod (gls,fedex,dhl)
+        zip - int
+        settlement - varchar
+        address - varchar
+        note - varchar
+    ]
+    orders__invoice [
+        id - int -> PRIMARY KEY
+        oid - int -> orders.id
+        zip - int
+        settlement - varchar
+        address - varchar
+        tax - int
+    ]
+    orders__payment [
+        id - int -> PRIMARY KEY
+        oid - int -> orders.id
+        cid - varchar -> customers__card.cid
+        voucherUsed - tinyint
+            -> 0: Nem hasznalt
+            -> 1: Hasznalt
+        voucherCode - varchar
+        voucherDiscount - int
+    ]
+*/
+
 function dieProcess ($msg) { die($msg); }
 function cancelProcess ($msg) {
     die('cancelled : ' . $msg);
@@ -121,62 +176,42 @@ if (isset($_SESSION['id'])) {
                                                 Egyenleg frissitese
                                         */
 
-                                        /*
-                                            Adatbazis EK diagramm:
-
-                                            orders [
-                                                id - int -> PRIMARY KEY
-                                                uid - int
-                                                pid - varchar 
-                                                    -> Termekek listaja ';'-vel elvalasztva tobb termek eseten
-                                                    -> Backorderes termekek nem ide kerulnek
-                                                status - int
-                                                    -> 0: Osszekeszites alatt
-                                                    -> 1: Kiszallitas alatt
-                                                    -> 2: Kiszallitva
-                                                    -> 3: Befagyasztott / temp rendeles
-                                                    -> 4: Sikertelen kiszallitas
-                                                date - timestamp
-                                            ]
-                                            orders__user [
-                                                id - int -> PRIMARY KEY
-                                                oid - int -> orders.id
-                                                fullname - varchar
-                                                company - varchar
-                                                email - varchar
-                                                phone - varchar
-                                            ]
-                                            orders__ship [
-                                                id - int -> PRIMARY KEY
-                                                oid - int -> orders.id
-                                                method -> varchar // Szallitasi mod (gls,fedex,dhl)
-                                                zip - int
-                                                settlement - varchar
-                                                address - varchar
-                                                note - varchar
-                                            ]
-                                            orders__invoice [
-                                                id - int -> PRIMARY KEY
-                                                oid - int -> orders.id
-                                                zip - int
-                                                settlement - varchar
-                                                address - varchar
-                                                tax - int
-                                            ]
-                                            orders__payment [
-                                                id - int -> PRIMARY KEY
-                                                oid - int -> orders.id
-                                                cid - varchar -> customers__card.cid
-                                                voucherUsed - tinyint
-                                                    -> 0: Nem hasznalt
-                                                    -> 1: Hasznalt
-                                                voucherCode - varchar
-                                                voucherDiscount - int
-                                            ]
-                                        */
-
                                         if (!is_null($jsonInventoryCheck)) {
                                             // Rendeles folytatasa a kivalasztott opciokkal pl. rendeles csak raktarbol, keszletbol es raktarbol vagy adott termek visszavonasa
+                                            $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); $inventoryOptions = array();
+                                            for ($i = 0; $i < count($inventoryKeys); $i++) {
+                                                $inventoryItemId = explode('_', $inventoryKeys[$i])[1];
+                                                array_push($inventoryItems, $jsonInventoryCheck['item_'.$inventoryItemId]);
+                                            }
+                                            for ($i = 0; $i < count($inventoryItems); $i++) {
+                                                $options = new stdClass(); $options->id = explode('-', $inventoryItems[$i])[1]; $options->option = explode('-', $inventoryItems[$i])[0];
+                                                array_push($inventoryOptions, $options);
+                                            }
+                                            for ($i = 0; $i < count($inventoryOptions); $i++) {
+                                                // Megrendeles folytatasa a megadott opciokkal
+                                                // Funkcio meghivasa a rendeles tobbi reszehez -> penz levonasa stb, majd a megadott opciokkal befejezni a rendelest
+                                                switch ($inventoryOptions[$i]->option) {
+                                                    case 'skipOrderItem': unset($jsonItemsData['item_'.$inventoryOptions[$i]->id]); break;
+                                                    case 'orderMinimumInventoryAvailable':
+                                                        // csak az elerheto darab megrendelese a keszletbol
+                                                        // if ($orderOnlyAvailableItemsFromInventorySQL = $con->prepare('UPDATE products__inventory SET quantity = (SELECT quantity FROM products__inventory WHERE pid = ?) - ? WHERE pid = ?')) {
+                                                        //     $orderOnlyAvailableItemsFromInventorySQL->bind_param('iii', $jsonItemsData['item_'.$inventoryOptions[$i]->id], $jsonItemsData['item_'.$inventoryOptions[$i]->id]); $orderOnlyAvailableItemsFromInventorySQL->execute(); $orderOnlyAvailableItemsFromInventorySQL->store_result(); $orderOnlyAvailableItemsFromInventorySQL->fetch();
+                                                        // } else { die('order error'); }
+                                                    break;
+                                                    case 'orderMinimumInventoryAndOrderRestWarehouse':
+                                                        // csak a keszleten levo termek megrendelese, a tobbi a raktarbol
+                                                    break;
+                                                    case 'orderCurrentOrderedQuantityWarehouse':
+                                                        // az mennyiseg megrendelese a raktrarbol
+                                                    break;
+                                                    default: die('Érvénytelen opciót választott.'); break;
+                                                }
+                                            }
+                                            die(print_r($jsonItemsData));
+                                            die();
+                                            die(print_r($inventoryOptions));
+                                            die(print_r($inventoryItems));
+                                            die(print_r($jsonInventoryCheck));
                                             die('check inventory..');
                                         } else {
                                             die('continue order');
