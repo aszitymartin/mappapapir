@@ -178,7 +178,7 @@ if (isset($_SESSION['id'])) {
 
                                         if (!is_null($jsonInventoryCheck)) {
                                             // Rendeles folytatasa a kivalasztott opciokkal pl. rendeles csak raktarbol, keszletbol es raktarbol vagy adott termek visszavonasa
-                                            $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); $inventoryOptions = array();
+                                            $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); $inventoryOptions = array(); $orderedItemsArray = array();
                                             for ($i = 0; $i < count($inventoryKeys); $i++) {
                                                 $inventoryItemId = explode('_', $inventoryKeys[$i])[1];
                                                 array_push($inventoryItems, $jsonInventoryCheck['item_'.$inventoryItemId]);
@@ -194,9 +194,22 @@ if (isset($_SESSION['id'])) {
                                                     case 'skipOrderItem': unset($jsonItemsData['item_'.$inventoryOptions[$i]->id]); break;
                                                     case 'orderMinimumInventoryAvailable':
                                                         // csak az elerheto darab megrendelese a keszletbol
-                                                        // if ($orderOnlyAvailableItemsFromInventorySQL = $con->prepare('UPDATE products__inventory SET quantity = (SELECT quantity FROM products__inventory WHERE pid = ?) - ? WHERE pid = ?')) {
-                                                        //     $orderOnlyAvailableItemsFromInventorySQL->bind_param('iii', $jsonItemsData['item_'.$inventoryOptions[$i]->id], $jsonItemsData['item_'.$inventoryOptions[$i]->id]); $orderOnlyAvailableItemsFromInventorySQL->execute(); $orderOnlyAvailableItemsFromInventorySQL->store_result(); $orderOnlyAvailableItemsFromInventorySQL->fetch();
-                                                        // } else { die('order error'); }
+                                                        // die(print_r($jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']));
+                                                        $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
+                                                        $getAvailableInventoryQuantitySQL = "SELECT quantity FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
+                                                        $getAvailableInventoryQuantityRes = $con->query($getAvailableInventoryQuantitySQL); $getAvailableInventoryQuantityData = $getAvailableInventoryQuantityRes->fetch_assoc();
+                                                        $inventoryAvailableQuantity = $getAvailableInventoryQuantityData['quantity'];
+                                                        if ($inventoryAvailableQuantity - $orderedQuantity < 0) { $orderQuantiry = $inventoryAvailableQuantity; } else { $orderQuantiry = $orderedQuantity; }
+                                                        if ($orderOnlyAvailableItemsFromInventorySQL = $con->prepare('UPDATE products__inventory SET quantity = (quantity - ?) WHERE pid = ?')) {
+                                                            $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantiry, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute(); //$orderOnlyAvailableItemsFromInventorySQL->store_result(); $orderOnlyAvailableItemsFromInventorySQL->fetch();
+                                                            array_push($orderedItemsArray,
+                                                                [
+                                                                    "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
+                                                                    "quantity" => $orderQuantiry,
+                                                                    "option" => "orderMinimumInventoryAvailable"
+                                                                ]
+                                                            );
+                                                        } else { die('order error'); }
                                                     break;
                                                     case 'orderMinimumInventoryAndOrderRestWarehouse':
                                                         // csak a keszleten levo termek megrendelese, a tobbi a raktarbol
@@ -207,6 +220,7 @@ if (isset($_SESSION['id'])) {
                                                     default: die('Érvénytelen opciót választott.'); break;
                                                 }
                                             }
+                                            die(print_r($orderedItemsArray));
                                             die(print_r($jsonItemsData));
                                             die();
                                             die(print_r($inventoryOptions));
