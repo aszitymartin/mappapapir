@@ -1,6 +1,6 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
-// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 
 $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
@@ -178,7 +178,8 @@ if (isset($_SESSION['id'])) {
 
                                         if (!is_null($jsonInventoryCheck)) {
                                             // Rendeles folytatasa a kivalasztott opciokkal pl. rendeles csak raktarbol, keszletbol es raktarbol vagy adott termek visszavonasa
-                                            $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); $inventoryOptions = array(); $orderedItemsArray = array();
+                                            $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); 
+                                            $inventoryOptions = array(); $orderedItemsArray = array(); $inventoryErrorData = array();
                                             for ($i = 0; $i < count($inventoryKeys); $i++) {
                                                 $inventoryItemId = explode('_', $inventoryKeys[$i])[1];
                                                 array_push($inventoryItems, $jsonInventoryCheck['item_'.$inventoryItemId]);
@@ -194,25 +195,69 @@ if (isset($_SESSION['id'])) {
                                                     case 'skipOrderItem': unset($jsonItemsData['item_'.$inventoryOptions[$i]->id]); break;
                                                     case 'orderMinimumInventoryAvailable':
                                                         // csak az elerheto darab megrendelese a keszletbol
-                                                        // die(print_r($jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']));
                                                         $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
                                                         $getAvailableInventoryQuantitySQL = "SELECT quantity FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
                                                         $getAvailableInventoryQuantityRes = $con->query($getAvailableInventoryQuantitySQL); $getAvailableInventoryQuantityData = $getAvailableInventoryQuantityRes->fetch_assoc();
                                                         $inventoryAvailableQuantity = $getAvailableInventoryQuantityData['quantity'];
-                                                        if ($inventoryAvailableQuantity - $orderedQuantity < 0) { $orderQuantiry = $inventoryAvailableQuantity; } else { $orderQuantiry = $orderedQuantity; }
+                                                        if ($inventoryAvailableQuantity - $orderedQuantity < 0) { $orderQuantity = $inventoryAvailableQuantity; } else { $orderQuantity = $orderedQuantity; }
                                                         if ($orderOnlyAvailableItemsFromInventorySQL = $con->prepare('UPDATE products__inventory SET quantity = (quantity - ?) WHERE pid = ?')) {
-                                                            $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantiry, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute(); //$orderOnlyAvailableItemsFromInventorySQL->store_result(); $orderOnlyAvailableItemsFromInventorySQL->fetch();
+                                                            $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute(); //$orderOnlyAvailableItemsFromInventorySQL->store_result(); $orderOnlyAvailableItemsFromInventorySQL->fetch();
                                                             array_push($orderedItemsArray,
                                                                 [
                                                                     "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
-                                                                    "quantity" => $orderQuantiry,
+                                                                    "quantity" => $orderQuantity,
                                                                     "option" => "orderMinimumInventoryAvailable"
                                                                 ]
                                                             );
-                                                        } else { die('order error'); }
+                                                        } else { 
+                                                            array_push($inventoryErrorData, 
+                                                                [
+                                                                    "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
+                                                                    "quantity" => $orderQuantity,
+                                                                    "alt" => "Hiba történt a folyamat közben."
+                                                                ]
+                                                            ); 
+                                                        }
                                                     break;
                                                     case 'orderMinimumInventoryAndOrderRestWarehouse':
-                                                        // csak a keszleten levo termek megrendelese, a tobbi a raktarbol
+                                                        // csak az elerheto termek megrendelese keszletbol, a tobbit a raktarbol
+                                                        $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
+                                                        $getAvailableInventoryQuantitySQL = "SELECT quantity, q__warehouse, backorder FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
+                                                        $getAvailableInventoryQuantityRes = $con->query($getAvailableInventoryQuantitySQL); $getAvailableInventoryQuantityData = $getAvailableInventoryQuantityRes->fetch_assoc();
+                                                        $inventoryAvailableQuantity = $getAvailableInventoryQuantityData['quantity']; $warehouseAvailableQuantity = $getAvailableInventoryQuantityData['q__warehouse']; $itemBackorderStatus = $getAvailableInventoryQuantityData['backorder'];
+                                                        if ($inventoryAvailableQuantity - $orderedQuantity < 0) { $orderQuantity = $inventoryAvailableQuantity; } else { $orderQuantity = $orderedQuantity; }
+                                                        // check if warehouse has enough products && if not check if backorder available
+                                                        if ($warehouseAvailableQuantity - ($jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] - $orderQuantity) >= 0) {
+                                                            if ($orderAvailableItemsInventoryRestWarehouseSQL = $con->prepare('UPDATE products__inventory SET quantity = (quantity - ?), q__warehouse = (q__warehouse - ?) WHERE pid = ?')) {
+                                                                $orderWarehouseQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] - $orderQuantity;
+                                                                $orderAvailableItemsInventoryRestWarehouseSQL->bind_param('iii', $orderQuantity, $orderWarehouseQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderAvailableItemsInventoryRestWarehouseSQL->execute();
+                                                                array_push($orderedItemsArray,
+                                                                    [
+                                                                        "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
+                                                                        "quantity" => $orderQuantity,
+                                                                        "option" => "orderMinimumInventoryAndOrderRestWarehouse"
+                                                                    ]
+                                                                );
+                                                            } else { 
+                                                                array_push($inventoryErrorData, 
+                                                                    [
+                                                                        "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
+                                                                        "quantity" => $orderQuantity,
+                                                                        "alt" => "Hiba történt a folyamat közben."
+                                                                    ]
+                                                                ); 
+                                                            }
+                                                        } elseif ($itemBackorderStatus == 1) {
+                                                            //backorder TRUE
+                                                        } else {
+                                                            array_push($inventoryErrorData, 
+                                                                [
+                                                                    "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
+                                                                    "quantity" => $orderQuantity,
+                                                                    "alt" => "Nincs elegendő termék a raktáron, és az Utólagos Rendelés opció nem elérhető ennél a terméknél."
+                                                                ]
+                                                            ); 
+                                                        }
                                                     break;
                                                     case 'orderCurrentOrderedQuantityWarehouse':
                                                         // az mennyiseg megrendelese a raktrarbol
@@ -220,12 +265,12 @@ if (isset($_SESSION['id'])) {
                                                     default: die('Érvénytelen opciót választott.'); break;
                                                 }
                                             }
-                                            die(print_r($orderedItemsArray));
-                                            die(print_r($jsonItemsData));
-                                            die();
-                                            die(print_r($inventoryOptions));
-                                            die(print_r($inventoryItems));
-                                            die(print_r($jsonInventoryCheck));
+                                            // die();
+                                            // die(print_r($orderedItemsArray));
+                                            // die(print_r($jsonItemsData));
+                                            // die(print_r($inventoryOptions));
+                                            // die(print_r($inventoryItems));
+                                            // die(print_r($jsonInventoryCheck));
                                             die('check inventory..');
                                         } else {
                                             die('continue order');

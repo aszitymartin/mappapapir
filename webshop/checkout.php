@@ -571,6 +571,14 @@
                             `;
                         }
                         cer.innerHTML += `
+                            <div class="flex">
+                                <div class="flex flex-row flex-align-c flex-justify-con-sb padding-05 gap-1 border-soft warning-bg" alert-id="outdpw">
+                                    <div class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect></svg>
+                                    </div>
+                                    <div class="small-med"><strong>Figyelem!</strong> Amennyiben olyan opciót választ, hogy a raktárból szeretné megrendelni a terméket, kérjük vegye tudomásul, hogy a kiszállítási idő megnövekedik, ami akár 7 nap is lehet.</div>
+                                </div>
+                            </div>
                             <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa gap-1">
                                 <span class="splash danger-bg danger-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés lemondása</span>
                                 <span class="splash primary-bg primary-bg-hover pointer user-select-none border-soft-light padding-05" onclick="sendReorderRequest()">Rendelés folytatása</span>
