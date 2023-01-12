@@ -5,6 +5,7 @@ ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_report
 $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
 $jsonVoucherData = json_decode($_POST['voucher'], true);
+$jsonLogData = json_decode($_POST['log'], true);
 
 $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_POST['inventory'])) > 1 ? json_decode($_POST['inventory'], true) : null) : null;
 
@@ -19,7 +20,7 @@ $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_P
     [*] egyenleg ellenorzese
         [X] fedezethiany eseten tobbi kartya ajanlasa ha van
     
-    [] keszlet ellenorzese (ratkaron levo termekek szama, backorder engedelyezve van-e)
+    [*] keszlet ellenorzese (ratkaron levo termekek szama, backorder engedelyezve van-e)
         [] ha a termek nincsen keszleten, hasonlo termekek ajanlasa helyette
     
 */
@@ -94,7 +95,6 @@ if (isset($_SESSION['id'])) {
                         if (date("Y-m-d" ,strtotime($userCardExpiryDate)) > date('Y-m-d')) {
                             if ($checkUserCardBalanceSQL = $con->prepare('SELECT value FROM customers__card WHERE uid = ? AND cid LIKE ?')) {
                                 $checkUserCardBalanceSQL->bind_param('is', $jsonUserData['general']['uid'], $jsonUserData['payment']['paymentMethod']); $checkUserCardBalanceSQL->execute(); $checkUserCardBalanceSQL->store_result(); $checkUserCardBalanceSQL->bind_result($userCardBalance); $checkUserCardBalanceSQL->fetch();
-                                // termekek aranak kiszamolasa, osszehasonlitas az egyenleggel
                                 $itemKeys = array_keys((array)$jsonItemsData); $itemsArray = array();
                                 for ($i = 0; $i < count($itemKeys); $i++) { $itemKeyId = explode('_', $itemKeys[$i])[1]; array_push($itemsArray, $jsonItemsData['item_'.$itemKeyId]['general']); } 
                                 $grossTotal = 1000;
@@ -201,14 +201,9 @@ if (isset($_SESSION['id'])) {
                                                         $inventoryAvailableQuantity = $getAvailableInventoryQuantityData['quantity'];
                                                         if ($inventoryAvailableQuantity - $orderedQuantity < 0) { $orderQuantity = $inventoryAvailableQuantity; } else { $orderQuantity = $orderedQuantity; }
                                                         if ($orderOnlyAvailableItemsFromInventorySQL = $con->prepare('UPDATE products__inventory SET quantity = (quantity - ?) WHERE pid = ?')) {
-                                                            $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute(); //$orderOnlyAvailableItemsFromInventorySQL->store_result(); $orderOnlyAvailableItemsFromInventorySQL->fetch();
-                                                            array_push($orderedItemsArray,
-                                                                [
-                                                                    "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
-                                                                    "quantity" => $orderQuantity,
-                                                                    "option" => "orderMinimumInventoryAvailable"
-                                                                ]
-                                                            );
+                                                            $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute();
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] = $orderQuantity;
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['option'] = "orderMinimumInventoryAvailable";
                                                         } else { 
                                                             array_push($inventoryErrorData, 
                                                                 [
@@ -231,13 +226,8 @@ if (isset($_SESSION['id'])) {
                                                             if ($orderAvailableItemsInventoryRestWarehouseSQL = $con->prepare('UPDATE products__inventory SET quantity = (quantity - ?), q__warehouse = (q__warehouse - ?) WHERE pid = ?')) {
                                                                 $orderWarehouseQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] - $orderQuantity;
                                                                 $orderAvailableItemsInventoryRestWarehouseSQL->bind_param('iii', $orderQuantity, $orderWarehouseQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderAvailableItemsInventoryRestWarehouseSQL->execute();
-                                                                array_push($orderedItemsArray,
-                                                                    [
-                                                                        "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
-                                                                        "quantity" => $orderQuantity,
-                                                                        "option" => "orderMinimumInventoryAndOrderRestWarehouse"
-                                                                    ]
-                                                                );
+                                                                $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] = $orderQuantity;
+                                                                $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['option'] = "orderMinimumInventoryAndOrderRestWarehouse";
                                                             } else { 
                                                                 array_push($inventoryErrorData, 
                                                                     [
@@ -261,19 +251,48 @@ if (isset($_SESSION['id'])) {
                                                     break;
                                                     case 'orderCurrentOrderedQuantityWarehouse':
                                                         // az mennyiseg megrendelese a raktrarbol
+                                                        $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
+                                                        $getAvailableWarehouseQuantitySQL = "SELECT q__warehouse FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
+                                                        $getAvailableWarehouseQuantityRes = $con->query($getAvailableWarehouseQuantitySQL); $getAvailableWarehouseQuantityData = $getAvailableWarehouseQuantityRes->fetch_assoc();
+                                                        $warehouseAvailableQuantity = $getAvailableWarehouseQuantityData['q__warehouse'];
+                                                        if ($warehouseAvailableQuantity - $orderedQuantity < 0) { $orderQuantity = $warehouseAvailableQuantity; } else { $orderQuantity = $orderedQuantity; }
+                                                        if ($orderOnlyAvailableItemsFromInventorySQL = $con->prepare('UPDATE products__inventory SET q__warehouse = (q__warehouse - ?) WHERE pid = ?')) {
+                                                            $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute();
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] = $orderQuantity;
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['option'] = "orderCurrentOrderedQuantityWarehouse";
+                                                        } else { 
+                                                            array_push($inventoryErrorData, 
+                                                                [
+                                                                    "pid" => $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'],
+                                                                    "quantity" => $orderQuantity,
+                                                                    "alt" => "Hiba történt a folyamat közben."
+                                                                ]
+                                                            ); 
+                                                        }
+
                                                     break;
                                                     default: die('Érvénytelen opciót választott.'); break;
                                                 }
                                             }
-                                            // die();
-                                            // die(print_r($orderedItemsArray));
+                                            // $jsonItemsData -> Ide vannak mentve a megrendelt termekek, az atirt mennyisegek es az option tag is a logolashoz
+                                            /*
+                                                A valasztott opciok alapjan ujraszamolni az egyenleget
+                                                Felhasznalo egyenlegenek frissitese
+                                                Rendelesi adatok elmentese adatbazisba
+                                                Naplozas vegrehajtasa
+                                            */
+
+
+                                            
+                                            die('continue order after inventory check..');
                                             // die(print_r($jsonItemsData));
-                                            // die(print_r($inventoryOptions));
-                                            // die(print_r($inventoryItems));
-                                            // die(print_r($jsonInventoryCheck));
-                                            die('check inventory..');
                                         } else {
-                                            die('continue order');
+                                            /*
+                                                Felhasznalo egyenlegenek frissitese
+                                                Rendelesi adatok elmentese adatbazisba
+                                                Naplozas vegrehajtasa
+                                            */
+                                            die('continue order without inventory check');
                                         }
 
                                     } else { $inventoryExitObject = new stdClass();
