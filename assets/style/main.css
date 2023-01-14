@@ -557,8 +557,8 @@ footer { display: flex;align-items: center;flex-direction: column;justify-conten
 
 /* Sekeleton */
 .skeletonSvg { display: flex;border-radius: 50%;background-color: #ddd;width: 32px;height: 32px;margin: 0 .5rem; }
-.skeletonTitle, .skeletonDesc { display: flex;background-color: #ddd;height: .9rem;width: 6rem;border-radius: .5rem; }
-.skeletonDesc { margin-top: .5rem;height: .6rem;width: 9rem; }
+.skeletonTitle, .skeletonDesc { display: flex;background-color: #ddd;height: .9rem;width: 75%;border-radius: .5rem; }
+.skeletonDesc { margin-top: .5rem;height: .6rem;width: 60% !important; }
 
 /* Tooltip */
 .tooltip { top: 115%;left: 50%;transform: translateX(-50%);color: #fff;padding: .4rem;font-size: .8rem;border-radius: .4rem;width: max-content;opacity: 0;visibility: hidden;cursor: default;background: rgba(0, 0, 0, 0.788235294117647);border-radius: .4rem;box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(5px);-webkit-backdrop-filter: blur(5px);border: 1px solid rgba(0, 0, 0, 0.3);transition: opacity 200ms, visibility 0ms 200ms; }

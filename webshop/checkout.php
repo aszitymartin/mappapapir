@@ -474,44 +474,67 @@
                                         cer.innerHTML = `
                                             <div class="flex flex-col flex-align-c flex-justify-con-c text-align-c gap-1 w-fa">
                                                 <span class="flex text-align-c">Rendelése során észre vettük, hogy a következő termék(ek)nél átlépte a készleten lévő darabszámot.</span>
+                                                <div class="flex">
+                                                    <div class="flex flex-row flex-align-c flex-justify-con-sb padding-05 gap-1 border-soft warning-bg text-align-l" alert-id="outdpw">
+                                                        <div class="flex">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect></svg>
+                                                        </div>
+                                                        <div class="small-med"><strong>Figyelem!</strong> Amennyiben olyan opciót választ, hogy a raktárból szeretné megrendelni a terméket, kérjük vegye tudomásul, hogy a kiszállítási idő megnövekedik, ami akár 7 nap is lehet.</div>
+                                                    </div>
+                                                </div>
                                                 <span class="flex flex-col w-fa gap-1 text-align-c text-secondary" id="checkout-inventory-error-con"></span>
                                             </div>
                                         `;
-                                        for (let i = 0; i < data.data.length; i++) {
-                                            document.getElementById('checkout-inventory-error-con').innerHTML += `
-                                                <hr style="border: 1px solid var(--background);" class="w-100">
-                                                <div class="flex flex-col w-fa text-align-l">
-                                                    <span>Jelenlegi információnk szerint ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> van készleten, Ön pedig ${data.data[i].orderedQuantity} darabot rendelt.
-                                                    Raktárunkban jelenleg ${data.data[i].warehouseQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> található meg.</span><br>
-                                                    <span>Kérjük válasszon a következő lehetőségek közül a rendelés folytatásához</span>
-                                                </div>
-                                                <div class="flex flex-col gap-05 inventory-options-con">
-                                                    <div class="flex flex-col gap-05" id="inventory-error-options-con-${data.data[i].pid}"></div>
-                                                    <div class="flex flex-row text-align-l gap-1">
-                                                        <input type="radio" id="skipOrderItem-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="skipOrderItem-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
-                                                        <label for="skipOrderItem-${data.data[i].pid}">Nem rendelem meg ezt a terméket</label>
-                                                    </div>
-                                                </div>
-                                            `;
-                                            if (data.data[i].inventoryQuantity > 0) {
-                                                document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
-                                                    <div class="flex flex-row text-align-l gap-1">
-                                                        <input type="radio" id="orderMinimumInventoryAvailable-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAvailable-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
-                                                        <label for="orderMinimumInventoryAvailable-${data.data[i].pid}">Csak ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből</label>
-                                                    </div>
-                                                    <div class="flex flex-row text-align-l gap-1">
-                                                        <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
-                                                        <label for="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}">${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből, a többi ${(data.data[i].orderedQuantity - data.data[i].inventoryQuantity)} darab megrendelése a raktárból.</label>
-                                                    </div>
-                                                `;
-                                            } if (data.data[i].warehouseQuantity > 0) {
-                                                document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
-                                                    <div class="flex flex-row text-align-l gap-1">
-                                                        <input type="radio" id="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
-                                                        <label for="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}">Mind a(z) ${data.data[i].orderedQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a raktárból</label>
-                                                    </div>
-                                                `;
-                                            }
+                                        for (let i = 0; i < data.data.length; i++) { var piData = new FormData(); piData.append('pid', data.data[i].pid);
+                                            $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/info.php", data: piData, dataType: 'json', contentType: false, processData: false,
+                                                beforeSend : function (e) { 
+                                                    // let currentPrice = (e.responseJSON.pricing.price - (e.responseJSON.pricing.price*e.responseJSON.pricing.discount)/100) * data.data[i].inventoryQuantity;
+                                                    
+                                                    console.log(e);
+                                                    document.getElementById('checkout-inventory-error-con').innerHTML += `
+                                                        <hr style="border: 1px solid var(--background);" class="w-100">
+                                                        <div class="flex flex-row flex-align-c gap-1 w-fa">
+                                                            <div class="product-miniature-variation drop-shadow user-select-none" id="ciec-thc-${data.data[i].pid}">
+                                                                <svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>
+                                                            </div>
+                                                            <div class="flex flex-col w-fa text-align-l">
+                                                                <span>Jelenlegi információnk szerint ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> van készleten, Ön pedig ${data.data[i].orderedQuantity} darabot rendelt.
+                                                                Raktárunkban jelenleg ${data.data[i].warehouseQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> található meg.</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex flex-row w-fa">
+                                                            <span>Kérjük válasszon a következő lehetőségek közül a rendelés folytatásához</span>
+                                                        </div>
+                                                        <div class="flex flex-col gap-05 inventory-options-con">
+                                                            <div class="flex flex-col gap-05" id="inventory-error-options-con-${data.data[i].pid}"></div>
+                                                            <div class="flex flex-row text-align-l gap-1">
+                                                                <input type="radio" id="skipOrderItem-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="skipOrderItem-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
+                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="skipOrderItem-${data.data[i].pid}"><span>Nem rendelem meg ezt a terméket</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 primary-bg border-soft-light smaller-light bold">- 1500 Ft</span></label>
+                                                            </div>
+                                                        </div>
+                                                    `;
+                                                    if (data.data[i].inventoryQuantity > 0) {
+                                                        document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
+                                                            <div class="flex flex-row text-align-l gap-1">
+                                                                <input type="radio" id="orderMinimumInventoryAvailable-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAvailable-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
+                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="orderMinimumInventoryAvailable-${data.data[i].pid}"><span>Csak ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 danger-bg border-soft-light smaller-light bold">- 2 db</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 primary-bg border-soft-light smaller-light bold">- ${currentPrice} Ft</span></label>
+                                                            </div>
+                                                            <div class="flex flex-row text-align-l gap-1">
+                                                                <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
+                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}"><span>${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből, a többi ${(data.data[i].orderedQuantity - data.data[i].inventoryQuantity)} darab megrendelése a raktárból</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 warning-bg border-soft-light smaller-light bold">+3 nap</span></label>
+                                                            </div>
+                                                        `;
+                                                    } if (data.data[i].warehouseQuantity > 0) {
+                                                        document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
+                                                            <div class="flex flex-row text-align-l gap-1">
+                                                                <input type="radio" id="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
+                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="orderCurrentOrderedQuantityWarehouse-${data.data[i].pid}"><span>Mind a(z) ${data.data[i].orderedQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a raktárból</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 warning-bg border-soft-light smaller-light bold">+3 nap</span></label>
+                                                            </div>
+                                                        `;
+                                                    }
+                                                }, success : function (e) { document.getElementById('ciec-thc-'+e.general.pid).innerHTML = ``; document.getElementById('ciec-thc-'+e.general.pid).setAttribute('data-image', e.general?.thumbnail); document.getElementById('ciec-thc-'+e.general.pid).style.backgroundImage = 'url("/assets/images/uploads/'+e.general?.thumbnail+'")';
+                                                }, error : function () { document.getElementById('ciec-thc-'+e.general.pid).innerHTML = `<span class="smaller-light user-select-none text-muted">Kép betöltése sikertelen.</span>`; }
+                                            });
                                         }
                                     break;
                                     case 'unavailable' :
@@ -548,12 +571,20 @@
                                     `;
                                 }
                                 cer.innerHTML += `
-                                    <div class="flex">
-                                        <div class="flex flex-row flex-align-c flex-justify-con-sb padding-05 gap-1 border-soft warning-bg" alert-id="outdpw">
-                                            <div class="flex">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect></svg>
+                                    <div class="flex flex-col flex-align-fe flex-justify-con-fe text-muted padding-05 gap-1 w-fa">
+                                        <div class="flex flex-col gap-025 small">
+                                            <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
+                                                <span class="bold">Szállítási díj:</span>
+                                                <span class="text-secondary" id="shfe-rc">NaN</span>
                                             </div>
-                                            <div class="small-med"><strong>Figyelem!</strong> Amennyiben olyan opciót választ, hogy a raktárból szeretné megrendelni a terméket, kérjük vegye tudomásul, hogy a kiszállítási idő megnövekedik, ami akár 7 nap is lehet.</div>
+                                            <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
+                                                <span class="bold">Kezelési költség:</span>
+                                                <span class="text-secondary">1 000 Ft</span>
+                                            </div>
+                                            <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
+                                                <span class="bold">Fizetendő:</span>
+                                                <span class="text-secondary fbe" id="subt-rc">NaN</span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa gap-1">
@@ -636,7 +667,7 @@
             }
         });
         if (optionsValidated) {
-            var postData = new FormData(); postData.append("user", JSON.stringify(orderData)); postData.append("items", JSON.stringify(itemData)); postData.append("voucher", JSON.stringify(voucherData)); postData.append("inventory", JSON.stringify(inventoryData));
+            var postData = new FormData(); postData.append("user", JSON.stringify(orderData)); postData.append("items", JSON.stringify(itemData)); postData.append("voucher", JSON.stringify(voucherData)); postData.append("inventory", JSON.stringify(inventoryData)); postData.append("log", JSON.stringify(logData));
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
                 beforeSend: function () {
                     document.getElementById('ch-tb-cn').innerHTML = `
@@ -648,7 +679,68 @@
                 },
                 success : function (e) {
                     console.log('succ');
-                    console.log(e);
+                    // console.log(e);
+                    if (e.alt == 'inventoryChecked') {
+                        document.getElementById('ch-tb-cn').innerHTML = `
+                            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
+                                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                <div class="flex flex-col flex-align-c flex-justify-con-c gap-025 w-fa">
+                                    <strong>Utolsó módosítások elvégzése</strong>
+                                    <span class="small text-align-c" id="checkout-error-response">A rendelésben szereplő termékek módosítva lettek, így a végösszeg és/vagy a szállítási idő is módosult. Így is folytatni kívánja a rendelést?</span>
+                                </div><br>
+                                <div class="flex flex-col gap-025 relative w-fa" id="changed-items-con"></div>
+                                <div class="flex flex-col flex-align-fe flex-justify-con-fe text-muted padding-05 gap-1 w-fa">
+                                    <div class="flex flex-col gap-025 small">
+                                        <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
+                                            <span class="bold">Szállítási díj:</span>
+                                            <span class="text-secondary" id="shfe-rc">NaN</span>
+                                        </div>
+                                        <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
+                                            <span class="bold">Kezelési költség:</span>
+                                            <span class="text-secondary">1 000 Ft</span>
+                                        </div>
+                                        <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
+                                            <span class="bold">Fizetendő:</span>
+                                            <span class="text-secondary fbe" id="subt-rc">NaN</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `; changedSubt = 1000;
+                        for (let i = 0; i < Object.getOwnPropertyNames(e.data).length; i++) {
+                            let pid = Number(Object.getOwnPropertyNames(e.data)[i].split('_')[1]); var piData = new FormData(); piData.append('pid', pid);
+                            $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/info.php", data: piData, dataType: 'json', contentType: false, processData: false,
+                                success : function (d) {
+                                    document.getElementById('changed-items-con').innerHTML += `
+                                    <div class="flex flex-row-d-col-m gap-1 text-align-c-m">
+                                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1">
+                                            <img src="/assets/images/uploads/${d.general.thumbnail}" class="drop-shadow" style="width: 2.5rem; height: 2.5rem; object-fit: contain;" />
+                                        </div>
+                                        <div class="flex flex-col w-fa gap-025 text-primary">
+                                            <div class="flex flex-col gap-025">
+                                                <a class="bold">${d.general.name}</a>
+                                            </div>
+                                            <div class="flex flex-col w-fa gap-025">
+                                                <div class="flex flex-row flex-align-c gap-1 user-select-none">
+                                                    <span class="text-secondary">${e.data['item_'+pid].general.quantity} ${d.inventory.q__unit}</span>
+                                                    <span class="text-secondary small">${e.data['item_'+pid].general.extras?.length > 0 ? e.data['item_'+pid].general.extras : ''}</span>
+                                                </div>
+                                                <span class="small">${e.data['item_'+pid].general.shipping?.length > 0 ? e.data['item_'+pid].general.shipping : ''}</span>
+                                            </div>
+                                        </div>
+                                    </div><hr style="border: 1px solid var(--background);" class="w-fa">
+                                    `;
+                                    changedSubt += ((d.pricing.price - (d.pricing.price * d.pricing.discount)/100) * e.data['item_'+pid].general.quantity);
+                                    if (i == (Object.getOwnPropertyNames(e.data).length-1)) { setSubTotalIndicator (changedSubt); }
+                                }, error : function (d) { document.getElementById('changed-items-con').innerHTML += `<span class="text-muted small">Termék betöltése sikertelen.</span><hr style="border: 1px solid var(--background);" class="w-fa">`; }
+                            });
+                        }
+                        function setSubTotalIndicator (s) {
+                            console.log(s);
+                            document.getElementById('subt-rc').textContent = formatter.format((s > 30000) ? s : s+2000);
+                            document.getElementById('shfe-rc').innerHTML = s > 30000 ? `<span class="text-secondary linethrough">2 000 Ft</span>` : `<span class="text-secondary">2 000 Ft</span>`;
+                        }
+                    }
                 }, error : function (e) {
                     console.log('err');
                     console.log(e);

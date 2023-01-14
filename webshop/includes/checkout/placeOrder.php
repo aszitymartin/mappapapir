@@ -10,7 +10,6 @@ $jsonLogData = json_decode($_POST['log'], true);
 $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_POST['inventory'])) > 1 ? json_decode($_POST['inventory'], true) : null) : null;
 
 // die(print_r($jsonUserData['general']));
-// die('SUID : ' . $_SESSION['id'] . ' PUID : ' . $jsonUserData['general']['uid']);
 
 /*
     [*] session ellenorzese
@@ -76,6 +75,7 @@ $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_P
             -> 1: Hasznalt
         voucherCode - varchar
         voucherDiscount - int
+        subtotal - int
     ]
 */
 
@@ -204,6 +204,7 @@ if (isset($_SESSION['id'])) {
                                                             $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute();
                                                             $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] = $orderQuantity;
                                                             $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['option'] = "orderMinimumInventoryAvailable";
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['extras'] = $orderQuantity . "db, " . $orderedQuantity . " helyett.";
                                                         } else { 
                                                             array_push($inventoryErrorData, 
                                                                 [
@@ -228,6 +229,8 @@ if (isset($_SESSION['id'])) {
                                                                 $orderAvailableItemsInventoryRestWarehouseSQL->bind_param('iii', $orderQuantity, $orderWarehouseQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderAvailableItemsInventoryRestWarehouseSQL->execute();
                                                                 $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] = $orderQuantity;
                                                                 $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['option'] = "orderMinimumInventoryAndOrderRestWarehouse";
+                                                                $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['extras'] = $orderQuantity . " termék készletből, " . $orderWarehouseQuantity . " raktárból.";
+                                                                $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['shipping'] = " +3 nap szállítási idő";
                                                             } else { 
                                                                 array_push($inventoryErrorData, 
                                                                     [
@@ -260,6 +263,8 @@ if (isset($_SESSION['id'])) {
                                                             $orderOnlyAvailableItemsFromInventorySQL->bind_param('ii', $orderQuantity, $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id']); $orderOnlyAvailableItemsFromInventorySQL->execute();
                                                             $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'] = $orderQuantity;
                                                             $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['option'] = "orderCurrentOrderedQuantityWarehouse";
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['extras'] = $orderQuantity . " termék raktárból.";
+                                                            $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['shipping'] = " +3 nap szállítási idő";
                                                         } else { 
                                                             array_push($inventoryErrorData, 
                                                                 [
@@ -276,16 +281,33 @@ if (isset($_SESSION['id'])) {
                                             }
                                             // $jsonItemsData -> Ide vannak mentve a megrendelt termekek, az atirt mennyisegek es az option tag is a logolashoz
                                             /*
-                                                A valasztott opciok alapjan ujraszamolni az egyenleget
-                                                Felhasznalo egyenlegenek frissitese
-                                                Rendelesi adatok elmentese adatbazisba
-                                                Naplozas vegrehajtasa
+                                                [X] A valasztott opciok alapjan ujraszamolni az egyenleget
+                                                [] Felhasznalo egyenlegenek frissitese
+                                                [] Rendelesi adatok elmentese adatbazisba
+                                                [] Naplozas vegrehajtasa
                                             */
 
+                                            $changedSubtotal = 1000; $changedItemsArray = array();
+                                            $changedItemKeys = array_keys((array)$jsonItemsData);
+                                            for ($i = 0; $i < count($changedItemKeys); $i++) { $itemKeyId = explode('_', $changedItemKeys[$i])[1]; array_push($changedItemsArray, $jsonItemsData['item_'.$itemKeyId]['general']); } 
+                                            for ($i = 0; $i < count($changedItemsArray); $i++) {
+                                                if ($getDynamicItemPrice = $con->prepare('SELECT base, discount FROM products__pricing WHERE pid = ?')) {
+                                                    $getDynamicItemPrice->bind_param('i', $changedItemsArray[$i]['id']); $getDynamicItemPrice->execute(); $getDynamicItemPrice->store_result(); $getDynamicItemPrice->bind_result($dynamicItemPrice, $dynamicItemDiscount); $getDynamicItemPrice->fetch();
+                                                    $changedSubtotal += (($dynamicItemPrice - (($dynamicItemPrice * $dynamicItemDiscount) / 100)) * $changedItemsArray[$i]['quantity']);
+                                                }
+                                            } $changedSubtotal <= 30000 ? $changedSubtotal += 2000 : $changedSubtotal;
+                                            
+                                            $inventoryContinueOrderExit = new stdClass();
+                                            $inventoryContinueOrderExit->data = $jsonItemsData;
+                                            $inventoryContinueOrderExit->alt = "inventoryChecked";
+                                            die(json_encode($inventoryContinueOrderExit));
+                                            
+                                            die(print_r($jsonItemsData));
+                                            die($changedSubtotal . ' cst');
+                                            die(print_r($jsonItemsData));
 
                                             
                                             die('continue order after inventory check..');
-                                            // die(print_r($jsonItemsData));
                                         } else {
                                             /*
                                                 Felhasznalo egyenlegenek frissitese
