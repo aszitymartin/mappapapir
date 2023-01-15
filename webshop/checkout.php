@@ -488,9 +488,6 @@
                                         for (let i = 0; i < data.data.length; i++) { var piData = new FormData(); piData.append('pid', data.data[i].pid);
                                             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/info.php", data: piData, dataType: 'json', contentType: false, processData: false,
                                                 beforeSend : function (e) { 
-                                                    // let currentPrice = (e.responseJSON.pricing.price - (e.responseJSON.pricing.price*e.responseJSON.pricing.discount)/100) * data.data[i].inventoryQuantity;
-                                                    
-                                                    console.log(e);
                                                     document.getElementById('checkout-inventory-error-con').innerHTML += `
                                                         <hr style="border: 1px solid var(--background);" class="w-100">
                                                         <div class="flex flex-row flex-align-c gap-1 w-fa">
@@ -509,7 +506,7 @@
                                                             <div class="flex flex-col gap-05" id="inventory-error-options-con-${data.data[i].pid}"></div>
                                                             <div class="flex flex-row text-align-l gap-1">
                                                                 <input type="radio" id="skipOrderItem-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="skipOrderItem-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
-                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="skipOrderItem-${data.data[i].pid}"><span>Nem rendelem meg ezt a terméket</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 primary-bg border-soft-light smaller-light bold">- 1500 Ft</span></label>
+                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="skipOrderItem-${data.data[i].pid}"><span>Nem rendelem meg ezt a terméket</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 primary-bg border-soft-light smaller-light bold" id="MoneyskipOrderItem-${data.data[i].pid}"></span></label>
                                                             </div>
                                                         </div>
                                                     `;
@@ -517,7 +514,7 @@
                                                         document.getElementById('inventory-error-options-con-'+data.data[i].pid).innerHTML += `
                                                             <div class="flex flex-row text-align-l gap-1">
                                                                 <input type="radio" id="orderMinimumInventoryAvailable-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAvailable-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
-                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="orderMinimumInventoryAvailable-${data.data[i].pid}"><span>Csak ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 danger-bg border-soft-light smaller-light bold">- 2 db</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 primary-bg border-soft-light smaller-light bold">- ${currentPrice} Ft</span></label>
+                                                                <label class="flex flex-row flex-align-c flex-align-c gap-05 flex-wrap" for="orderMinimumInventoryAvailable-${data.data[i].pid}"><span>Csak ${data.data[i].inventoryQuantity} darab <a class="link user-select-none pointer text-primary inline-item-preview" data-preview-id="${data.data[i].pid}">${data.data[i].name}</a> megrendelése a készletből</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 danger-bg border-soft-light smaller-light bold">-${(data.data[i].orderedQuantity - data.data[i].inventoryQuantity)} db</span><span class="flex flex-row flex-align-c flex-justify-con-c padding-025 primary-bg border-soft-light smaller-light bold" id="MoneyorderMinimumInventoryAvailable-${data.data[i].pid}"></span></label>
                                                             </div>
                                                             <div class="flex flex-row text-align-l gap-1">
                                                                 <input type="radio" id="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" name="order-warehouse-option-${data.data[i].pid}" value="orderMinimumInventoryAndOrderRestWarehouse-${data.data[i].pid}" class="order-warehouse-options" onChange="setOrderOptions(${data.data[i].pid})" />
@@ -532,7 +529,10 @@
                                                             </div>
                                                         `;
                                                     }
-                                                }, success : function (e) { document.getElementById('ciec-thc-'+e.general.pid).innerHTML = ``; document.getElementById('ciec-thc-'+e.general.pid).setAttribute('data-image', e.general?.thumbnail); document.getElementById('ciec-thc-'+e.general.pid).style.backgroundImage = 'url("/assets/images/uploads/'+e.general?.thumbnail+'")';
+                                                }, success : function (e) { 
+                                                    document.getElementById('ciec-thc-'+e.general.pid).innerHTML = ``; document.getElementById('ciec-thc-'+e.general.pid).setAttribute('data-image', e.general?.thumbnail); document.getElementById('ciec-thc-'+e.general.pid).style.backgroundImage = 'url("/assets/images/uploads/'+e.general?.thumbnail+'")';
+                                                    if (document.getElementById('MoneyorderMinimumInventoryAvailable-'+e.general.pid)) document.getElementById('MoneyorderMinimumInventoryAvailable-'+e.general.pid).textContent = formatter.format(((e.pricing.price - (e.pricing.price*e.pricing.discount)/100) * (data.data[i].orderedQuantity - data.data[i].inventoryQuantity)) * -1);
+                                                    if (document.getElementById('MoneyskipOrderItem-'+e.general.pid)) document.getElementById('MoneyskipOrderItem-'+e.general.pid).textContent = formatter.format(((e.pricing.price - (e.pricing.price*e.pricing.discount)/100) * (data.data[i].orderedQuantity)) * -1);
                                                 }, error : function () { document.getElementById('ciec-thc-'+e.general.pid).innerHTML = `<span class="smaller-light user-select-none text-muted">Kép betöltése sikertelen.</span>`; }
                                             });
                                         }
@@ -571,22 +571,6 @@
                                     `;
                                 }
                                 cer.innerHTML += `
-                                    <div class="flex flex-col flex-align-fe flex-justify-con-fe text-muted padding-05 gap-1 w-fa">
-                                        <div class="flex flex-col gap-025 small">
-                                            <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
-                                                <span class="bold">Szállítási díj:</span>
-                                                <span class="text-secondary" id="shfe-rc">NaN</span>
-                                            </div>
-                                            <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
-                                                <span class="bold">Kezelési költség:</span>
-                                                <span class="text-secondary">1 000 Ft</span>
-                                            </div>
-                                            <div class="flex flex-row gap-05 flex-align-fe flex-justify-con-fe w-fa">
-                                                <span class="bold">Fizetendő:</span>
-                                                <span class="text-secondary fbe" id="subt-rc">NaN</span>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa gap-1">
                                         <span class="splash danger-bg danger-bg-hover pointer user-select-none border-soft-light padding-05">Rendelés lemondása</span>
                                         <span class="splash primary-bg primary-bg-hover pointer user-select-none border-soft-light padding-05" onclick="sendReorderRequest()">Rendelés folytatása</span>

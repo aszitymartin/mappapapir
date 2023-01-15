@@ -83,6 +83,22 @@ function dieProcess ($msg) { die($msg); }
 function cancelProcess ($msg) {
     die('cancelled : ' . $msg);
 }
+
+function proceedOrder ($e) {
+    if (count($e->errors) < 1) {
+
+        /*
+            [] Felhasznalo egyenlegenek frissitese
+            [] Rendelesi adatok elmentese adatbazisba
+            [] Naplozas vegrehajtasa
+        */
+        
+        die('continue');
+    } else {
+        die('errors');
+    }
+}
+
 if (isset($_SESSION['id'])) {
     if ($checkUserSQL = $con->prepare('SELECT id FROM customers WHERE id = ?')) {
         $checkUserSQL->bind_param('i', $jsonUserData['general']['uid']); $checkUserSQL->execute(); $checkUserSQL->store_result(); $checkUserSQL->bind_result($checkedUID); $checkUserSQL->fetch();
@@ -105,7 +121,6 @@ if (isset($_SESSION['id'])) {
                                     }
                                 } $grossTotal <= 30000 ? $grossTotal += 2000 : $grossTotal;
                                 if ($userCardBalance >= round($grossTotal)) {
-                                    // keszlet megtekintese
                                     $warehouseItemsArray = array(); $unavailableItemsArray = array(); $backorderItemsArray = array();
                                     if (is_null($jsonInventoryCheck)) {
                                         for ($i = 0; $i < count($itemsArray); $i++) {
@@ -177,7 +192,6 @@ if (isset($_SESSION['id'])) {
                                         */
 
                                         if (!is_null($jsonInventoryCheck)) {
-                                            // Rendeles folytatasa a kivalasztott opciokkal pl. rendeles csak raktarbol, keszletbol es raktarbol vagy adott termek visszavonasa
                                             $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); 
                                             $inventoryOptions = array(); $orderedItemsArray = array(); $inventoryErrorData = array();
                                             for ($i = 0; $i < count($inventoryKeys); $i++) {
@@ -189,12 +203,9 @@ if (isset($_SESSION['id'])) {
                                                 array_push($inventoryOptions, $options);
                                             }
                                             for ($i = 0; $i < count($inventoryOptions); $i++) {
-                                                // Megrendeles folytatasa a megadott opciokkal
-                                                // Funkcio meghivasa a rendeles tobbi reszehez -> penz levonasa stb, majd a megadott opciokkal befejezni a rendelest
                                                 switch ($inventoryOptions[$i]->option) {
                                                     case 'skipOrderItem': unset($jsonItemsData['item_'.$inventoryOptions[$i]->id]); break;
                                                     case 'orderMinimumInventoryAvailable':
-                                                        // csak az elerheto darab megrendelese a keszletbol
                                                         $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
                                                         $getAvailableInventoryQuantitySQL = "SELECT quantity FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
                                                         $getAvailableInventoryQuantityRes = $con->query($getAvailableInventoryQuantitySQL); $getAvailableInventoryQuantityData = $getAvailableInventoryQuantityRes->fetch_assoc();
@@ -216,7 +227,6 @@ if (isset($_SESSION['id'])) {
                                                         }
                                                     break;
                                                     case 'orderMinimumInventoryAndOrderRestWarehouse':
-                                                        // csak az elerheto termek megrendelese keszletbol, a tobbit a raktarbol
                                                         $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
                                                         $getAvailableInventoryQuantitySQL = "SELECT quantity, q__warehouse, backorder FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
                                                         $getAvailableInventoryQuantityRes = $con->query($getAvailableInventoryQuantitySQL); $getAvailableInventoryQuantityData = $getAvailableInventoryQuantityRes->fetch_assoc();
@@ -253,7 +263,6 @@ if (isset($_SESSION['id'])) {
                                                         }
                                                     break;
                                                     case 'orderCurrentOrderedQuantityWarehouse':
-                                                        // az mennyiseg megrendelese a raktrarbol
                                                         $orderedQuantity = $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['quantity'];
                                                         $getAvailableWarehouseQuantitySQL = "SELECT q__warehouse FROM products__inventory WHERE pid = ". $jsonItemsData['item_'.$inventoryOptions[$i]->id]['general']['id'];
                                                         $getAvailableWarehouseQuantityRes = $con->query($getAvailableWarehouseQuantitySQL); $getAvailableWarehouseQuantityData = $getAvailableWarehouseQuantityRes->fetch_assoc();
@@ -272,42 +281,37 @@ if (isset($_SESSION['id'])) {
                                                                     "quantity" => $orderQuantity,
                                                                     "alt" => "Hiba történt a folyamat közben."
                                                                 ]
-                                                            ); 
+                                                            );
                                                         }
 
                                                     break;
                                                     default: die('Érvénytelen opciót választott.'); break;
                                                 }
                                             }
-                                            // $jsonItemsData -> Ide vannak mentve a megrendelt termekek, az atirt mennyisegek es az option tag is a logolashoz
-                                            /*
-                                                [X] A valasztott opciok alapjan ujraszamolni az egyenleget
-                                                [] Felhasznalo egyenlegenek frissitese
-                                                [] Rendelesi adatok elmentese adatbazisba
-                                                [] Naplozas vegrehajtasa
-                                            */
-
-                                            $changedSubtotal = 1000; $changedItemsArray = array();
-                                            $changedItemKeys = array_keys((array)$jsonItemsData);
+                                            $changedSubtotal = 1000; $changedItemsArray = array(); $changedItemKeys = array_keys((array)$jsonItemsData);
                                             for ($i = 0; $i < count($changedItemKeys); $i++) { $itemKeyId = explode('_', $changedItemKeys[$i])[1]; array_push($changedItemsArray, $jsonItemsData['item_'.$itemKeyId]['general']); } 
                                             for ($i = 0; $i < count($changedItemsArray); $i++) {
+                                                if ($updateInventoryOthers = $con->prepare('UPDATE products__inventory SET quantity = (quantity - ?) WHERE pid = ?')) {
+                                                    $updateInventoryOthers->bind_param('ii', $changedItemsArray[$i]['quantity'], $changedItemsArray[$i]['id']); $updateInventoryOthers->execute();
+                                                } else {
+                                                    array_push($inventoryErrorData, 
+                                                        [
+                                                            "pid" => $changedItemsArray[$i]['id'],
+                                                            "quantity" => $changedItemsArray[$i]['quantity'],
+                                                            "alt" => "Hiba történt a folyamat közben."
+                                                        ]
+                                                    );
+                                                }
+
                                                 if ($getDynamicItemPrice = $con->prepare('SELECT base, discount FROM products__pricing WHERE pid = ?')) {
                                                     $getDynamicItemPrice->bind_param('i', $changedItemsArray[$i]['id']); $getDynamicItemPrice->execute(); $getDynamicItemPrice->store_result(); $getDynamicItemPrice->bind_result($dynamicItemPrice, $dynamicItemDiscount); $getDynamicItemPrice->fetch();
                                                     $changedSubtotal += (($dynamicItemPrice - (($dynamicItemPrice * $dynamicItemDiscount) / 100)) * $changedItemsArray[$i]['quantity']);
                                                 }
                                             } $changedSubtotal <= 30000 ? $changedSubtotal += 2000 : $changedSubtotal;
-                                            
-                                            $inventoryContinueOrderExit = new stdClass();
-                                            $inventoryContinueOrderExit->data = $jsonItemsData;
-                                            $inventoryContinueOrderExit->alt = "inventoryChecked";
-                                            die(json_encode($inventoryContinueOrderExit));
-                                            
-                                            die(print_r($jsonItemsData));
-                                            die($changedSubtotal . ' cst');
-                                            die(print_r($jsonItemsData));
-
-                                            
-                                            die('continue order after inventory check..');
+                                            $proceedOrderArguments = new stdClass(); $proceedOrderArguments->items = $changedItemsArray;
+                                            $proceedOrderArguments->subTotal = $changedSubtotal; $proceedOrderArguments->errors = $inventoryErrorData;
+                                            // $inventoryContinueOrderExit = new stdClass(); $inventoryContinueOrderExit->data = $jsonItemsData; $inventoryContinueOrderExit->alt = "inventoryChecked";
+                                            proceedOrder($proceedOrderArguments);
                                         } else {
                                             /*
                                                 Felhasznalo egyenlegenek frissitese
