@@ -204,7 +204,7 @@ if (isset($_SESSION['loggedin'])) {
             } document.getElementById('pd-st-cn').innerHTML = formatter.format(gt);
         }
     }
-    var itemDataVoucer_VoucherUsed = false; var itemDataVoucer_VoucherCode; var itemDataVoucer_VoucherPercentage;
+    var itemDataVoucer_VoucherUsed = false; var itemDataVoucer_VoucherCode = ""; var itemDataVoucer_VoucherPercentage = 0;
     function validateVoucher () { csubt = dval * <?= $base; ?>; var vData = new FormData(); vData.append('checkout', 'single'); vData.append("pid", <?= $pid; ?>); vData.append("code", document.getElementById('voucher-input').value);
         if (document.getElementById('voucher-input').value.length > 0) {
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/includes/webshop/checkout/assets/vouchers/get.php", data: vData, dataType: 'json', contentType: false, processData: false,

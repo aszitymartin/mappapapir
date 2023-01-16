@@ -324,7 +324,7 @@
             itemData = {};
             voucherData = {
                 voucher : {
-                    voucherUsed : itemDataVoucer_VoucherUsed,
+                    voucherUsed : itemDataVoucer_VoucherUsed == true ? 1 : 0,
                     voucherCode : itemDataVoucer_VoucherCode,
                     voucherPercentage : itemDataVoucer_VoucherPercentage
                 }
@@ -663,7 +663,7 @@
                 },
                 success : function (e) {
                     console.log('succ');
-                    // console.log(e);
+                    console.log(e);
                     if (e.alt == 'inventoryChecked') {
                         document.getElementById('ch-tb-cn').innerHTML = `
                             <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
@@ -724,6 +724,8 @@
                             document.getElementById('subt-rc').textContent = formatter.format((s > 30000) ? s : s+2000);
                             document.getElementById('shfe-rc').innerHTML = s > 30000 ? `<span class="text-secondary linethrough">2 000 Ft</span>` : `<span class="text-secondary">2 000 Ft</span>`;
                         }
+                    } else if (e.alt == 'orderError') {
+                        console.log('orderError');
                     }
                 }, error : function (e) {
                     console.log('err');

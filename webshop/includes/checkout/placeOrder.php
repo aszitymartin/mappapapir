@@ -6,10 +6,7 @@ $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
 $jsonVoucherData = json_decode($_POST['voucher'], true);
 $jsonLogData = json_decode($_POST['log'], true);
-
 $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_POST['inventory'])) > 1 ? json_decode($_POST['inventory'], true) : null) : null;
-
-// die(print_r($jsonUserData['general']));
 
 /*
     [*] session ellenorzese
@@ -85,18 +82,40 @@ function cancelProcess ($msg) {
 }
 
 function proceedOrder ($e) {
+    $dieArguments = new stdClass();
     if (count($e->errors) < 1) {
+        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
+        $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        $orderedItemsImplode = ""; for ($i = 0; $i < count($e->items); $i++) { $orderedItemsImplode .= $e->items[$i]['id'] . ':' . $e->items[$i]['quantity'] . ';'; }
+        if ($updateUserBalance = $con->prepare('UPDATE customers__card SET value = (value - ?) WHERE uid = ? AND cid LIKE ?')) {
+            $updateUserBalance->bind_param('iis', round($e->subTotal), $e->user['general']['uid'], $e->user['payment']['paymentMethod']); $updateUserBalance->execute();
+            if (
+                $saveOrders = $con->prepare('INSERT INTO orders (uid, items, status) VALUES (?, ?, ?)') &&
+                $saveOrdersUser = $con->prepare('INSERT INTO orders__user (oid, fullname, company, email, phone) VALUES (?, ?, ?, ?, ?)') &&
+                $saveOrdersShip = $con->prepare('INSERT INTO orders__ship (oid, method, zip, settlement, address, note) VALUES (?, ?, ?, ?, ?, ?)') &&
+                $saveOrdersInvoice = $con->prepare('INSERT INTO orders__invoice (oid, zip, settlement, address, tax) VALUES (?, ?, ?, ?, ?)') &&
+                $saveOrdersPayment = $con->prepare('INSERT INTO orders__payment (oid, cid, voucherUsed, voucherCode, voucherDiscount, subTotal) VALUES (?, ?, ?, ?, ?, ?)')
+            ) { 
+                $saveOrders = $con->prepare('INSERT INTO orders (uid, items, status) VALUES (?, ?, ?)');
+                $saveOrdersUser = $con->prepare('INSERT INTO orders__user (oid, fullname, company, email, phone) VALUES (?, ?, ?, ?, ?)');
+                $saveOrdersShip = $con->prepare('INSERT INTO orders__ship (oid, method, zip, settlement, address, note) VALUES (?, ?, ?, ?, ?, ?)');
+                $saveOrdersInvoice = $con->prepare('INSERT INTO orders__invoice (oid, zip, settlement, address, tax) VALUES (?, ?, ?, ?, ?)');
+                $saveOrdersPayment = $con->prepare('INSERT INTO orders__payment (oid, cid, voucherUsed, voucherCode, voucherDiscount, subTotal) VALUES (?, ?, ?, ?, ?, ?)');
 
-        /*
-            [] Felhasznalo egyenlegenek frissitese
-            [] Rendelesi adatok elmentese adatbazisba
-            [] Naplozas vegrehajtasa
-        */
-        
-        die('continue');
-    } else {
-        die('errors');
-    }
+                $orderStatus = 0;
+                $saveOrders->bind_param('isi', $e->user['general']['uid'], $orderedItemsImplode, $orderStatus); $saveOrders->execute(); $lastId = $con->insert_id;
+                $saveOrdersUser->bind_param('issss', $lastId, $e->user['general']['fullname'], $e->user['general']['company'], $e->user['general']['email'], $e->user['general']['phone']);
+                $saveOrdersShip->bind_param('isisss', $lastId, $e->user['shipping']['shpMethod'], $e->user['shipping']['zip'], $e->user['shipping']['settlement'], $e->user['shipping']['address'], $e->user['shipping']['note']);
+                $saveOrdersInvoice->bind_param('iissi', $lastId, $e->user['invoice']['zip'], $e->user['invoice']['settlement'], $e->user['invoice']['address'], $e->user['invoice']['tax']);
+                $saveOrdersPayment->bind_param('isisii', $lastId, $e->user['payment']['paymentMethod'], $e->voucher['voucherUsed'], $e->voucher['voucherCode'], $e->voucher['voucherPercentage'], round($e->subTotal));
+                $saveOrdersUser->execute(); $saveOrdersShip->execute(); $saveOrdersInvoice->execute(); $saveOrdersPayment->execute();
+
+                $log_categ = "Rendelés"; $log_desc = "A következő termék(ek) sikeresen meg lettek rendelve: " . $orderedItemsImplode;
+                $orderLog = $con->prepare("INSERT INTO log (uid, ip, category, description) VALUES (?, ?, ?, ?)"); $orderLog->bind_param('isss', $e->user['general']['uid'], $e->log['ip'], $log_categ, $log_desc); $log->execute(); $log->free_result(); $log->close();
+                $dieArguments->alt = "success"; die(json_encode($dieArguments));
+            } else { $dieArguments->alt = "orderError"; $dieArguments->type = "saveOrder"; }
+        } else { $dieArguments->alt = "orderError"; $dieArguments->type = "payment"; }
+    } else { $dieArguments->data = $e->errors; $dieArguments->alt = "orderError"; $dieArguments->type = "items"; die(json_encode($dieArguments)); }
 }
 
 if (isset($_SESSION['id'])) {
@@ -193,7 +212,7 @@ if (isset($_SESSION['id'])) {
 
                                         if (!is_null($jsonInventoryCheck)) {
                                             $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); 
-                                            $inventoryOptions = array(); $orderedItemsArray = array(); $inventoryErrorData = array();
+                                            $inventoryOptions = array(); $orderedItemsArray = array(); $inventoryErrorData = array();                                            
                                             for ($i = 0; $i < count($inventoryKeys); $i++) {
                                                 $inventoryItemId = explode('_', $inventoryKeys[$i])[1];
                                                 array_push($inventoryItems, $jsonInventoryCheck['item_'.$inventoryItemId]);
@@ -308,10 +327,10 @@ if (isset($_SESSION['id'])) {
                                                     $changedSubtotal += (($dynamicItemPrice - (($dynamicItemPrice * $dynamicItemDiscount) / 100)) * $changedItemsArray[$i]['quantity']);
                                                 }
                                             } $changedSubtotal <= 30000 ? $changedSubtotal += 2000 : $changedSubtotal;
-                                            $proceedOrderArguments = new stdClass(); $proceedOrderArguments->items = $changedItemsArray;
+                                            $proceedOrderArguments = new stdClass(); $proceedOrderArguments->items = $changedItemsArray; $proceedOrderArguments->user = $jsonUserData; $proceedOrderArguments->voucher = $jsonVoucherData; $proceedOrderArguments->log = $jsonLogData;
                                             $proceedOrderArguments->subTotal = $changedSubtotal; $proceedOrderArguments->errors = $inventoryErrorData;
-                                            // $inventoryContinueOrderExit = new stdClass(); $inventoryContinueOrderExit->data = $jsonItemsData; $inventoryContinueOrderExit->alt = "inventoryChecked";
                                             proceedOrder($proceedOrderArguments);
+                                            // $inventoryContinueOrderExit = new stdClass(); $inventoryContinueOrderExit->data = $jsonItemsData; $inventoryContinueOrderExit->alt = "inventoryChecked";
                                         } else {
                                             /*
                                                 Felhasznalo egyenlegenek frissitese
@@ -339,10 +358,6 @@ if (isset($_SESSION['id'])) {
                                     $cardExitObject->alt = "notEnoughMoney";
                                     dieProcess($cardExitObject); 
                                 }
-                                // die(round($userCardBalance) . ' Card Balance');
-                                // die(round($grossTotal) . ' Gross Total');
-                                // die(print_r($itemsArray));
-                                // die(print_r($jsonItemsData));
                             } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
                         } else { dieProcess('A kártájának lejárt az érvényessége, ezért már nem használható tovább fizetéseknél.'); }
                     } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
