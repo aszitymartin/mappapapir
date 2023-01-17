@@ -87,7 +87,7 @@ function __loadreviews (model) { urldata.append("model", model);
             } else { if (document.getElementById('add-review-con')) { document.getElementById('add-review-con').innerHTML = ``; document.getElementById('add-review-con').classList.replace('flex', 'display-none'); } }
             <?php if (!isset($_SESSION['id'])) { echo 'document.getElementById("add-review-con").innerHTML = ``; document.getElementById("add-review-con").classList.replace("flex", "display-none");'; } ?>
             __loadstars();
-        }, error: function (data) { console.log(data) ;}
+        }, error: function (data) { console.log(data); }
     });
 } function __addreview () {
     document.getElementById('write-review-act-con').innerHTML += `<span class="text-muted small-med user-select-none pointer" id="review-cancel" onclick="__canceladdreview();">Mégsem</span>`;

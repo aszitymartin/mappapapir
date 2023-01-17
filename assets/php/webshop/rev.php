@@ -4,7 +4,18 @@ $pr_res = $con-> query($pr_sql); $rev__arr = array();
 while ($rev = $pr_res-> fetch_assoc()) { $uid = $rev['uid']; $pid = $rev['pid']; $rid = $rev['id']; $object = new stdClass();
     if ($pr_res-> num_rows > 0) { $review = new stdClass();$variations = new stdClass();$initials = new stdClass();$user = new stdClass();
         $hdr__sql = "SELECT initials, color FROM customers__header WHERE uid = $uid"; $hdr__res = $con-> query($hdr__sql);$init = $hdr__res-> fetch_assoc();
-        $ord__sql = "SELECT pid FROM orders WHERE pid = $pid AND uid = $uid"; $ord__res = $con-> query($ord__sql);if ($ord__res-> num_rows > 0) { $user->auth = true; } else { $user->auth = false; }
+        $ord__sql = "SELECT items FROM orders WHERE uid = $uid"; $ord__res = $con-> query($ord__sql);
+        if ($ord__res-> num_rows > 0) {
+            while($odt = $ord__res->fetch_assoc()) {
+                $items = explode(";", $odt['items']);
+                for ($i = 0; $i < count($items); $i++) {
+                    if (explode(':', $items[$i])[0] == $pid) {
+                        $user->auth = true;
+                    }
+                }
+            }
+        } 
+        else { $user->auth = false; }
         $rvu__sql = "SELECT COUNT(id) AS amount FROM rv__u WHERE rid = $rid GROUP BY rid"; $rvu__res = $con-> query($rvu__sql); $rvu = $rvu__res-> fetch_assoc();
         if ($rev['priv_ena']) { $review->priv_ena = true; } else { $review->priv_ena = false; }
         

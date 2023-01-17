@@ -1,6 +1,6 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 
 $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
@@ -76,6 +76,7 @@ $jsonInventoryCheck = isset($_POST['inventory']) ? (count((array)json_decode($_P
     ]
 */
 
+
 function dieProcess ($msg) { die($msg); }
 function cancelProcess ($msg) {
     die('cancelled : ' . $msg);
@@ -84,11 +85,14 @@ function cancelProcess ($msg) {
 function proceedOrder ($e) {
     $dieArguments = new stdClass();
     if (count($e->errors) < 1) {
+
+        $finalSubTotal = $e->voucher['voucherUsed'] == 1 ? ($e->subTotal - (($e->subTotal * $e->voucher['voucherPercentage']) / 100)) : $e->subTotal;
+
         $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
         $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
         $orderedItemsImplode = ""; for ($i = 0; $i < count($e->items); $i++) { $orderedItemsImplode .= $e->items[$i]['id'] . ':' . $e->items[$i]['quantity'] . ';'; }
         if ($updateUserBalance = $con->prepare('UPDATE customers__card SET value = (value - ?) WHERE uid = ? AND cid LIKE ?')) {
-            $updateUserBalance->bind_param('iis', round($e->subTotal), $e->user['general']['uid'], $e->user['payment']['paymentMethod']); $updateUserBalance->execute();
+            $updateUserBalance->bind_param('iis', round($finalSubTotal), $e->user['general']['uid'], $e->user['payment']['paymentMethod']); $updateUserBalance->execute();
             if (
                 $saveOrders = $con->prepare('INSERT INTO orders (uid, items, status) VALUES (?, ?, ?)') &&
                 $saveOrdersUser = $con->prepare('INSERT INTO orders__user (oid, fullname, company, email, phone) VALUES (?, ?, ?, ?, ?)') &&
@@ -107,12 +111,25 @@ function proceedOrder ($e) {
                 $saveOrdersUser->bind_param('issss', $lastId, $e->user['general']['fullname'], $e->user['general']['company'], $e->user['general']['email'], $e->user['general']['phone']);
                 $saveOrdersShip->bind_param('isisss', $lastId, $e->user['shipping']['shpMethod'], $e->user['shipping']['zip'], $e->user['shipping']['settlement'], $e->user['shipping']['address'], $e->user['shipping']['note']);
                 $saveOrdersInvoice->bind_param('iissi', $lastId, $e->user['invoice']['zip'], $e->user['invoice']['settlement'], $e->user['invoice']['address'], $e->user['invoice']['tax']);
-                $saveOrdersPayment->bind_param('isisii', $lastId, $e->user['payment']['paymentMethod'], $e->voucher['voucherUsed'], $e->voucher['voucherCode'], $e->voucher['voucherPercentage'], round($e->subTotal));
+                $saveOrdersPayment->bind_param('isisii', $lastId, $e->user['payment']['paymentMethod'], $e->voucher['voucherUsed'], $e->voucher['voucherCode'], $e->voucher['voucherPercentage'], round($finalSubTotal));
                 $saveOrdersUser->execute(); $saveOrdersShip->execute(); $saveOrdersInvoice->execute(); $saveOrdersPayment->execute();
 
                 $log_categ = "Rendelés"; $log_desc = "A következő termék(ek) sikeresen meg lettek rendelve: " . $orderedItemsImplode;
-                $orderLog = $con->prepare("INSERT INTO log (uid, ip, category, description) VALUES (?, ?, ?, ?)"); $orderLog->bind_param('isss', $e->user['general']['uid'], $e->log['ip'], $log_categ, $log_desc); $log->execute(); $log->free_result(); $log->close();
-                $dieArguments->alt = "success"; die(json_encode($dieArguments));
+                $orderLog = $con->prepare("INSERT INTO log (uid, ip, category, description) VALUES (?, ?, ?, ?)"); $orderLog->bind_param('isss', $e->user['general']['uid'], $e->log['ip'], $log_categ, $log_desc); $orderLog->execute(); $orderLog->free_result(); $orderLog->close();
+                $dieArguments->alt = "success"; $dieArguments->data = [
+                    "oid" => $lastId,
+                    "status" => "0",
+                    "items" => $orderedItemsImplode,
+                    "fullname" => $e->user['general']['fullname'],
+                    "email" => $e->user['general']['email'],
+                    "inv_zip" => $e->user['invoice']['zip'],
+                    "inv_settlement" => $e->user['invoice']['settlement'],
+                    "inv_address" => $e->user['invoice']['address'],
+                    "payment" => $e->user['payment']['paymentMethod'],
+                    "subtotal" => round($finalSubTotal),
+                    "voucher" => $e->voucher['voucherPercentage']
+                ];
+                die(json_encode($dieArguments));
             } else { $dieArguments->alt = "orderError"; $dieArguments->type = "saveOrder"; }
         } else { $dieArguments->alt = "orderError"; $dieArguments->type = "payment"; }
     } else { $dieArguments->data = $e->errors; $dieArguments->alt = "orderError"; $dieArguments->type = "items"; die(json_encode($dieArguments)); }
@@ -327,7 +344,7 @@ if (isset($_SESSION['id'])) {
                                                     $changedSubtotal += (($dynamicItemPrice - (($dynamicItemPrice * $dynamicItemDiscount) / 100)) * $changedItemsArray[$i]['quantity']);
                                                 }
                                             } $changedSubtotal <= 30000 ? $changedSubtotal += 2000 : $changedSubtotal;
-                                            $proceedOrderArguments = new stdClass(); $proceedOrderArguments->items = $changedItemsArray; $proceedOrderArguments->user = $jsonUserData; $proceedOrderArguments->voucher = $jsonVoucherData; $proceedOrderArguments->log = $jsonLogData;
+                                            $proceedOrderArguments = new stdClass(); $proceedOrderArguments->items = $changedItemsArray; $proceedOrderArguments->user = $jsonUserData; $proceedOrderArguments->voucher = $jsonVoucherData['voucher']; $proceedOrderArguments->log = $jsonLogData;
                                             $proceedOrderArguments->subTotal = $changedSubtotal; $proceedOrderArguments->errors = $inventoryErrorData;
                                             proceedOrder($proceedOrderArguments);
                                             // $inventoryContinueOrderExit = new stdClass(); $inventoryContinueOrderExit->data = $jsonItemsData; $inventoryContinueOrderExit->alt = "inventoryChecked";
