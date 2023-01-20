@@ -214,6 +214,7 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
 </div>
 </main>
 <?php $pid = $params['id']; $gmsql = "SELECT model FROM products__variations WHERE pid = $pid"; $gmres = $con->query($gmsql); $gmdt = $gmres->fetch_assoc(); $model = $gmdt['model']; ?>
+<script src="/assets/script/webshop/item.js" content-type="application/javascript"></script>
 <script>
     var miniature = document.getElementsByClassName('product-miniature');
     for (let i = 0 ; i < miniature.length; i++) {
@@ -225,10 +226,9 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
         });
     }
     if (document.getElementById('product-thumbnail').src.split(".")[1] == "png") { document.getElementById('product-thumbnail').classList.add('drop-shadow'); } else { document.getElementById('product-thumbnail').classList.remove('drop-shadow'); }
+    var urlpid = <?php echo $params['id']; ?>; var urlmodel = '<?= $model ?>';
 </script>
 <script>var bal__to__form = document.getElementsByClassName('money__form'); for (let i = 0; i < bal__to__form.length; i++) { bal__to__form[i].textContent = formatter.format(bal__to__form[i].getAttribute('default-data')); }</script>
-<script src="/assets/script/webshop/item.js" content-type="application/javascript"></script>
-<script>var urlpid = <?php echo $params['id']; ?>; var urlmodel = '<?= $model ?>';</script>
 <script>
     function __ch (pid) { 
         // let sq = document.getElementById('product-quantity').value > 0 ? Number(document.getElementById('product-quantity').value) : 1;
