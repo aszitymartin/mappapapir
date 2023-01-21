@@ -246,7 +246,7 @@ function get_time_ago( $time ) {
         `;
     }); function __removelinks (index) { document.getElementById('link-cons-item-'+index).remove(); var ldiv = document.getElementsByClassName('ln-it-sl');
         if (ldiv.length < 1) { document.getElementById('ln-it-con').innerHTML = `<span class="text-muted user-select-none text-align-c" id="ln-cn-it-em-in">Egy link sem található, vagy el lett távolítva. Amennyiben fel szeretne venni új linket, kattintson a <strong>Link hozzáadása</strong> gombra.</span>`; }
-    } let minActive = 0; let miniArr = [];  let newsminActive = 0; let newsMiniArr = [];
+    } var minActive = 0; var miniArr = [];  var newsminActive = 0; var newsMiniArr = [];
     function __inituploader () { var minIndex = document.getElementsByClassName('miniature-upload').length;  minActive++; minIndex++; 
         if (minIndex <= 1) {
             document.getElementById('miniatures-con').innerHTML += `

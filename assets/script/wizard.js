@@ -9,7 +9,7 @@ var currentTab = 0; currentTab = 0; showTab(currentTab);
 var bool_fname, bool_email, bool_passw, bool_passc, bool_comus, bool_settl, bool_addri, bool_zipin, bool_taxad, bool_shset, bool_shadd, bool_shzip, bool_phone, bool_lsfax, bool_accep = false;
 var wizard_input = document.getElementsByClassName('wizard_input');
 for (var i = 0; i < wizard_input.length; i++) {
-    $(wizard_input[i]).on('blur click', function () {
+    $(wizard_input[i]).on('input', function () {
         switch(validate(this.getAttribute('name'))) {
             case true:this.parentNode.lastElementChild.innerHTML = formOpps.valid;
             break;
@@ -19,7 +19,7 @@ for (var i = 0; i < wizard_input.length; i++) {
         } if (this.value.length < 1) {this.parentNode.lastElementChild.innerHTML = formOpps.waiting;}
     });
 }
-for (var i = 0; i < wizard_input.length; i++) {$(wizard_input[i]).on('focus', function () {if (this.value.length < 1) {this.parentNode.lastElementChild.innerHTML = formOpps.waiting;}});}
+for (var i = 0; i < wizard_input.length; i++) {$(wizard_input[i]).on('focus', function () { console.log('asdasdsadasd focus'); if (this.value.length < 1) {this.parentNode.lastElementChild.innerHTML = formOpps.waiting;}});}
 var status_btn = document.getElementsByClassName('wizard_input_status_button'); var tooltip =  document.createElement('span');tooltip.classList.add('wizard_tooltip');
 for (var i = 0; i < status_btn.length; i++) {
     status_btn[i].addEventListener('mouseenter', function() {if (this.hasAttribute('emsg')) {tooltip.innerHTML = tooltipIcons.bell +this.getAttribute('emsg');this.parentNode.append(tooltip);}});

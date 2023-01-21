@@ -284,9 +284,9 @@ a { color: unset; text-decoration: none; }
 .label { padding: .25rem .5rem; font-size: .55rem; }
 .label-primary { background-color: #0380fd24; color: #3699FF !important; }
 .label-warning { background-color: #f4a20024; color: #e29702 !important; }
-.label-danger { background-color: #ff001a2b; color: #F64E60; }
-.label-success { background-color: #00fff445; color: #1aafa8; }
-.label-secondary { background-color: #5f656b!important; color: #fff; }
+.label-danger { background-color: #ff001a2b !important; color: #F64E60 !important; }
+.label-success { background-color: #00fff445; color: #1aafa8 !important; }
+.label-secondary { background-color: #5f656b!important; color: #fff !important; }
 
 /* Outline / Border */
 .outline-none, .outline-none:focus, .outline-none:active { outline: none !important; }

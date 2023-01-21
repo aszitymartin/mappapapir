@@ -78,9 +78,9 @@ function get_time_ago( $time ) {
                 function __isnum (val) { return [typeof val === 'number', val]; }
             </script>
         </div>
-        <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 w-fa">
+        <!-- <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 w-fa">
             <div id='page_navigation' class="flex flex-row flex-align-c gap-05"></div>
-        </div>
+        </div> -->
     </div>
 </div>
 <script>var bal__to__form = document.getElementsByClassName('money__form'); for (let i = 0; i < bal__to__form.length; i++) { bal__to__form[i].textContent = formatter.format(bal__to__form[i].getAttribute('default-data')); }</script>

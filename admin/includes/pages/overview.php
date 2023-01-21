@@ -38,9 +38,9 @@ function get_time_ago( $time ) {
                 <span class="text-muted small-med">Rendelések</span>
             </div>
             <div class="flex flex-col gap-05 margin-top-a">
-                <div class="flex flex-row gap-05">
-                    <div class="flex flex-row flex-wrap-no" id="dailysales__chart__con">
-                        <canvas id="dailysales__chart" width="150" height="80px"></canvas>
+                <div class="flex flex-row gap-05 w-fa">
+                    <div class="flex flex-row flex-wrap-no w-fa" id="dailysales__chart__con">
+                        <canvas id="dailysales__chart" class="w-fa" height="80px"></canvas>
                         <script id="dlysls__script">
                             var recentchart = document.getElementById('dailysales__chart');
                             var footer = (tooltipItems) => { let sum = 0; tooltipItems.forEach(function(tooltipItem) { sum += tooltipItem.parsed.y; }); return 'Rendelve: ' + sum; };

@@ -126,7 +126,7 @@
                 </script>
             </div>
         </div>
-        <div id="ims__chrt" class="card border-soft box-shadow padding-0">
+        <!-- <div id="ims__chrt" class="card border-soft box-shadow padding-0">
             <div class="flex flex-col gap-1">
                 <div class="flex flex-col w-fa gap-05 padding-1">
                     <span class="larger text-primary bold" id="lastsvnsales__ind"></span>
@@ -142,26 +142,30 @@
                             var rcChart = new Chart(recentchart, { type: 'bar',
                                 data: {
                                     labels: [
-                                        <?php $lastsevenqty = 0; $dly__sql = "SELECT DAY(date) AS date FROM `orders` WHERE MONTH(CURRENT_DATE) = MONTH(date) AND pid = {$product['id']} GROUP BY DAY(date)"; $dly__res = $con-> query($dly__sql);
-                                        if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'". date("F")." ".$data['date']."',"; } } ?>
+                                        <?php
+                                            // $lastsevenqty = 0; $dly__sql = "SELECT DAY(date) AS date FROM `orders` WHERE MONTH(CURRENT_DATE) = MONTH(date) AND pid = {$product['id']} GROUP BY DAY(date)"; $dly__res = $con-> query($dly__sql);
+                                            // if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'". date("F")." ".$data['date']."',"; } }
+                                        ?>
                                     ],
                                     datasets: [{
                                         data: [
-                                            <?php $dly__sql = "SELECT SUM(quantity) AS qty FROM `orders` WHERE MONTH(CURRENT_DATE) = MONTH(date) AND pid = {$product['id']} GROUP BY DAY(date)"; $dly__res = $con-> query($dly__sql);
-                                            if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'".$data['qty']."',"; $lastsevenqty += $data['qty']; } } ?>
+                                            <?php
+                                                // $dly__sql = "SELECT SUM(quantity) AS qty FROM `orders` WHERE MONTH(CURRENT_DATE) = MONTH(date) AND pid = {$product['id']} GROUP BY DAY(date)"; $dly__res = $con-> query($dly__sql);
+                                                // if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'".$data['qty']."',"; $lastsevenqty += $data['qty']; } }
+                                            ?>
                                         ], backgroundColor: 'rgb(0, 158, 247)', hoverOffset: 2, borderRadius: 50, maxBarThickness: 10
                                     }]
                                 }, options: { plugins: { legend: { display: false }, tooltip: { callbacks: { footer: footer, }, bodySpacing: 0, bodyFont: { size: '0' }, bodyColor: 'transparent', displayColors: false } }, scales: { x: { display: false, }, y: { display: false, } } }
-                            }); document.getElementById('lastsvnsales__ind').textContent = <?php echo $lastsevenqty; ?>;
+                            }); document.getElementById('lastsvnsales__ind').textContent = <?php // echo $lastsevenqty; ?>;
                         </script>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script>let sales = <?php echo $lastsevenqty; ?>;
+        <script>let sales = <?php // echo $lastsevenqty; ?>;
             if (sales < 1) { document.getElementById('ims__chrt').remove(); }
-        </script>
+        </script> -->
     </div>
     <div class="spancolumn w-75d-100m">
         <div class="flex flex-row flex-align-c padding-1 padding-b-0">

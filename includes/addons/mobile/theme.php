@@ -26,8 +26,8 @@
                       </label>
                 </div>
             </div>
-            <div class="theme-item flex flex-row">
-                <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
+            <div class="theme-item flex flex-col">
+                <div class="theme-button flex flex-row flex-align-c flex-justify-con-sb w-100">
                     <span class="text-primary">Fényes mód</span>
                     <label class="radio">
                         <input type="radio" name="radio" id='theme-light' onclick="switchTheme('light')">
@@ -35,8 +35,8 @@
                     </label>
                 </div>
             </div>
-            <div class="theme-item flex flex-row">
-                <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
+            <div class="theme-item flex flex-col">
+                <div class="theme-button flex flex-row flex-align-c flex-justify-con-sb w-100">
                     <span class="text-primary themeLight">
                         <span key="themeLight">Ütemezett mód</span>
                     </span>
@@ -45,6 +45,7 @@
                         <span class="checkmark"></span>
                     </label>
                 </div>
+                <span class="text-primary smaller">6 - 20 óra között világos téma, utánna sötét.</span>
             </div>
             <div class="theme-item flex flex-row">
                 <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
@@ -62,47 +63,138 @@
 
     if (!isset($_SESSION['loggedin'])) {
         echo "
-            <script>
-                if (!localStorage.getItem('theme')) {
-                } else {document.getElementById('theme-auto').checked = false;document.getElementById(localStorage.getItem('theme')).checked = true;
-                $('#theme-auto').click(function () {localStorage.removeItem('theme');document.getElementById('theme-auto').checked = true;document.getElementById('theme-dark').checked = false;document.getElementById('theme-light').checked = false;const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');if (darkThemeMq.matches) {html.dataset.theme = 'theme-light';} else {html.dataset.theme = 'theme-dark';}});
-                } $('#theme-dark').click(function () {document.getElementById('theme-auto').checked = false;document.getElementById('theme-dark').checked = true;document.getElementById('theme-light').checked = false;});
-                $('#theme-light').click(function () {document.getElementById('theme-auto').checked = false;document.getElementById('theme-dark').checked = false;document.getElementById('theme-light').checked = true;});
+            <script content-type='application/javascript'>
+                if (!localStorage.getItem('theme')) {}
+                else {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById(localStorage.getItem('theme')).checked = true;
+                    $('#theme-auto').click(function () {
+                        localStorage.removeItem('theme');
+                        document.getElementById('theme-auto').checked = true;
+                        document.getElementById('theme-dark').checked = false;
+                        document.getElementById('theme-light').checked = false;
+                        document.getElementById('theme-schedule').checked = false;
+                        const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                        if (darkThemeMq.matches) {
+                            html.dataset.theme = 'theme-light';
+                        } else {
+                            html.dataset.theme = 'theme-dark';
+                        }
+                    });
+                }
+                $('#theme-dark').click(function () {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById('theme-dark').checked = true;
+                    document.getElementById('theme-light').checked = false;
+                    document.getElementById('theme-schedule').checked = false;
+                });
+                $('#theme-light').click(function () {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById('theme-dark').checked = false;
+                    document.getElementById('theme-light').checked = true;
+                    document.getElementById('theme-schedule').checked = false;
+                });
+                $('#theme-schedule').click(function () {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById('theme-dark').checked = false;
+                    document.getElementById('theme-light').checked = false;
+                    document.getElementById('theme-schedule').checked = true;
+                });
             </script>
         ";
     } else {
-        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-        $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
-        $stmt = $con->prepare('SELECT theme FROM customers WHERE id = ?');
-        $stmt->bind_param('i', $_SESSION['id']);$stmt->execute();$stmt->bind_result($getTheme);$stmt->fetch();$stmt->close();
+        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        $getUserUITheme = $con->prepare('SELECT theme FROM customers WHERE id = ?'); $getUserUITheme->bind_param('i', $_SESSION['id']);$getUserUITheme->execute();$getUserUITheme->bind_result($getTheme);$getUserUITheme->fetch();$getUserUITheme->close();
         echo "
             <script>var curTheme = '"; echo $getTheme; echo "';
                 if (localStorage.getItem('theme')) {localStorage.removeItem('theme');}
-                var auto = document.getElementById('theme-auto');var dark = document.getElementById('theme-dark');var light = document.getElementById('theme-light');
-                auto.removeAttribute('onclick');dark.removeAttribute('onclcik');light.removeAttribute('onclick');
-                dark.setAttribute('onclick', 'setTheme(this.id);');light.setAttribute('onclick', 'setTheme(this.id);');auto.setAttribute('onclick', 'setTheme(this.id);');
-                if (curTheme === 'light') {auto.checked = false;dark.checked = false;light.checked = true;}
-                if (curTheme === 'dark') {auto.checked = false;dark.checked = true;light.checked = false;}
-                if (curTheme === 'auto') {auto.checked = true;dark.checked = false;light.checked = false;}
-                $('#theme-dark').click(function () {document.getElementById('theme-auto').checked = false;document.getElementById('theme-dark').checked = true;document.getElementById('theme-light').checked = false;});
-                $('#theme-light').click(function () {document.getElementById('theme-auto').checked = false;document.getElementById('theme-dark').checked = false;document.getElementById('theme-light').checked = true;});
-                $('#theme-auto').click(function () {document.getElementById('theme-auto').checked = true;document.getElementById('theme-dark').checked = false;document.getElementById('theme-light').checked = false;});
+                
+                var auto = document.getElementById('theme-auto');
+                var dark = document.getElementById('theme-dark');
+                var light = document.getElementById('theme-light');
+                var schedule = document.getElementById('theme-schedule');
+
+                auto.removeAttribute('onclick');
+                dark.removeAttribute('onclcik');
+                light.removeAttribute('onclick');
+                schedule.removeAttribute('onclick');
+
+
+                dark.setAttribute('onclick', 'setTheme(this.id);');
+                light.setAttribute('onclick', 'setTheme(this.id);');
+                auto.setAttribute('onclick', 'setTheme(this.id);');
+                schedule.setAttribute('onclick', 'setTheme(this.id);');
+
+                if (curTheme === 'light') {
+                    auto.checked = false;
+                    dark.checked = false;
+                    light.checked = true;
+                    schedule.checked = false;
+                }
+                if (curTheme === 'dark') {
+                    auto.checked = false;
+                    dark.checked = true;
+                    light.checked = false;
+                    schedule.checked = false;
+                }
+                if (curTheme === 'auto') {
+                    auto.checked = true;
+                    dark.checked = false;
+                    light.checked = false;
+                    schedule.checked = false;
+                }
+                if (curTheme === 'schedule') {
+                    auto.checked = false;
+                    dark.checked = false;
+                    light.checked = false;
+                    schedule.checked = true;
+                }
+
+                $('#theme-dark').click(function () {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById('theme-dark').checked = true;
+                    document.getElementById('theme-light').checked = false;
+                    document.getElementById('theme-schedule').checked = false;
+                });
+                $('#theme-light').click(function () {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById('theme-dark').checked = false;
+                    document.getElementById('theme-light').checked = true;
+                    document.getElementById('theme-schedule').checked = false;
+                });
+                $('#theme-auto').click(function () {
+                    document.getElementById('theme-auto').checked = true;
+                    document.getElementById('theme-dark').checked = false;
+                    document.getElementById('theme-light').checked = false;
+                    document.getElementById('theme-schedule').checked = false;
+                });
+                $('#theme-schedule').click(function () {
+                    document.getElementById('theme-auto').checked = false;
+                    document.getElementById('theme-dark').checked = false;
+                    document.getElementById('theme-light').checked = false;
+                    document.getElementById('theme-schedule').checked = true;
+                });
             </script>
         ";
     }
 ?>
 
-<script>
+<script content-type="application/javascript">
 
     function setTheme (themeType) {
         $.ajax({
             type: "POST",url: "/actions/theme/changeTheme.php",data: {theme: themeType.split('-')[1]},cache: false,
             success: function(data) {
-                if (themeType.split('-')[1] === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                if (themeType.split('-')[1] === 'auto') { const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
                     if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = 'theme-light';
                     } else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                } else {document.querySelector('html').dataset.theme = 'theme-' + themeType.split('-')[1];}
-            },error: function () {console.log('Cannot change theme. Try again.');}
+                } else {
+                    if (themeType.split('-')[1] == 'schedule') {
+                        var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
+                        document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
+                    } else { document.querySelector('html').dataset.theme = 'theme-' + themeType.split('-')[1]; }
+                }
+            },error: function (e) { notificationSystem(0, 1, 0, 'Téma módosítása', 'Sikertelen módosítás'); }
         });
 
     }

@@ -358,7 +358,7 @@ if (isset($_SESSION['id'])) {
                                     dieProcess($cardExitObject); 
                                 }
                             } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
-                        } else { dieProcess('A kártájának lejárt az érvényessége, ezért már nem használható tovább fizetéseknél.'); }
+                        } else { dieProcess('A kártyájának lejárt az érvényessége, ezért már nem használható tovább fizetéseknél.'); }
                     } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }
                 } else { dieProcess('Az a kártya, amellyel fizetni szeretett volna, nem létezik a fiókján.'); }
             } else { dieProcess('A folyamat elvégzését nem sikerült végrehajtani.'); }

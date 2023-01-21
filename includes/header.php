@@ -39,7 +39,12 @@
                         if (theme === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
                             if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = `theme-light`;}
                             else {document.querySelector('html').dataset.theme = `theme-dark`;}
-                        } else {document.querySelector('html').dataset.theme = 'theme-' + theme;   }
+                        } else {
+                            if (theme == 'schedule') {
+                                var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
+                                document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
+                            } else { document.querySelector('html').dataset.theme = 'theme-' + theme; }
+                        }
                     </script>
                 ";
             } else {
