@@ -50,6 +50,17 @@
                                             </div>
                                             <div class="theme-item flex flex-row">
                                                 <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
+                                                    <span class="text-primary themeLight">
+                                                        <span key="themeLight">Ütemezett mód</span>
+                                                    </span>
+                                                    <label class="radio">
+                                                        <input type="radio" name="radio" id="theme-schedule" onclick="setTheme(this.id);">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="theme-item flex flex-row">
+                                                <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
                                                     <span class="text-primary themeAuto">
                                                         <span key="themeAuto">Automatikus</span>
                                                     </span>

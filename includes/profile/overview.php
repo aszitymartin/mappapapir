@@ -16,33 +16,33 @@ function get_time_ago( $time ) {
         </div>
         <div class="flex flex-col gap-2 prio__con">
             <?php
-            $pr_sql = "SELECT products.id, products.name, products.thumbnail, SUM(orders.quantity) AS 'ord__quant' FROM products INNER JOIN orders ON orders.pid = products.id WHERE orders.uid = $uid GROUP BY orders.pid";
-            $pr_res = $con-> query($pr_sql);
-            if ($pr_res-> num_rows > 0) { $subtot = 0; $product = $pr_res-> fetch_assoc(); $pid = $product['id'];
-                $pd__sql = "SELECT products.id, products.name, products.thumbnail, products__variations.color, products__variations.brand, products__inventory.code, products__pricing.base FROM products INNER JOIN products__variations ON products__variations.pid = products.id INNER JOIN products__inventory ON products__inventory.pid = products.id INNER JOIN products__pricing ON products__pricing.pid = products.id WHERE products.id = $pid";
-                $pd__res = $con-> query($pd__sql);
-                while ($prd = $pd__res-> fetch_assoc()) { $thmb = "'/assets/images/uploads/".$prd['thumbnail']."'";
-                    echo '
-                        <div class="flex flex-row flex-align-c flex-justify-con-sb gap-05">
-                            <div class="flex flex-row gap-05">
-                                <div class="flex flex-align-c flex-justify-con-c pri__con border-soft padding-05">
-                                    <div class="product-miniature" style="background-image: url('.$thmb.');"></div>
-                                </div>
-                                <div class="flex flex-col gap-025">
-                                    <span class="text-primary bold link pointer user-select-none"><a href="/webshop/?id='.$prd['id'].'">'.$prd['brand'].' - '.$prd['name'].'</a></span>
-                                    <span class="text-secondary small capitalize">'.$prd['color'].' - '.$prd['code'].'</span>
-                                    <span class="text-secondary small-med">Rendelve: <b>'.$product['ord__quant'].'</b> db.</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col flex-align-c flex-justify-con-c">
-                                <span class="text-primary small bold" id="prip__ind'.$prd['id'].'">NaN Ft</span>
-                                <span class="text-secondary small-med">Összesen</span>
-                            </div>
-                        </div>
-                        <script>document.getElementById("prip__ind'.$prd['id'].'").textContent = formatter.format('.$prd['base'] * $product['ord__quant'].');</script>
-                    '; $subtot += ($prd['base'] * $product['ord__quant']);
-                } echo '<script>document.getElementById("pripa__ind").textContent = formatter.format('.$subtot.');</script>';
-            } else { echo '<span class="text-secondary small-med">Még nem vásárolt semmilyen terméket...</span>'; }
+                // $pr_sql = "SELECT products.id, products.name, products.thumbnail, SUM(orders.quantity) AS 'ord__quant' FROM products INNER JOIN orders ON orders.pid = products.id WHERE orders.uid = $uid GROUP BY orders.pid";
+                // $pr_res = $con-> query($pr_sql);
+                // if ($pr_res-> num_rows > 0) { $subtot = 0; $product = $pr_res-> fetch_assoc(); $pid = $product['id'];
+                //     $pd__sql = "SELECT products.id, products.name, products.thumbnail, products__variations.color, products__variations.brand, products__inventory.code, products__pricing.base FROM products INNER JOIN products__variations ON products__variations.pid = products.id INNER JOIN products__inventory ON products__inventory.pid = products.id INNER JOIN products__pricing ON products__pricing.pid = products.id WHERE products.id = $pid";
+                //     $pd__res = $con-> query($pd__sql);
+                //     while ($prd = $pd__res-> fetch_assoc()) { $thmb = "'/assets/images/uploads/".$prd['thumbnail']."'";
+                //         echo '
+                //             <div class="flex flex-row flex-align-c flex-justify-con-sb gap-05">
+                //                 <div class="flex flex-row gap-05">
+                //                     <div class="flex flex-align-c flex-justify-con-c pri__con border-soft padding-05">
+                //                         <div class="product-miniature" style="background-image: url('.$thmb.');"></div>
+                //                     </div>
+                //                     <div class="flex flex-col gap-025">
+                //                         <span class="text-primary bold link pointer user-select-none"><a href="/webshop/?id='.$prd['id'].'">'.$prd['brand'].' - '.$prd['name'].'</a></span>
+                //                         <span class="text-secondary small capitalize">'.$prd['color'].' - '.$prd['code'].'</span>
+                //                         <span class="text-secondary small-med">Rendelve: <b>'.$product['ord__quant'].'</b> db.</span>
+                //                     </div>
+                //                 </div>
+                //                 <div class="flex flex-col flex-align-c flex-justify-con-c">
+                //                     <span class="text-primary small bold" id="prip__ind'.$prd['id'].'">NaN Ft</span>
+                //                     <span class="text-secondary small-med">Összesen</span>
+                //                 </div>
+                //             </div>
+                //             <script>document.getElementById("prip__ind'.$prd['id'].'").textContent = formatter.format('.$prd['base'] * $product['ord__quant'].');</script>
+                //         '; $subtot += ($prd['base'] * $product['ord__quant']);
+                //     } echo '<script>document.getElementById("pripa__ind").textContent = formatter.format('.$subtot.');</script>';
+                // } else { echo '<span class="text-secondary small-med">Még nem vásárolt semmilyen terméket...</span>'; }
             ?>
         </div>
     </div>
