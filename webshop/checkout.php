@@ -728,6 +728,8 @@
                         console.log('orderError');
                     } else if (e.alt == 'success') {
                         orderStatus(e.alt, e.data);
+                    } else if (e.category == 'inventory' && e.alt == 'warehouse') {
+                        orderStatus('success', e.data);
                     }
                 }, error : function (e) {
                     console.log('err');

@@ -339,7 +339,7 @@ if (isset($_SESSION['id'])) {
                                             proceedOrder($proceedOrderArguments);
                                         }
 
-                                    } else { $inventoryExitObject = new stdClass();
+                                    } else { $inventoryExitObject = new stdClass(); $inventoryExitCopy = array();
                                         $inventoryExitObject->data = 
                                             count($warehouseItemsArray) > 0 ? $warehouseItemsArray : 
                                             (count($unavailableItemsArray) > 0 ? $unavailableItemsArray : 
@@ -348,7 +348,8 @@ if (isset($_SESSION['id'])) {
                                         $inventoryExitObject->alt = 
                                             count($warehouseItemsArray) > 0 ? 'warehouse' : 
                                             (count($unavailableItemsArray) > 0 ? 'unavailable' : 'backorder')
-                                        ; die(json_encode($inventoryExitObject));
+                                        ; unset($warehouseItemsArray); unset($unavailableItemsArray); unset($backorderItemsArray);
+                                        die(json_encode($inventoryExitObject));
                                     } 
                                 } else {
                                     // tobbi kartya ajanlasa
