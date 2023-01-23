@@ -68,6 +68,218 @@ function get_time_ago( $time ) {
         </div>
     </div>
 </div>
+<div class="flex flex-row-d-col-m gap-1">
+    <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-0">
+        <div class="flex flex-col gap-2 prio__con">
+            <div class="flex flex-col padding-1">
+                <div class="flex flex-row flex-align-c gap-05">
+                    <?php $monthord__sql = "SELECT SUM(subTotal) AS subtotal, DAY(date) AS date FROM `orders` INNER JOIN orders__payment ON orders__payment.oid = orders.id WHERE MONTH(CURRENT_DATE) = MONTH(date) GROUP BY DAY(date)"; $monthord__res = $con-> query($monthord__sql); if ($monthord__res-> num_rows > 0) { $mth__arr = array(); while($data = $monthord__res-> fetch_assoc()) { array_push($mth__arr, [$data['date'],date('F'),$data['subtotal']]); $mthord__total += $data['subtotal']; } } else { $mthord__total = 0; } ?>
+                    <span class="text-primary larger bold" id="monthly__orders__money">NaN</span>
+                    <script>document.getElementById('monthly__orders__money').textContent = formatter.format(<?php echo $mthord__total; ?>);</script>
+                </div>
+                <div class="flex flex-row flex-align-c">
+                    <span class="small text-muted">Ebben a hónapban szerzett bevételek</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col flex-align-l flex-justify-con-fs padding-1 gap-2 w-30d-fam">
+            <?php
+                $sql = "SELECT SUM(subTotal) AS subTotal FROM orders__payment INNER JOIN orders ON orders.id = orders__payment.oid WHERE orders.status = 2";
+                $res = $con-> query($sql); $dt = $res->fetch_assoc(); $cm = $dt['subTotal'];
+                $ordperc = round((($cm*100)/$mthord__total));
+            ?>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Befejezett tranzakciók</span>
+                    <span class="small text-muted" id="cm"><script>document.getElementById('cm').textContent = (formatter.format(<?= $cm; ?>));</script></span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-danger"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <?php
+                    $sql = "SELECT SUM(subTotal) AS subTotal FROM orders__payment INNER JOIN orders ON orders.id = orders__payment.oid WHERE orders.status = 0 OR orders.status = 1";
+                    $res = $con-> query($sql); $dt = $res->fetch_assoc(); $pm = $dt['subTotal'];
+                    $ordperc = round((($pm*100)/$mthord__total));
+                ?>
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Függő tranzakciók</span>
+                    <span class="small text-muted" id="pm"><script>document.getElementById('pm').textContent = (formatter.format(<?= $pm; ?>));</script></span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-warning"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-danger"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <?php
+                    $sql = "SELECT SUM(subTotal) AS subTotal FROM orders__payment INNER JOIN orders ON orders.id = orders__payment.oid WHERE orders.status = 4";
+                    $res = $con-> query($sql); $dt = $res->fetch_assoc(); $fm = $dt['subTotal'];
+                    $ordperc = round((($fm*100)/$mthord__total));
+                ?>
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Sikertelen tranzakciók</span>
+                    <span class="small text-muted" id="fm"><script>document.getElementById('fm').textContent = (formatter.format(<?= $fm; ?>));</script></span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-danger"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-success"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col margin-top-a">
+            <?php
+                if ($monthord__res-> num_rows > 0) {
+                    echo "
+                    <canvas id='monthlyorder__chart' width='' height='150' style='margin: -.55%; cursor: crosshair;'></canvas>
+                    <script id='dlysls__script'>
+                        var mho = document.getElementById('monthlyorder__chart');
+                        var mhChart = new Chart(mho, { type: 'line',
+                            data: { labels: ["; for ($i = 0; $i < sizeof($mth__arr); $i++) { echo "'"; echo $mth__arr[$i][1]; echo " "; echo $mth__arr[$i][0]; echo "',"; } echo "],
+                                datasets: [{ data: ["; for ($i = 0; $i < sizeof($mth__arr); $i++) { echo "'".$mth__arr[$i][2]."',"; } echo "],
+                                    fill: { target: 'start', above: '#00fff445' }, pointBackgroundColor: '#1aafa8', borderColor: '#1aafa8', hoverOffset: 2, maxBarThickness: 10, lineTension: 0.5
+                                }]
+                            }, options: { plugins: { filler: { propagate: true }, legend: { display: false }, tooltip: { displayColors: false } }, scales: { x: { display: false, }, y: { display: false, } } },
+                        });
+                    </script>
+                    ";
+                } else { echo '<span class="text-muted padding-1">Nincsen megjeleníthető adat.</span>'; }
+            ?>
+        </div>
+    </div>
+    
+</div>
+<div class="flex flex-row flex-align-c gap-1">
+    <div class="flex flex-row flex-justify-con-c flex-wrap-m gap-05 prio__con w-100">
+        <?php
+            $nus__sql = "SELECT * FROM orders WHERE 1";
+            $nus__res = $con-> query($nus__sql); $ordersCount = $nus__res-> num_rows;
+        ?>
+        <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
+            <div class="flex flex-col w-fa gap-05">
+                <span class="larger text-primary bold">
+                    <?php
+                        $nus__sql = "SELECT * FROM orders WHERE status = 0";
+                        $nus__res = $con-> query($nus__sql);
+                        $cm__orders = $nus__res-> num_rows;
+                        echo $nus__res-> num_rows; 
+                    ?>
+                </span>
+                <div class="flex flex-col w-fa">
+                    <span class="text-muted small-med">Összekészítés alatt</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Összes rendelések: <span class="bold"><?= $ordersCount; ?></span></span>
+                    <span class="small text-muted"><?= $ordperc = round((($cm__orders * 100) / $ordersCount), 1); ?>%</span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-danger"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
+            <div class="flex flex-col w-fa gap-05">
+                <span class="larger text-primary bold">
+                    <?php
+                        $nus__sql = "SELECT * FROM orders WHERE status = 1";
+                        $nus__res = $con-> query($nus__sql);
+                        $cm__orders = $nus__res-> num_rows;
+                        echo $nus__res-> num_rows; 
+                    ?>
+                </span>
+                <div class="flex flex-col w-fa">
+                    <span class="text-muted small-med">Kiszállítás alatt</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Összes rendelések: <span class="bold"><?= $ordersCount; ?></span></span>
+                    <span class="small text-muted"><?= $ordperc = round((($cm__orders * 100) / $ordersCount), 1); ?>%</span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-warning"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
+            <div class="flex flex-col w-fa gap-05">
+                <span class="larger text-primary bold">
+                    <?php
+                        $nus__sql = "SELECT * FROM orders WHERE status = 2";
+                        $nus__res = $con-> query($nus__sql);
+                        $cm__orders = $nus__res-> num_rows;
+                        echo $nus__res-> num_rows; 
+                    ?>
+                </span>
+                <div class="flex flex-col w-fa">
+                    <span class="text-muted small-med">Kiszállítva</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Összes rendelések: <span class="bold"><?= $ordersCount; ?></span></span>
+                    <span class="small text-muted"><?= $ordperc = round((($cm__orders * 100) / $ordersCount), 1); ?>%</span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-danger"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
+            <div class="flex flex-col w-fa gap-05">
+                <span class="larger text-primary bold">
+                    <?php
+                        $nus__sql = "SELECT * FROM orders WHERE status = 4";
+                        $nus__res = $con-> query($nus__sql);
+                        $cm__orders = $nus__res-> num_rows;
+                        echo $nus__res-> num_rows; 
+                    ?>
+                </span>
+                <div class="flex flex-col w-fa">
+                    <span class="text-muted small-med">Sikertelen</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-05 margin-top-a">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                    <span class="small-med text-primary bold">Összes rendelések: <span class="bold"><?= $ordersCount; ?></span></span>
+                    <span class="small text-muted"><?= $ordperc = round((($cm__orders * 100) / $ordersCount), 1); ?>%</span>
+                </div>
+                <div class="flex flex-row gap-05">
+                    <div class="flex flex-row border-soft background-bg w-fa">
+                        <div class="flex flex-row padding-025 border-soft 
+                        <?php if ($ordperc > 50) { echo "loader-danger"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-success"; } ?>
+                        " style="width: <?php echo $ordperc; ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1">
     <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1" id="orders-con">
         <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">

@@ -133,7 +133,7 @@
     .w-40d-100m { width: 40% !important; }
     .w-40d-50m { width: 40% !important; }
     .w-33d-100m { width: 33.33% !important; }
-    .w-30d-100m { width: 30% !important; }
+    .w-30d-100m, .w-30d-fam { width: 30% !important; }
     .w-25d-100m { width: 25% !important; }
     .w-24d-100m { width: 24% !important; }
     .w-20d-100m { width: 20% !important; }
