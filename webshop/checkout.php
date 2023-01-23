@@ -652,6 +652,7 @@
         });
         if (optionsValidated) {
             var postData = new FormData(); postData.append("user", JSON.stringify(orderData)); postData.append("items", JSON.stringify(itemData)); postData.append("voucher", JSON.stringify(voucherData)); postData.append("inventory", JSON.stringify(inventoryData)); postData.append("log", JSON.stringify(logData));
+            console.log(inventoryData);
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
                 beforeSend: function () {
                     document.getElementById('ch-tb-cn').innerHTML = `
@@ -729,7 +730,8 @@
                     } else if (e.alt == 'success') {
                         orderStatus(e.alt, e.data);
                     } else if (e.category == 'inventory' && e.alt == 'warehouse') {
-                        orderStatus('success', e.data);
+                        // orderStatus('success', e.data);
+                        console.log('inventory error');
                     }
                 }, error : function (e) {
                     console.log('err');
