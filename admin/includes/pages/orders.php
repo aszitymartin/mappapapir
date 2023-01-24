@@ -192,6 +192,9 @@ function get_time_ago( $time ) {
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
                 </div>
+                <div class="flex flex-row flex-justify-con-fe padding-025">
+                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/prepare">Kezelés</a>
+                </div>
             </div>
         </div>
         <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
@@ -219,6 +222,9 @@ function get_time_ago( $time ) {
                         <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-warning"; } ?>
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
+                </div>
+                <div class="flex flex-row flex-justify-con-fe padding-025">
+                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/shipping">Kezelés</a>
                 </div>
             </div>
         </div>
@@ -248,6 +254,9 @@ function get_time_ago( $time ) {
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
                 </div>
+                <div class="flex flex-row flex-justify-con-fe padding-025">
+                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/delivered">Kezelés</a>
+                </div>
             </div>
         </div>
         <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
@@ -276,50 +285,116 @@ function get_time_ago( $time ) {
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
                 </div>
+                <div class="flex flex-row flex-justify-con-fe padding-025">
+                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/error">Kezelés</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1">
-    <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1" id="orders-con">
-        <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">
-            <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="users-table">
-                <tr class="small uppercase sessh__header" style="line-height: 2;">
-                    <th>OID</th>
-                    <th>Vásárló</th>
-                    <th>Státusz</th>
-                    <th>Összeg</th>
-                    <th>Dátum</th>
-                    <th></th>
-                </tr>
-                <?php
-                    $selectOrdersSQL = "SELECT orders.id, orders.date, fullname, status, subTotal FROM orders INNER JOIN customers ON customers.id = orders.uid INNER JOIN orders__payment ON orders__payment.oid = orders.id ORDER BY orders.status, orders.date ASC";
-                    $selectOrdersRes = $con->query($selectOrdersSQL);
-                    if ($selectOrdersRes->num_rows > 0) {
-                        while ($o = $selectOrdersRes->fetch_assoc()) {
-                            echo '
+<div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1" id="home-os-con"></div>
+<script>
+    function __loadOrders (id, m, s = -1) {
+        document.getElementById(id).innerHTML = `
+            <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1" id="orders-con">
+                <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">
+                    <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="orders-table">
+                        <tr class="small uppercase sessh__header" style="line-height: 2;">
+                            <th>OID</th>
+                            <th>Vásárló</th>
+                            <th>Státusz</th>
+                            <th>Összeg</th>
+                            <th>Dátum</th>
+                            <th></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        `;
+        var orderData = new FormData(); orderData.append("status", s);
+        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/admin/orders/includes/getOrderByStatus.php", data: orderData, dataType: 'json', contentType: false, processData: false,
+            beforeSend : function () {
+                document.getElementById('orders-table').innerHTML += `
+                    <tr class="sessh__body small" id="order-table-loader"><td></td><td></td>
+                        <td>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                                <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                                <span>Rendelések megjelenítése</span>
+                            </div>
+                        </td><td></td><td></td><td></td>
+                    </tr>
+                `;
+            }, success : function (e) {
+                document.getElementById('order-table-loader').remove();
+                if (e.status == 'success') {
+                    for (let i = 0; i < e.data.length; i++) {
+                        document.getElementById('orders-table').innerHTML += `
                             <tr class="sessh__body small">
-                                <td>'.$o['id'].'</td>
-                                <td>'.$o['fullname'].'</td>
-                                <td>';
-                                    switch ($o['status']) {
-                                        case '0': echo '<span class="label-warning smaller bold padding-025 border-soft-light">Összekészítés</span>'; break;
-                                        case '1': echo '<span class="label-primary smaller bold padding-025 border-soft-light">Kiszállítás</span>'; break;
-                                        case '2': echo '<span class="label-success smaller bold padding-025 border-soft-light">Kiszállítva</span>'; break;
-                                        case '3': echo '<span class="label-warning smaller bold padding-025 border-soft-light">Befagyasztott</span>'; break;
-                                        case '4': echo '<span class="label-danger smaller bold padding-025 border-soft-light">Sikertelen</span>'; break;
-                                    }
-                                    echo '
-                                </td>
-                                <td>'.$o['subTotal'].' Ft</td>
-                                <td>'.$o['date'].'</td>
-                                <td><a href="/orders/v/'.$o['id'].'" class="label-primary pointer user-select-none smaller bold padding-025 border-soft-light">Megtekintés</a></td>
+                                <td>${e.data[i].id}</td>
+                                <td>${e.data[i].fullname}</td>
+                                <td id="odts-${e.data[i].id}"></td>
+                                <td>${formatter.format(e.data[i].subTotal)}</td>
+                                <td>${e.data[i].date}</td>
+                                <td><a data-link="${e.data[i].id}" class="op-od-mt label-primary pointer user-select-none smaller bold padding-025 border-soft-light">Megtekintés</a></td>
                             </tr>
-                            ';
+                        `;
+                        switch (e.data[i].status) {
+                            case '0': document.getElementById('odts-'+e.data[i].id).innerHTML = `<span class="label-warning smaller bold padding-025 border-soft-light">Összekészítés</span>`; break;
+                            case '1': document.getElementById('odts-'+e.data[i].id).innerHTML = `<span class="label-primary smaller bold padding-025 border-soft-light">Kiszállítás</span>`; break;
+                            case '2': document.getElementById('odts-'+e.data[i].id).innerHTML = `<span class="label-success smaller bold padding-025 border-soft-light">Kiszállítva</span>`; break;
+                            case '3': document.getElementById('odts-'+e.data[i].id).innerHTML = `<span class="label-warning smaller bold padding-025 border-soft-light">Befagyasztott</span>`; break;
+                            case '4': document.getElementById('odts-'+e.data[i].id).innerHTML = `<span class="label-danger smaller bold padding-025 border-soft-light">Sikertelen</span>`; break;
                         }
                     }
-                ?>
-            </table>
-        </div>
-    </div>
-</div>
+                    var opd = document.getElementsByClassName('op-od-mt');
+                    switch (m) {
+                        case 'v': for (let i = 0; i < opd.length; i++) { opd[i].href = "/orders/v/" + opd[i].getAttribute('data-link'); } break;
+                        case 'e': for (let i = 0; i < opd.length; i++) { opd[i].href = "/orders/e/" + opd[i].getAttribute('data-link'); } break;
+                        default: for (let i = 0; i < opd.length; i++) { opd[i].href = "/orders/v/" + opd[i].getAttribute('data-link'); } break;
+                    }
+                } else {
+                    document.getElementById('orders-table').innerHTML += `
+                        <tr class="sessh__body small" id="order-table-loader"><td></td><td></td>
+                            <td>
+                                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
+                                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-025 w-fa">
+                                        <strong>Sikertelen megjelenítés. Próbálja újra később.</strong>
+                                    </div>
+                                </div>
+                            </td><td></td><td></td><td></td>
+                        </tr>
+                    `;
+                }
+            }, error : function (e) {
+                document.getElementById('order-table-loader').remove();
+                document.getElementById('orders-table').innerHTML += `
+                    <tr class="sessh__body small" id="order-table-loader"><td></td><td></td>
+                        <td>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
+                                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                <div class="flex flex-col flex-align-c flex-justify-con-c gap-025 w-fa">
+                                    <strong>Sikertelen megjelenítés. Próbálja újra később.</strong>
+                                </div>
+                            </div>
+                        </td><td></td><td></td><td></td>
+                    </tr>
+                `;
+            }
+        });
+
+        // var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";
+        // c__wrapper.classList.add('fadein'); c__wrapper.classList.remove('fadeout'); c__box.classList.add("padding-t-0"); c__box.classList.add('popup'); c__box.classList.remove('popout'); document.body.append(c__wrapper);  c__wrapper.append(c__box); $('html').css("overflow-y", "hidden");
+        // c__box.innerHTML = `
+        // <div class="flex flex-row flex-align-c flex-justify-con-sb padding-t-1" id="cbh__con">
+        //     <span class="text-primary bold" id="prs__title"></span>
+        //     <span class="flex text-primary pointer" aria-label="Bezárás" id="cl__box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg></span></div>
+        // </div><br>
+        // <div class="flex flex-col gap-1 feat__body prs__con" id="prs__con"></div><br>
+        // <div class="flex flex-row flex-align-fe flex-justify-con-r gap-05"><span class="flex" id="prsb__con"></span>
+        // `; var con = document.getElementById('cbh__con');var mc = new Hammer(con);mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });mc.on("pandown", function(ev) { $('#cl__box').click(); });
+        // $('#cl__box').click(function () { c__wrapper.classList.add('fadeout'); c__box.classList.add('popout'); setTimeout(() => { c__wrapper.remove(); $('html').css("overflow-y", "unset"); }, 200); });
+
+    }
+    __loadOrders('home-os-con', 'v');
+</script>

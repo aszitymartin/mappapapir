@@ -1,6 +1,6 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 
 $jsonUserData = json_decode($_POST['user'], true);
 $jsonItemsData = json_decode($_POST['items'], true);
@@ -128,7 +128,7 @@ function proceedOrder ($e) {
     } else { $dieArguments->data = $e->errors; $dieArguments->alt = "orderError"; $dieArguments->type = "items"; die(json_encode($dieArguments)); }
 }
 
-function updateInventoryExtended ($a, $b, $c, $d, $e) { $jsonInventoryCheck = (array)json_decode($a); $jsonItemsData = $b; $jsonUserData = $c; $jsonVoucherData = $d; $jsonLogData = $e;
+function updateInventoryExtended ($a, $b, $c, $d, $e, $f) { $jsonInventoryCheck = (array)json_decode($a); $jsonItemsData = $b; $jsonUserData = $c; $jsonVoucherData = $d; $jsonLogData = $e; $grossTotal = $f;
     $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
     if (count((array)($jsonInventoryCheck)) > 0) {
         $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); 
@@ -344,7 +344,7 @@ if (isset($_SESSION['id'])) {
                                     }
                                     if (count($warehouseItemsArray) === 0 && count($unavailableItemsArray) === 0 && count($backorderItemsArray) === 0) {
 
-                                        updateInventoryExtended($_POST['inventory'], $jsonItemsData, $jsonUserData, $jsonVoucherData, $jsonLogData);
+                                        updateInventoryExtended($_POST['inventory'], $jsonItemsData, $jsonUserData, $jsonVoucherData, $jsonLogData, $grossTotal);
 
                                     } else { $inventoryExitObject = new stdClass(); $inventoryExitCopy = array();
                                         $inventoryExitObject->data = 
@@ -357,7 +357,7 @@ if (isset($_SESSION['id'])) {
                                             (count($unavailableItemsArray) > 0 ? 'unavailable' : 'backorder')
                                         ; $warehouseItemsArray = array(); $unavailableItemsArray = array(); $backorderItemsArray = array();
                                         
-                                        if (count((array)json_decode($_POST['inventory'])) > 0) { updateInventoryExtended($_POST['inventory'], $jsonItemsData, $jsonUserData, $jsonVoucherData, $jsonLogData); }
+                                        if (count((array)json_decode($_POST['inventory'])) > 0) { updateInventoryExtended($_POST['inventory'], $jsonItemsData, $jsonUserData, $jsonVoucherData, $jsonLogData, $grossTotal); }
                                         else { die(json_encode($inventoryExitObject)); }
                                     } 
                                 } else {
