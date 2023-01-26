@@ -26,12 +26,12 @@ function get_time_ago( $time ) {
                             var rcChart = new Chart(recentchart, { type: 'bar',
                                 data: {
                                     labels: [
-                                        <?php $dly__sql = "SELECT DATE(date) AS date FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 7"; $dly__res = $con-> query($dly__sql);
+                                        <?php $dly__sql = "SELECT DATE(date) AS date FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 31"; $dly__res = $con-> query($dly__sql);
                                         if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'".$data['date']."',"; } } ?>
                                     ],
                                     datasets: [{
                                         data: [
-                                            <?php $dly__sql = "SELECT COUNT(id) AS qty FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 7"; $dly__res = $con-> query($dly__sql);
+                                            <?php $dly__sql = "SELECT COUNT(id) AS qty FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 31"; $dly__res = $con-> query($dly__sql);
                                             if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'".$data['qty']."',"; $lastsevenqty += $data['qty']; } } ?>
                                         ], backgroundColor: 'rgb(0, 158, 247)', hoverOffset: 2, borderRadius: 50, maxBarThickness: 10
                                     }]
@@ -192,9 +192,6 @@ function get_time_ago( $time ) {
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
                 </div>
-                <div class="flex flex-row flex-justify-con-fe padding-025">
-                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/prepare">Kezelés</a>
-                </div>
             </div>
         </div>
         <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
@@ -222,9 +219,6 @@ function get_time_ago( $time ) {
                         <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-warning"; } ?>
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
-                </div>
-                <div class="flex flex-row flex-justify-con-fe padding-025">
-                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/shipping">Kezelés</a>
                 </div>
             </div>
         </div>
@@ -254,9 +248,6 @@ function get_time_ago( $time ) {
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
                 </div>
-                <div class="flex flex-row flex-justify-con-fe padding-025">
-                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/delivered">Kezelés</a>
-                </div>
             </div>
         </div>
         <div class="flex flex-col item-bg border-soft w-40 padding-05 gap-2">
@@ -284,9 +275,6 @@ function get_time_ago( $time ) {
                         <?php if ($ordperc > 50) { echo "loader-danger"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-success"; } ?>
                         " style="width: <?php echo $ordperc; ?>%;"></div>
                     </div>
-                </div>
-                <div class="flex flex-row flex-justify-con-fe padding-025">
-                    <a class="text-primary-light small-med link user-select-none pointer bold" href="/orders/m/error">Kezelés</a>
                 </div>
             </div>
         </div>

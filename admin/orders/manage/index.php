@@ -1,15 +1,5 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php'); $uid = $_SESSION['id'];
 
-switch ($params['status']) {
-    case 'prepare': $ost = 0; break;
-    case 'shipping': $ost = 1; break;
-    case 'delivered': $ost = 2; break;
-    case 'error': $ost = 4; break;
-    default : $ost = 0; break;
-}
-
-die($ost . ' ost');
-
 if (!isset($_SESSION['loggedin'])) { echo '<script>window.location.href = "/"</script>'; header('Location: /'); exit(); }
 $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
 function get_time_ago( $time ) {
@@ -19,19 +9,23 @@ function get_time_ago( $time ) {
     foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
 }
 $getOrderDetails = $con->prepare('SELECT orders.id, status, date, orders__invoice.zip, orders__invoice.settlement, orders__invoice.address, orders__invoice.tax, orders__ship.method, orders__ship.zip AS szip, orders__ship.settlement AS ssettlement, orders__ship.address AS saddress, orders__ship.note, orders__payment.cid, orders__payment.subTotal, orders__user.fullname, orders__user.company, orders__user.email, orders__user.phone FROM orders INNER JOIN orders__invoice ON orders__invoice.oid = orders.id INNER JOIN orders__ship ON orders__ship.oid = orders.id INNER JOIN orders__payment ON orders__payment.oid = orders.id INNER JOIN orders__user ON orders__user.oid = orders.id WHERE orders.id = ?');
-$getOrderDetails->bind_param('i', $params['id']); $getOrderDetails->execute(); $getOrderDetails->store_result();
+$getOrderDetails->bind_param('i', $params['oid']); $getOrderDetails->execute(); $getOrderDetails->store_result();
 if ($getOrderDetails->num_rows() > 0) { $getOrderDetails->bind_result($getOrderId, $getOrderStatus, $getOrderDate, $getOrderZip, $getOrderSettlement, $getOrderAddress, $getOrderTax, $getOrderSMethod, $getOrderSZip, $getOrderSSettlement, $getOrderSAddress, $getOrderNote, $getOrderCid, $getOrderSubTotal, $getOrderFullname, $getOrderCompany, $getOrderEmail, $getOrderPhone); $getOrderDetails->fetch(); $getOrderDetails->close(); }
 else { echo '<script>window.location.href = "/404"</script>'; header('Location: /404'); } 
+
 ?>
 <main class="flex flex-col gap-1">
     <nav class="flex flex-row flex-align-c flex-justify-con-sb gap-1 w-fa">
-        <span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=orders">Megrendelések</a> / #<?= $params['id'] ?></span>
+        <span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=orders">Megrendelések</a> / #<?= $params['oid'] ?></span>
     </nav>
     <div class="flex flex-row flex-align-c gap-1">
         <div class="flex flex-row flex-justify-con-c flex-wrap-m gap-05 prio__con w-100">
             <div class="flex flex-col item-bg border-soft w-40 padding-1 gap-2">
-                <div class="flex flex-col w-fa gap-05">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                     <span class="larger text-primary bold">Rendelés Részletei (#<?= $getOrderId; ?>)</span>
+                    <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                        <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                    </div>
                 </div>
                 <div class="flex flex-col gap-05 padding-05 margin-top-a text-muted small">
                     <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
@@ -58,8 +52,11 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                 </div>
             </div>
             <div class="flex flex-col item-bg border-soft w-40 padding-1 gap-2">
-                <div class="flex flex-col w-fa gap-05">
+                <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                     <span class="larger text-primary bold">Vevő Adatai</span>
+                    <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                        <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                    </div>
                 </div>
                 <div class="flex flex-col gap-05 padding-05 margin-top-a text-muted small">
                     <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
@@ -117,8 +114,11 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
     </div>
     <div class="flex flex-row flex-align-c gap-1">
         <div class="flex flex-col item-bg border-soft w-50d-fam padding-1 gap-2">
-            <div class="flex flex-col w-fa gap-05">
+            <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                 <span class="larger text-primary bold">Számlázási Cím</span>
+                <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                    <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                </div>
             </div>
             <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-1 text-muted">
                 <div class="flex flex-col gap-025 small">
@@ -130,8 +130,11 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
             </div>
         </div>
         <div class="flex flex-col item-bg border-soft w-50d-fam padding-1 gap-2">
-            <div class="flex flex-col w-fa gap-05">
+            <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                 <span class="larger text-primary bold">Szállítási Cím</span>
+                <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                    <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                </div>
             </div>
             <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-1 text-muted">
                 <div class="flex flex-col gap-025 small">
@@ -148,6 +151,12 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
             <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">
                 <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="users-table">
                     <tr class="small uppercase sessh__header" style="line-height: 2;">
+                        <th>
+                            <label class="cst-chb-lbl">
+                                <input type="checkbox" class="absolute" id="check_all_item">
+                                <span class="cst-checkbox"></span>
+                            </label>
+                        </th>
                         <th class="text-align-l">Termék</th>
                         <th>Mennyiség</th>
                         <th>Darab Összeg</th>
@@ -155,13 +164,19 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                     </tr>
                     <?php
                         $orderDetails = $con->prepare("SELECT items, subTotal, voucherDiscount FROM orders INNER JOIN orders__payment ON orders__payment.oid = orders.id WHERE orders.id = ?");
-                        $orderDetails->bind_param('i', $params['id']); $orderDetails->execute(); $orderDetails->store_result(); $orderDetails->bind_result($orderItems, $orderSubTotal, $orderVoucher); $orderDetails->fetch(); $orderDetails->close();
+                        $orderDetails->bind_param('i', $params['oid']); $orderDetails->execute(); $orderDetails->store_result(); $orderDetails->bind_result($orderItems, $orderSubTotal, $orderVoucher); $orderDetails->fetch(); $orderDetails->close();
                         for ($i = 0; $i < count(explode(';', rtrim($orderItems, ";"))); $i++) {
                             $itemDetails = $con->prepare('SELECT name, thumbnail, base, discount FROM products INNER JOIN products__pricing ON products__pricing.pid = products.id WHERE products.id = ?');
                             $itemDetails->bind_param('i', explode(':', explode(';', $orderItems)[$i])[0]); $itemDetails->execute(); $itemDetails->store_result(); $itemDetails->bind_result($itemName, $itemThumbnail, $itemPrice, $itemDiscount); $itemDetails->fetch(); $itemDetails->free_result(); $itemDetails->close(); $con->next_result();
                             $thumbnail = "'/assets/images/uploads/".$itemThumbnail."'";
                             echo '
                                 <tr>
+                                    <td class="text-align-c padding-1">
+                                        <label class="cst-chb-lbl">
+                                            <input type="checkbox" class="absolute">
+                                            <span class="cst-checkbox"></span>
+                                        </label>
+                                    </td>
                                     <td>
                                         <div class="flex flex-row flex-align-c gap-1">
                                             <div class="product-miniature pointer drop-shadow" style="background-image: url('.$thumbnail.');"></div>
