@@ -126,6 +126,7 @@ a { color: unset; text-decoration: none; }
 .w-50-d-fc-m { width: fit-content; }
 .w-45d-100m { width: 100%; }
 .w-45d-50m { width: 50%; }
+.w-40d-fam { width: -webkit-fill-available; }
 .w-40d-100m { width: 100%; }
 .w-40d-50m { width: 50%; }
 .w-33d-100m { width: -webkit-fill-available; }

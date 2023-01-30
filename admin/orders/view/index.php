@@ -7,9 +7,9 @@ function get_time_ago( $time ) {
     $condition = array( 12 * 30 * 24 * 60 * 60 =>  'éve',30 * 24 * 60 * 60 => 'hónapja',24 * 60 * 60 => 'napja',60 * 60 =>  'órája',60 =>  'perce',1 =>  'másodperce');
     foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
 }
-$getOrderDetails = $con->prepare('SELECT orders.id, status, date, orders__invoice.zip, orders__invoice.settlement, orders__invoice.address, orders__invoice.tax, orders__ship.method, orders__ship.zip AS szip, orders__ship.settlement AS ssettlement, orders__ship.address AS saddress, orders__ship.note, orders__payment.cid, orders__payment.subTotal, orders__user.fullname, orders__user.company, orders__user.email, orders__user.phone FROM orders INNER JOIN orders__invoice ON orders__invoice.oid = orders.id INNER JOIN orders__ship ON orders__ship.oid = orders.id INNER JOIN orders__payment ON orders__payment.oid = orders.id INNER JOIN orders__user ON orders__user.oid = orders.id WHERE orders.id = ?');
+$getOrderDetails = $con->prepare('SELECT orders.id, status, date, orders__invoice.zip, orders__invoice.settlement, orders__invoice.address, orders__invoice.tax, orders__ship.method, orders__ship.zip AS szip, orders__ship.settlement AS ssettlement, orders__ship.address AS saddress, orders__ship.note, orders__payment.cid, orders__payment.subTotal, orders__payment.voucherUsed, orders__payment.voucherCode, orders__payment.voucherDiscount, orders__user.fullname, orders__user.company, orders__user.email, orders__user.phone FROM orders INNER JOIN orders__invoice ON orders__invoice.oid = orders.id INNER JOIN orders__ship ON orders__ship.oid = orders.id INNER JOIN orders__payment ON orders__payment.oid = orders.id INNER JOIN orders__user ON orders__user.oid = orders.id WHERE orders.id = ?');
 $getOrderDetails->bind_param('i', $params['id']); $getOrderDetails->execute(); $getOrderDetails->store_result();
-if ($getOrderDetails->num_rows() > 0) { $getOrderDetails->bind_result($getOrderId, $getOrderStatus, $getOrderDate, $getOrderZip, $getOrderSettlement, $getOrderAddress, $getOrderTax, $getOrderSMethod, $getOrderSZip, $getOrderSSettlement, $getOrderSAddress, $getOrderNote, $getOrderCid, $getOrderSubTotal, $getOrderFullname, $getOrderCompany, $getOrderEmail, $getOrderPhone); $getOrderDetails->fetch(); $getOrderDetails->close(); }
+if ($getOrderDetails->num_rows() > 0) { $getOrderDetails->bind_result($getOrderId, $getOrderStatus, $getOrderDate, $getOrderZip, $getOrderSettlement, $getOrderAddress, $getOrderTax, $getOrderSMethod, $getOrderSZip, $getOrderSSettlement, $getOrderSAddress, $getOrderNote, $getOrderCid, $getOrderSubTotal, $getOrderVoucherUsed, $getOrderVoucherCode, $getOrderVoucherDiscount, $getOrderFullname, $getOrderCompany, $getOrderEmail, $getOrderPhone); $getOrderDetails->fetch(); $getOrderDetails->close(); }
 else { echo '<script>window.location.href = "/404"</script>'; header('Location: /404'); } 
 ?>
 <main class="flex flex-col gap-1">
@@ -33,12 +33,15 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                         </div>
                         <span class="text-muted bold"><?= $getOrderDate; ?></span>
                     </div><hr style="border: 1px solid var(--background); width: 100%;">
-                    <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
-                        <div class="flex flex-row flex-align-c gap-05">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M3.20001 5.91897L16.9 3.01895C17.4 2.91895 18 3.219 18.1 3.819L19.2 9.01895L3.20001 5.91897Z" fill="currentColor"></path><path opacity="0.3" d="M13 13.9189C13 12.2189 14.3 10.9189 16 10.9189H21C21.6 10.9189 22 11.3189 22 11.9189V15.9189C22 16.5189 21.6 16.9189 21 16.9189H16C14.3 16.9189 13 15.6189 13 13.9189ZM16 12.4189C15.2 12.4189 14.5 13.1189 14.5 13.9189C14.5 14.7189 15.2 15.4189 16 15.4189C16.8 15.4189 17.5 14.7189 17.5 13.9189C17.5 13.1189 16.8 12.4189 16 12.4189Z" fill="currentColor"></path><path d="M13 13.9189C13 12.2189 14.3 10.9189 16 10.9189H21V7.91895C21 6.81895 20.1 5.91895 19 5.91895H3C2.4 5.91895 2 6.31895 2 6.91895V20.9189C2 21.5189 2.4 21.9189 3 21.9189H19C20.1 21.9189 21 21.0189 21 19.9189V16.9189H16C14.3 16.9189 13 15.6189 13 13.9189Z" fill="currentColor"></path></svg>
-                            <span>Fizetési metód</span>
+                    <div class="flex flex-col flex-justify-con-fe flex-align-fe w-fa">
+                        <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
+                            <div class="flex flex-row flex-align-c gap-05">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M3.20001 5.91897L16.9 3.01895C17.4 2.91895 18 3.219 18.1 3.819L19.2 9.01895L3.20001 5.91897Z" fill="currentColor"></path><path opacity="0.3" d="M13 13.9189C13 12.2189 14.3 10.9189 16 10.9189H21C21.6 10.9189 22 11.3189 22 11.9189V15.9189C22 16.5189 21.6 16.9189 21 16.9189H16C14.3 16.9189 13 15.6189 13 13.9189ZM16 12.4189C15.2 12.4189 14.5 13.1189 14.5 13.9189C14.5 14.7189 15.2 15.4189 16 15.4189C16.8 15.4189 17.5 14.7189 17.5 13.9189C17.5 13.1189 16.8 12.4189 16 12.4189Z" fill="currentColor"></path><path d="M13 13.9189C13 12.2189 14.3 10.9189 16 10.9189H21V7.91895C21 6.81895 20.1 5.91895 19 5.91895H3C2.4 5.91895 2 6.31895 2 6.91895V20.9189C2 21.5189 2.4 21.9189 3 21.9189H19C20.1 21.9189 21 21.0189 21 19.9189V16.9189H16C14.3 16.9189 13 15.6189 13 13.9189Z" fill="currentColor"></path></svg>
+                                <span>Fizetési metód</span>
+                            </div>
+                            <span class="flex text-muted bold"><?= $getOrderCid; ?></span>
                         </div>
-                        <span class="text-muted bold"><?= $getOrderCid; ?></span>
+                        <?php if ($getOrderVoucherUsed == 1 && $getOrderVoucherDiscount > 0) { echo '<span class="text-primary-light smaller user-select-none">Utalvány beváltva</span>'; } ?>
                     </div><hr style="border: 1px solid var(--background); width: 100%;">
                     <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
                         <div class="flex flex-row flex-align-c gap-05">
