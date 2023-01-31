@@ -130,9 +130,8 @@ function get_time_ago( $time ) {
     </div>
     
 </div>
-<div class="flex flex-row-d-col-m gap-1">
-    <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
-        <div class="flex flex-row flex-align-c flex-justify-con-sb">
+<div class="flex flex-col gap-025">
+<div class="flex flex-row flex-align-c flex-justify-con-sb">
             <span class="text-primary small bold">Készletjelentés</span>
             <div class="flex flex-row flex-align-c gap-1">
                 <div class="flex flex-row flex-align-c gap-05 stock__dropdown relative">
@@ -155,8 +154,9 @@ function get_time_ago( $time ) {
                 </div>
             </div>
         </div>
-        <div class="flex flex-col gap-2 prio__con">
-            <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg padding-05 box-shadow border-soft">
+    <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow">
+        <div class="flex flex-col gap-2">
+            <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">
                 <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="stock__table">
                     <tr class="small uppercase sessh__header tr-padding-05" style="line-height: 2;">
                         <th>Azonosító</th><th>Termék</th><th>Szín</th>
@@ -174,7 +174,7 @@ function get_time_ago( $time ) {
                                     <td class="padding-tb-1">'.$data['color'].'</td>
                                     <td class="padding-tb-1">'.$data['added'].'</td>
                                     <td class="padding-tb-1">'.$data['base'].' Ft</td>
-                                    <td class="padding-tb-1" data-stock="'; if ($data['quantity'] < 1) { echo 'out'; } else if ($data['unit'] < 10) { echo 'low'; } else if ($data['quantity'] > 20) { echo 'stock'; } echo '">'; if ($data['quantity'] < 1) { echo '<span class="label-danger smaller bold padding-025 border-soft">Elfogyott</span>'; } else if ($data['quantity'] < 10) { echo '<span class="label-warning smaller bold padding-025 border-soft">Kifutóban</span>'; } else if ($data['quantity'] > 20) { echo '<span class="label-primary smaller bold padding-025 border-soft">Készleten</span>'; } echo '</td>
+                                    <td class="padding-tb-1" data-stock="'; if ($data['quantity'] < 1) { echo 'out'; } else if ($data['unit'] < 10) { echo 'low'; } else if ($data['quantity'] > 20) { echo 'stock'; } echo '">'; if ($data['quantity'] < 1) { echo '<span class="label-danger smaller bold padding-025 border-soft-light">Elfogyott</span>'; } else if ($data['quantity'] < 10) { echo '<span class="label-warning smaller bold padding-025 border-soft-light">Kifutóban</span>'; } else if ($data['quantity'] > 20) { echo '<span class="label-primary smaller bold padding-025 border-soft-light">Készleten</span>'; } echo '</td>
                                     <td class="padding-tb-1 text-secondary bold">'.$data['quantity'].' '.$data['unit'].'</td>
                                 </tr>
                                 ';

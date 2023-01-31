@@ -744,6 +744,7 @@ input:checked + .slider-smaller:before { -webkit-transform: translateX(24px);-ms
 
 /* Badge */
 .badge { top: 15%;right: 5%;border-radius: 50%;width: 1.2rem;height: 1.2rem;max-height: 1.2rem;font-size: .8rem;background-color: var(--text-danger);color: var(--white); }
+.header-badge-con { top: 5%; right: 5%; }
 .badge-small { width: .5rem;height: .5rem; }
 .sidenav-badge { right: 0%; top: -15%; }
 .badge-basket { right: -15%; top: -15%; }

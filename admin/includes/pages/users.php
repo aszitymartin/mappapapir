@@ -161,7 +161,7 @@ $gsql = "SELECT "
                     break;
                     case 'list': document.getElementById('load-list').classList.add('primary-bg'); document.getElementById('load-list').classList.remove('primary-bg-hover'); document.getElementById('load-card').classList.remove('primary-bg'); document.getElementById('load-card').classList.add('primary-bg-hover');
                         document.getElementById('users-con').innerHTML = `
-                        <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg padding-05 box-shadow border-soft">
+                        <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">
                             <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="users-table">
                                 <tr class="small uppercase sessh__header" style="line-height: 2;">
                                     <th>ID</th>

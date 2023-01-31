@@ -151,20 +151,10 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
         </div>
     </div>
     <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1">
-        <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 w-fa">
-            <span class="text-muted user-select-none small" id="remove-selected-products">Eltávolítás</span>
-            <span class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer user-select-none" onclick="showPanel('products')">Termék hozzáadása</span>
-        </div>
         <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1" id="orders-con">
             <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg box-shadow border-soft">
                 <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;" id="users-table">
                     <tr class="small uppercase sessh__header" style="line-height: 2;">
-                        <th>
-                            <label class="cst-chb-lbl">
-                                <input type="checkbox" class="absolute" id="check_all_item">
-                                <span class="cst-checkbox"></span>
-                            </label>
-                        </th>
                         <th class="text-align-l">Termék</th>
                         <th>Mennyiség</th>
                         <th>Darab Összeg</th>
@@ -179,12 +169,6 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                             $thumbnail = "'/assets/images/uploads/".$itemThumbnail."'";
                             echo '
                                 <tr>
-                                    <td class="text-align-c padding-1">
-                                        <label class="cst-chb-lbl">
-                                            <input type="checkbox" class="absolute">
-                                            <span class="cst-checkbox"></span>
-                                        </label>
-                                    </td>
                                     <td>
                                         <div class="flex flex-row flex-align-c gap-1">
                                             <div class="product-miniature pointer drop-shadow" style="background-image: url('.$thumbnail.');"></div>
@@ -335,7 +319,64 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
             break;
             case 'manage':
                 document.getElementById('prs__title').textContent = "Rendelés Kezelése";
-                document.getElementById('prs__con').innerHTML = panel; 
+                document.getElementById('prs__con').classList.remove('prs__con', 'feat__body');
+                document.getElementById('prs__con').innerHTML = `
+                    <div id="st-er-ls-cn"></div>
+                    <div class="flex flex-col w-fa gap-1 user-select-none">
+                        <div class="flex flex-col w-fa gap-1">
+                            <div class="flex flex-col w-fa gap-1">
+                                <div class="csts-select csts-select-fnc w-fa relative" id="prd-st-con">
+                                    <select class="hidden relative" id="product-status">
+                                        <option value="9">Státusz</option>
+                                        <option value="ö">Összekészítés</option>
+                                        <option value="1">Szállítás alatt</option>
+                                        <option value="2">Kiszállítva</option>
+                                        <option value="4">Sikertelen</option>
+                                    </select>
+                                <span class="text-muted small-med">Állítsa be a rendelés státuszát</span>
+                            </div>
+                            <div id="prd-st-sch-con"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row flex-align-c w-fa gap-1 text-muted">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="17" width="7" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/><rect x="11" y="9" width="2" height="2" rx="1" transform="rotate(-90 11 9)" fill="currentColor"/></svg>
+                        <span class="small">Állítsa be a rendelés státuszát, hogy a rendelő nyomon tudja követni a rendelésének folyamatát.</span>
+                    </div>
+                `;
+                var x, i, j, l, ll, selElmnt, a, b, c; x = document.getElementsByClassName("csts-select"); l = x.length;
+                for (i = 0; i < l; i++) {
+                selElmnt = x[i].getElementsByTagName("select")[0]; ll = selElmnt.length; a = document.createElement("DIV"); a.setAttribute("class", "cst-sl-sltd adm__input item-bg border-soft text-secondary outline-none small pointer");
+                a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML; x[i].appendChild(a); b = document.createElement("DIV");
+                b.setAttribute("class", "absolute w-fa cst-sl-it box-shadow item-bg border-soft text-secondary small select-hide user-select-none");
+                for (j = 1; j < ll; j++) {
+                    c = document.createElement("DIV"); c.innerHTML = selElmnt.options[j].innerHTML;
+                    c.addEventListener("click", function(e) { var y, i, k, s, h, sl, yl;
+                        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                        sl = s.length; h = this.parentNode.previousSibling;
+                        for (i = 0; i < sl; i++) {
+                        if (s.options[i].innerHTML == this.innerHTML) {
+                            s.selectedIndex = i; h.innerHTML = this.innerHTML;
+                            y = this.parentNode.getElementsByClassName("same-as-selected"); yl = y.length;
+                            for (k = 0; k < yl; k++) { y[k].removeAttribute("class"); }
+                            this.setAttribute("class", "same-as-selected");
+                            break;
+                        }
+                        } h.click();
+                    }); b.appendChild(c);
+                } x[i].appendChild(b);
+                a.addEventListener("click", function(e) { e.stopPropagation(); closeAllSelect(this); this.nextSibling.classList.toggle("select-hide"); this.classList.toggle("select-arrow-active"); });
+                }
+                function closeAllSelect(elmnt) { var x, y, i, xl, yl, arrNo = [];
+                x = document.getElementsByClassName("select-items"); y = document.getElementsByClassName("cst-sl-sltd");
+                xl = x.length; yl = y.length;
+                for (i = 0; i < yl; i++) {
+                    if (elmnt == y[i]) { arrNo.push(i)
+                    } else { y[i].classList.remove("select-arrow-active"); }
+                }
+                for (i = 0; i < xl; i++) {
+                    if (arrNo.indexOf(i)) { x[i].classList.add("select-hide"); }
+                }
+                } document.addEventListener("click", closeAllSelect);
             break;
             default: 
                 document.getElementById('prs__title').textContent = "Rendelés Részletei (#<?= $params['oid']; ?>)";
@@ -347,4 +388,5 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
         $('#cl__box').click(function () { c__wrapper.classList.add('fadeout'); c__box.classList.add('popout'); setTimeout(() => { c__wrapper.remove(); $('html').css("overflow-y", "unset"); }, 200); });
     }
 </script>
+<!-- <script src="/admin/assets/script/cst-drd.js"></script> -->
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footer.php'); ?>

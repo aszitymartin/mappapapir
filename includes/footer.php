@@ -1,4 +1,62 @@
-        <script>
+        <footer class="flex flex-col w-fa padding-tb-1">
+            <div class="flex flex-row-d-col-m flex-justify-con-c gap-1 footer-inner">
+                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none">
+                    <div class="flex flex-col">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z" fill="currentColor"/><rect x="6" y="12" width="7" height="2" rx="1" fill="currentColor"/><rect x="6" y="7" width="12" height="2" rx="1" fill="currentColor"/></svg>
+                    </div>
+                    <div class="flex flex-col text-primary gap-05">
+                        <span class="bold">Írjon nekünk</span>
+                        <span class="small-med">Honlapunkról közvetlenül tud üzenetet küldeni ügyfélszolgálatunknak.</span>
+                    </div>
+                </div>
+                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none">
+                    <div class="flex flex-col">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M18.0624 15.3453L13.1624 20.7453C12.5624 21.4453 11.5624 21.4453 10.9624 20.7453L6.06242 15.3453C4.56242 13.6453 3.76242 11.4453 4.06242 8.94534C4.56242 5.34534 7.46242 2.44534 11.0624 2.04534C15.8624 1.54534 19.9624 5.24534 19.9624 9.94534C20.0624 12.0453 19.2624 13.9453 18.0624 15.3453Z" fill="currentColor"/><path d="M12.0624 13.0453C13.7193 13.0453 15.0624 11.7022 15.0624 10.0453C15.0624 8.38849 13.7193 7.04535 12.0624 7.04535C10.4056 7.04535 9.06241 8.38849 9.06241 10.0453C9.06241 11.7022 10.4056 13.0453 12.0624 13.0453Z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="flex flex-col text-primary gap-05">
+                        <span class="bold">Üzletkereső</span>
+                        <span class="small-med">Keresse fel üzletünket, akármelyik hétköznapon.</span>
+                    </div>
+                </div>
+                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none">
+                    <div class="flex flex-col">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 8H16C15.4 8 15 8.4 15 9V16H10V17C10 17.6 10.4 18 11 18H16C16 16.9 16.9 16 18 16C19.1 16 20 16.9 20 18H21C21.6 18 22 17.6 22 17V13L20 8Z" fill="currentColor"/><path opacity="0.3" d="M20 18C20 19.1 19.1 20 18 20C16.9 20 16 19.1 16 18C16 16.9 16.9 16 18 16C19.1 16 20 16.9 20 18ZM15 4C15 3.4 14.6 3 14 3H3C2.4 3 2 3.4 2 4V13C2 13.6 2.4 14 3 14H15V4ZM6 16C4.9 16 4 16.9 4 18C4 19.1 4.9 20 6 20C7.1 20 8 19.1 8 18C8 16.9 7.1 16 6 16Z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="flex flex-col text-primary gap-05">
+                        <span class="bold">Futárszolgálat</span>
+                        <span class="small-med">Amennyiben online rendelt, élvezze a házhozszállítás kényelmét.</span>
+                    </div>
+                </div>
+                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none" onclick="openSearch()">
+                    <div class="flex flex-col">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.7 18.9L18.6 15.8C17.9 16.9 16.9 17.9 15.8 18.6L18.9 21.7C19.3 22.1 19.9 22.1 20.3 21.7L21.7 20.3C22.1 19.9 22.1 19.3 21.7 18.9Z" fill="currentColor"/><path opacity="0.3" d="M11 20C6 20 2 16 2 11C2 6 6 2 11 2C16 2 20 6 20 11C20 16 16 20 11 20ZM11 4C7.1 4 4 7.1 4 11C4 14.9 7.1 18 11 18C14.9 18 18 14.9 18 11C18 7.1 14.9 4 11 4ZM8 11C8 9.3 9.3 8 11 8C11.6 8 12 7.6 12 7C12 6.4 11.6 6 11 6C8.2 6 6 8.2 6 11C6 11.6 6.4 12 7 12C7.6 12 8 11.6 8 11Z" fill="currentColor"/></svg>
+                    </div>
+                    <div class="flex flex-col text-primary gap-05">
+                        <span class="bold">Keressen az oldalon</span>
+                        <span class="small-med">Találja meg gyorsan és egyszerűen az információkat.</span>
+                    </div>
+                </div>
+            </div>
+            <hr style="border: 1px solid var(--background); width: 100%;">
+            <div class="flex flex-col gap-1 padding-1 w-fa footer-inner">
+                <div class="flex flex-row w-fa">
+                    <img src="/assets/icons/logo_blue.png" style="width: 92px;" />
+                </div>
+                <div class="flex flex-row flex-wrap gap-2 w-fa text-primary small-med bold">
+                    <span class="link pointer">Jogi tudnivalók</span>
+                    <span class="link pointer">ÁSZF</span>
+                    <span class="link pointer">Adatvédelem</span>
+                    <span class="link pointer">Felhívások</span>
+                    <span class="link pointer">Hírlevél</span>
+                    <span class="link pointer">Ügyfélszolgálat</span>
+                    <span class="link pointer">Cookie beállítások</span>
+                </div>
+                <div class="flex flex-row w-fa small-med text-muted">
+                    <span>© <?php echo date("Y"); ?> Mappa Papír Kft.</span>
+                </div>
+            </div>
+        </footer>
+        <script content-type="application/javascript">
             var profileActionsContainer = document.createElement('div');var transWrapper = document.createElement('div'); let subt = 0;
             transWrapper.classList.add('transWrapper');profileActionsContainer.id = 'profileHeaderContainer';let cC = 1;
             function openHeaderProfileActionLogged () {cC++;
@@ -161,64 +219,6 @@
             function cl__basket () { hib__container.remove();transWrapper.remove();hib__c = 1; }
             window.onclick = function(event) {if (event.target == transWrapper) {profileActionsContainer.remove();transWrapper.remove(); hib__container.remove(); hib__c = 1; cC = 1; document.getElementsByTagName('html')[0].classList.remove('stop-scroll', 'stop-scroll-mobile'); }}
         </script>
-        <footer class="flex flex-col w-fa padding-tb-1">
-            <div class="flex flex-row-d-col-m flex-justify-con-c gap-1 footer-inner">
-                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none">
-                    <div class="flex flex-col">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z" fill="currentColor"/><rect x="6" y="12" width="7" height="2" rx="1" fill="currentColor"/><rect x="6" y="7" width="12" height="2" rx="1" fill="currentColor"/></svg>
-                    </div>
-                    <div class="flex flex-col text-primary gap-05">
-                        <span class="bold">Írjon nekünk</span>
-                        <span class="small-med">Honlapunkról közvetlenül tud üzenetet küldeni ügyfélszolgálatunknak.</span>
-                    </div>
-                </div>
-                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none">
-                    <div class="flex flex-col">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M18.0624 15.3453L13.1624 20.7453C12.5624 21.4453 11.5624 21.4453 10.9624 20.7453L6.06242 15.3453C4.56242 13.6453 3.76242 11.4453 4.06242 8.94534C4.56242 5.34534 7.46242 2.44534 11.0624 2.04534C15.8624 1.54534 19.9624 5.24534 19.9624 9.94534C20.0624 12.0453 19.2624 13.9453 18.0624 15.3453Z" fill="currentColor"/><path d="M12.0624 13.0453C13.7193 13.0453 15.0624 11.7022 15.0624 10.0453C15.0624 8.38849 13.7193 7.04535 12.0624 7.04535C10.4056 7.04535 9.06241 8.38849 9.06241 10.0453C9.06241 11.7022 10.4056 13.0453 12.0624 13.0453Z" fill="currentColor"/></svg>
-                    </div>
-                    <div class="flex flex-col text-primary gap-05">
-                        <span class="bold">Üzletkereső</span>
-                        <span class="small-med">Keresse fel üzletünket, akármelyik hétköznapon.</span>
-                    </div>
-                </div>
-                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none">
-                    <div class="flex flex-col">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 8H16C15.4 8 15 8.4 15 9V16H10V17C10 17.6 10.4 18 11 18H16C16 16.9 16.9 16 18 16C19.1 16 20 16.9 20 18H21C21.6 18 22 17.6 22 17V13L20 8Z" fill="currentColor"/><path opacity="0.3" d="M20 18C20 19.1 19.1 20 18 20C16.9 20 16 19.1 16 18C16 16.9 16.9 16 18 16C19.1 16 20 16.9 20 18ZM15 4C15 3.4 14.6 3 14 3H3C2.4 3 2 3.4 2 4V13C2 13.6 2.4 14 3 14H15V4ZM6 16C4.9 16 4 16.9 4 18C4 19.1 4.9 20 6 20C7.1 20 8 19.1 8 18C8 16.9 7.1 16 6 16Z" fill="currentColor"/></svg>
-                    </div>
-                    <div class="flex flex-col text-primary gap-05">
-                        <span class="bold">Futárszolgálat</span>
-                        <span class="small-med">Amennyiben online rendelt, élvezze a házhozszállítás kényelmét.</span>
-                    </div>
-                </div>
-                <div class="flex flex-row gap-1 footer-inner-item padding-1 pointer user-select-none" onclick="openSearch()">
-                    <div class="flex flex-col">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.7 18.9L18.6 15.8C17.9 16.9 16.9 17.9 15.8 18.6L18.9 21.7C19.3 22.1 19.9 22.1 20.3 21.7L21.7 20.3C22.1 19.9 22.1 19.3 21.7 18.9Z" fill="currentColor"/><path opacity="0.3" d="M11 20C6 20 2 16 2 11C2 6 6 2 11 2C16 2 20 6 20 11C20 16 16 20 11 20ZM11 4C7.1 4 4 7.1 4 11C4 14.9 7.1 18 11 18C14.9 18 18 14.9 18 11C18 7.1 14.9 4 11 4ZM8 11C8 9.3 9.3 8 11 8C11.6 8 12 7.6 12 7C12 6.4 11.6 6 11 6C8.2 6 6 8.2 6 11C6 11.6 6.4 12 7 12C7.6 12 8 11.6 8 11Z" fill="currentColor"/></svg>
-                    </div>
-                    <div class="flex flex-col text-primary gap-05">
-                        <span class="bold">Keressen az oldalon</span>
-                        <span class="small-med">Találja meg gyorsan és egyszerűen az információkat.</span>
-                    </div>
-                </div>
-            </div>
-            <hr style="border: 1px solid var(--background); width: 100%;">
-            <div class="flex flex-col gap-1 padding-1 w-fa footer-inner">
-                <div class="flex flex-row w-fa">
-                    <img src="/assets/icons/logo_blue.png" style="width: 92px;" />
-                </div>
-                <div class="flex flex-row flex-wrap gap-2 w-fa text-primary small-med bold">
-                    <span class="link pointer">Jogi tudnivalók</span>
-                    <span class="link pointer">ÁSZF</span>
-                    <span class="link pointer">Adatvédelem</span>
-                    <span class="link pointer">Felhívások</span>
-                    <span class="link pointer">Hírlevél</span>
-                    <span class="link pointer">Ügyfélszolgálat</span>
-                    <span class="link pointer">Cookie beállítások</span>
-                </div>
-                <div class="flex flex-row w-fa small-med text-muted">
-                    <span>© <?php echo date("Y"); ?> Mappa Papír Kft.</span>
-                </div>
-            </div>
-        </footer>
         <script src="/assets/script/swiper/swiper-bundle.min.js" content-type="application/javascript"></script>
         <script src="/assets/script/main.js" content-type="application/javascript"></script>   
         <!-- <script src="/assets/script/internationalize/jquery.MultiLanguage.js" content-type="application/javascript"></script> -->
@@ -247,6 +247,7 @@
         <script src="/assets/script/cookies.js" content-type="application/javascript"></script>
         <script src="/assets/script/scroll.js" content-type="application/javascript"></script>
         <script src="/assets/script/search.js" content-type="application/javascript"></script>
+        <script content-type="application/javascript">var cardExpiryArray = [];</script>
         <?php
             function rememberMe () { $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
                 $cookie = isset($_COOKIE['__au__login']) ? $_COOKIE['__au__login'] : '';
@@ -261,6 +262,7 @@
                                 document.getElementById("hd-rb-con").innerHTML = `
                                     <div id="header_desktop_button" class="header_heading_button user_action_button pointer flex flex-align-c flex-justify-con-c has-tooltip relative" aria-describedby="tooltipProfile">
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><polygon points="0 0 24 0 24 24 0 24"/><path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" class="svg" fill-rule="nonzero" opacity="0.3"/><path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" class="svg" fill-rule="nonzero"/></g></svg>
+                                        <div class="absolute header-badge-con" id="header-user-badge-con"></div>
                                     </div>
                                     <div class="padding-05 pointer flex flex-align-c flex-justify-con-c has-tooltip relative" id="deskBask" aria-describedby="tooltipBasket" onclick="sh__basket()">
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M12,4.56204994 L7.76822128,9.6401844 C7.4146572,10.0644613 6.7840925,10.1217854 6.3598156,9.76822128 C5.9355387,9.4146572 5.87821464,8.7840925 6.23177872,8.3598156 L11.2317787,2.3598156 C11.6315738,1.88006147 12.3684262,1.88006147 12.7682213,2.3598156 L17.7682213,8.3598156 C18.1217854,8.7840925 18.0644613,9.4146572 17.6401844,9.76822128 C17.2159075,10.1217854 16.5853428,10.0644613 16.2317787,9.6401844 L12,4.56204994 Z" class="svg" fill-rule="nonzero" opacity="0.3"/><path d="M3.28077641,9 L20.7192236,9 C21.2715083,9 21.7192236,9.44771525 21.7192236,10 C21.7192236,10.0817618 21.7091962,10.163215 21.6893661,10.2425356 L19.5680983,18.7276069 C19.234223,20.0631079 18.0342737,21 16.6576708,21 L7.34232922,21 C5.96572629,21 4.76577697,20.0631079 4.43190172,18.7276069 L2.31063391,10.2425356 C2.17668518,9.70674072 2.50244587,9.16380623 3.03824078,9.0298575 C3.11756139,9.01002735 3.1990146,9 3.28077641,9 Z M12,12 C11.4477153,12 11,12.4477153 11,13 L11,17 C11,17.5522847 11.4477153,18 12,18 C12.5522847,18 13,17.5522847 13,17 L13,13 C13,12.4477153 12.5522847,12 12,12 Z M6.96472382,12.1362967 C6.43125772,12.2792385 6.11467523,12.8275755 6.25761704,13.3610416 L7.29289322,17.2247449 C7.43583503,17.758211 7.98417199,18.0747935 8.51763809,17.9318517 C9.05110419,17.7889098 9.36768668,17.2405729 9.22474487,16.7071068 L8.18946869,12.8434035 C8.04652688,12.3099374 7.49818992,11.9933549 6.96472382,12.1362967 Z M17.0352762,12.1362967 C16.5018101,11.9933549 15.9534731,12.3099374 15.8105313,12.8434035 L14.7752551,16.7071068 C14.6323133,17.2405729 14.9488958,17.7889098 15.4823619,17.9318517 C16.015828,18.0747935 16.564165,17.758211 16.7071068,17.2247449 L17.742383,13.3610416 C17.8853248,12.8275755 17.5687423,12.2792385 17.0352762,12.1362967 Z" class="svg"/></g></svg>
@@ -269,7 +271,7 @@
                                 `;
                                 var headbtn = document.getElementsByClassName("header_heading_button");
                                 for (let i = 0; i < headbtn.length; i++) { if (!isMobile) { headbtn[i].setAttribute("onclick", "openHeaderProfileActionLogged()"); } else { headbtn[i].setAttribute("onclick", "openSidenav()"); } }
-                                document.getElementById("header_desktop_button").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><polygon points="0 0 24 0 24 24 0 24"/><path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" class="svg" fill-rule="nonzero" opacity="0.3"/><path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" class="svg" fill-rule="nonzero"/></g></svg>`;
+                                document.getElementById("header_desktop_button").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><polygon points="0 0 24 0 24 24 0 24"/><path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" class="svg" fill-rule="nonzero" opacity="0.3"/><path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" class="svg" fill-rule="nonzero"/></g></svg><div class="absolute header-badge-con" id="header-user-badge-con"></div>`;
                                 if (isMobile) { document.getElementById("header_desktop_button").remove(); document.getElementById("header-search").remove(); }
                                 </script>
                             ';
@@ -302,8 +304,16 @@
                     ';
                 }
             } rememberMe();
-            
+            if (isset($_SESSION['loggedin'])) { $cardExpirySQL = "SELECT expiry FROM customers__card WHERE uid = ". $_SESSION['id']; $cardExpiryRes = $con->query($cardExpirySQL);
+                if ($cardExpiryRes->num_rows > 0) { 
+                    while ($dt = $cardExpiryRes->fetch_assoc()) { 
+                        $now = new DateTime();$future_date = new DateTime($dt['expiry']);$interval = $future_date->diff($now);if ($interval-> format('%a') > 0) {$exp = $interval->format("%a");}
+                        echo '<script content-type="application/javascript">cardExpiryArray.push('.$exp.');</script>'; 
+                    }
+                }
+            }
         ?>
+        <script content-type="application/javascript">for (let i = 0; i < cardExpiryArray.length; i++) { if (cardExpiryArray[i] <= 14) { if (document.getElementById('header-user-badge-con')) { document.getElementById('header-user-badge-con').innerHTML = `<span class="badge badge-small absolute"></span>`; } } }</script>
         <noscript>
             <div class="noscript flex flex-col flex-align-c flex-justify-con-c fixed w-fa larger">
                 <svg width="256" height="256" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.95 18.9688C16.75 18.9688 16.55 18.8688 16.35 18.7688C15.85 18.4688 15.75 17.8688 16.05 17.3688L19.65 11.9688L16.05 6.56876C15.75 6.06876 15.85 5.46873 16.35 5.16873C16.85 4.86873 17.45 4.96878 17.75 5.46878L21.75 11.4688C21.95 11.7688 21.95 12.2688 21.75 12.5688L17.75 18.5688C17.55 18.7688 17.25 18.9688 16.95 18.9688ZM7.55001 18.7688C8.05001 18.4688 8.15 17.8688 7.85 17.3688L4.25001 11.9688L7.85 6.56876C8.15 6.06876 8.05001 5.46873 7.55001 5.16873C7.05001 4.86873 6.45 4.96878 6.15 5.46878L2.15 11.4688C1.95 11.7688 1.95 12.2688 2.15 12.5688L6.15 18.5688C6.35 18.8688 6.65 18.9688 6.95 18.9688C7.15 18.9688 7.35001 18.8688 7.55001 18.7688Z" fill="#004E9C"/><path opacity="0.3" d="M10.45 18.9687C10.35 18.9687 10.25 18.9687 10.25 18.9687C9.75 18.8687 9.35 18.2688 9.55 17.7688L12.55 5.76878C12.65 5.26878 13.25 4.8687 13.75 5.0687C14.25 5.1687 14.65 5.76878 14.45 6.26878L11.45 18.2688C11.35 18.6688 10.85 18.9687 10.45 18.9687Z" fill="#004E9C"/></svg>
