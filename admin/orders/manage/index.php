@@ -341,7 +341,7 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                     <div class="flex flex-row flex-align-c w-fa gap-1 text-muted">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="17" width="7" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/><rect x="11" y="9" width="2" height="2" rx="1" transform="rotate(-90 11 9)" fill="currentColor"/></svg>
                         <span class="small">Állítsa be a rendelés státuszát, hogy a rendelő nyomon tudja követni a rendelésének folyamatát.</span>
-                    </div>
+                    </div><br>
                 `;
                 var x, i, j, l, ll, selElmnt, a, b, c; x = document.getElementsByClassName("csts-select"); l = x.length;
                 for (i = 0; i < l; i++) {
