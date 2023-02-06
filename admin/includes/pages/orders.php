@@ -70,7 +70,7 @@ function get_time_ago( $time ) {
 </div>
 <div class="flex flex-col gap-1">
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-0">
-        <div class="flex flex-col gap-2 prio__con">
+        <div class="flex flex-row flex-align-c flex-justify-con-sb gap-1">
             <div class="flex flex-col padding-1">
                 <div class="flex flex-row flex-align-c gap-05">
                     <?php $monthord__sql = "SELECT SUM(subTotal) AS subtotal, DAY(date) AS date FROM `orders` INNER JOIN orders__payment ON orders__payment.oid = orders.id WHERE MONTH(CURRENT_DATE) = MONTH(date) GROUP BY DAY(date)"; $monthord__res = $con-> query($monthord__sql); if ($monthord__res-> num_rows > 0) { $mth__arr = array(); while($data = $monthord__res-> fetch_assoc()) { array_push($mth__arr, [$data['date'],date('F'),$data['subtotal']]); $mthord__total += $data['subtotal']; } } else { $mthord__total = 0; } ?>
@@ -79,6 +79,16 @@ function get_time_ago( $time ) {
                 </div>
                 <div class="flex flex-row flex-align-c">
                     <span class="small text-muted">Ebben a hónapban szerzett bevételek</span>
+                </div>
+            </div>
+            <div class="flex flex-col padding-1">
+                <div class="flex flex-row flex-align-c gap-05">
+                    <?php $allt__sql = "SELECT SUM(subTotal) AS subtotal FROM `orders` INNER JOIN orders__payment ON orders__payment.oid = orders.id WHERE 1"; $allt__res = $con-> query($allt__sql); if ($allt__res-> num_rows > 0) { $alltmth__arr = array(); while($data = $allt__res-> fetch_assoc()) { array_push($alltmth__arr, [$data['date'],date('F'),$data['subtotal']]); $allt__total += $data['subtotal']; } } else { $allt__total = 0; } ?>
+                    <span class="text-primary larger bold" id="alltime__orders__money">NaN</span>
+                    <script>document.getElementById('alltime__orders__money').textContent = formatter.format(<?php echo $allt__total; ?>);</script>
+                </div>
+                <div class="flex flex-row flex-align-c">
+                    <span class="small text-muted">Összes bevétel</span>
                 </div>
             </div>
         </div>
@@ -143,6 +153,7 @@ function get_time_ago( $time ) {
                 ';
             }
         ?>
+        </div>
         <div class="flex flex-col margin-top-a">
             <?php
                 if ($monthord__res-> num_rows > 0) {

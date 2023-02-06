@@ -277,7 +277,7 @@
                             ';
                             $bsi__sql = "SELECT * FROM cart WHERE uid = $uid"; $bsi__res = $con-> query($bsi__sql);
                             if ($bsi__res-> num_rows > 0) { $num = $bsi__res -> num_rows;
-                                echo '<script>var bsi__button; if (document.getElementById("deskBask")) {bsi__button = document.getElementById("deskBask");} else { bsi__button = document.getElementById("sh__basket"); } bsi__button.setAttribute("onclick", "sh__basket()"); bsi__button.id = "sh__basket"; var bsi__badge = document.createElement("span"); bsi__badge.id = "bspc__ind"; bsi__badge.textContent = '.$num.'; bsi__badge.classList = "badge badge-basket bold sidenav-badge flex flex-align-c flex-justify-con-c absolute box-shadow"; bsi__button.append(bsi__badge); </script>';
+                                echo '<script>var bsi__button; if (document.getElementById("deskBask")) {bsi__button = document.getElementById("deskBask");} else { bsi__button = document.getElementById("sh__basket"); } bsi__button.setAttribute("onclick", "sh__basket()"); bsi__button.id = "sh__basket"; var bsi__badge = document.createElement("span"); bsi__badge.id = "bspc__ind"; bsi__badge.textContent = '.$num.'; bsi__badge.classList = "badge badge-basket bold sidenav-badge label-danger flex flex-align-c flex-justify-con-c absolute"; bsi__button.append(bsi__badge); </script>';
                             }
                         } else { echo '<script>console.log("Cookies: invalid token."); window.location.href="/actions/logout.php"</script>
                             <script>

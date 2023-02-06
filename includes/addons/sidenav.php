@@ -57,7 +57,7 @@
             ?>
             <span class="sidenav-item-in flex flex-col">
                 <span class="flex sidenav-notif-con relative" onclick="openSidenavAddons('notifications')">
-                    <span class="badge badge-small sidenav-badge flex flex-align-c flex-justify-con-c absolute box-shadow"></span>
+                    <span class="badge badge-small sidenav-badge padding-0 flex flex-align-c flex-justify-con-c absolute box-shadow"></span>
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><path d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z" class="svg" opacity=".3" /><rect class="svg" opacity="0.3" x="10" y="16" width="4" height="4" rx="2"/></g>
                     </svg>
@@ -125,7 +125,7 @@
                         <?php if (isset($_SESSION['loggedin'])) { $uid = $_SESSION['id']; 
                             $bm_sql = "SELECT * FROM orders WHERE uid = $uid"; $bm_res = $con-> query($bm_sql);
                             if ($bm_res-> num_rows > 0) { $bnum = $bm_res -> num_rows;
-                                echo '<span class="badge badge-sidenav bold sidenav-badge flex flex-align-c flex-justify-con-c absolute box-shadow" id="bspc__ind">'.$bnum.'</span>';
+                                echo '<span class="badge bold label-danger flex flex-align-c flex-justify-con-c absolute" style="right: 0%;">'.$bnum.'</span>';
                             }
                             }
                         ?>
@@ -138,14 +138,14 @@
                             <span class="sidenav-item-in flex">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M8,4 L16,4 C17.1045695,4 18,4.8954305 18,6 L18,17.726765 C18,18.2790497 17.5522847,18.726765 17,18.726765 C16.7498083,18.726765 16.5087052,18.6329798 16.3242754,18.4639191 L12.6757246,15.1194142 C12.2934034,14.7689531 11.7065966,14.7689531 11.3242754,15.1194142 L7.67572463,18.4639191 C7.26860564,18.8371115 6.63603827,18.8096086 6.26284586,18.4024896 C6.09378519,18.2180598 6,17.9769566 6,17.726765 L6,6 C6,4.8954305 6.8954305,4 8,4 Z" class="svg"/></g></svg>
                             </span>
-                            <span class="sidenav-item-in flex flex-col">
+                            <span class="sidenav-item-in flex flex-col relative">
                                 <span class="text-primary sidenav-item-primary-light">Mentett elemek</span>
                             </span>
                         </span>
                         <?php if (isset($_SESSION['loggedin'])) { $uid = $_SESSION['id']; 
                             $bm_sql = "SELECT * FROM bookmarks WHERE uid = $uid"; $bm_res = $con-> query($bm_sql);
                             if ($bm_res-> num_rows > 0) { $bnum = $bm_res -> num_rows;
-                                echo '<span class="badge badge-sidenav bold sidenav-badge flex flex-align-c flex-justify-con-c absolute box-shadow" id="bspc__ind">'.$bnum.'</span>';
+                                echo '<span class="badge bold label-danger flex flex-align-c flex-justify-con-c absolute" style="right: 0%;">'.$bnum.'</span>';
                             }
                             }
                         ?>

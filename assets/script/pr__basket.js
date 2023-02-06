@@ -19,7 +19,7 @@ for (let i = 0; i < cart_button.length; i++) {
                     }
                     $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/basket/count.php", dataType: "json", contentType: false, processData: false,
                         success: function(data) { var badge = document.getElementById("bspc__ind"); if (badge) { document.getElementById("bspc__ind").textContent = Number(data); }
-                            else { var crbdspc__ind = document.createElement("div"); crbdspc__ind.id = "bspc__ind"; crbdspc__ind.classList = "badge badge-basket bold sidenav-badge flex flex-align-c flex-justify-con-c absolute box-shadow"; document.getElementById("tooltipBasket").parentNode.prepend(crbdspc__ind); crbdspc__ind.textContent = 1; }
+                            else { var crbdspc__ind = document.createElement("div"); crbdspc__ind.id = "bspc__ind"; crbdspc__ind.classList = "badge badge-basket bold sidenav-badge label-danger flex flex-align-c flex-justify-con-c absolute"; document.getElementById("tooltipBasket").parentNode.prepend(crbdspc__ind); crbdspc__ind.textContent = 1; }
                         }, error: function (data) { console.log(data); notificationSystem(0, 1, 0, "Hiba", "Sikertelen művelet!"); }
                     });
                 }

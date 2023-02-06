@@ -195,6 +195,7 @@ a { color: unset; text-decoration: none; }
 .padding-0 { padding: 0 !important; }
 .padding-2 { padding: 2rem; }
 .padding-1 { padding: 1rem !important; }
+.padding-05-0 { padding: .5rem 0; }
 .padding-0-05 { padding: 0 .5rem }
 .padding-025-05 { padding: .25rem .5rem }
 .padding-105 { padding: 1.5rem; }
@@ -743,7 +744,7 @@ input:checked + .slider-smaller:before { -webkit-transform: translateX(24px);-ms
 .select-items div:hover, .same-as-selected { background-color: rgba(0, 0, 0, 0.1); }
 
 /* Badge */
-.badge { top: 15%;right: 5%;border-radius: 50%;width: 1.2rem;height: 1.2rem;max-height: 1.2rem;font-size: .8rem;background-color: var(--text-danger);color: var(--white); }
+.badge { top: 15%;right: 5%;border-radius: 50em;font-size: .65em;background-color: var(--text-danger);color: var(--white);padding: 0.25em 0.45em;display: inline-block !important; line-height: 1; }
 .header-badge-con { top: 5%; right: 5%; }
 .badge-small { width: .5rem;height: .5rem; }
 .sidenav-badge { right: 0%; top: -15%; }

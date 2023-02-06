@@ -2,6 +2,7 @@
 
 if (!isset($_SESSION['loggedin'])) { echo '<script>window.location.href = "/"</script>'; header('Location: /'); exit(); }
 $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
+if ($privilege < 1) { echo '<script>window.location.href = "/"</script>'; header('Location: /'); }
 function get_time_ago( $time ) {
     $time_difference = time() - $time;
     if( $time_difference < 1 ) { return '< 1mp'; }
@@ -199,8 +200,11 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                 </div>
             </div><br>
             <div class="flex flex-col gap-1 feat__body prs__con" id="prs__con"></div><br>
-            <div class="flex flex-row flex-align-fe flex-justify-con-r gap-05"><span class="flex" id="prsb__con">
-                <span class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer user-select-none">Mentés</span>
+            <div class="flex flex-col gap-05" id="panel-bottom">
+                <span class="flex" id="panel-error-con"></span>
+                <div class="flex flex-align-fe flex-justify-con-r w-fa">
+                    <span class="flex flex-row gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer user-select-none" id="save-order">Mentés</span>
+                </div>
             </span>
         `;
 
@@ -328,7 +332,7 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                                 <div class="csts-select csts-select-fnc w-fa relative" id="prd-st-con">
                                     <select class="hidden relative" id="product-status">
                                         <option value="9">Státusz</option>
-                                        <option value="ö">Összekészítés</option>
+                                        <option value="0">Összekészítés</option>
                                         <option value="1">Szállítás alatt</option>
                                         <option value="2">Kiszállítva</option>
                                         <option value="4">Sikertelen</option>
@@ -343,6 +347,28 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                         <span class="small">Állítsa be a rendelés státuszát, hogy a rendelő nyomon tudja követni a rendelésének folyamatát.</span>
                     </div><br>
                 `;
+                $('#save-order').off('click');
+                $('#save-order').click(() => {
+                    let status = new Array (0,1,2,4);
+                    if (status.indexOf(Number(document.getElementById('product-status').value)) != -1) {
+                        $('#save-order').off('click');
+                        document.getElementById('panel-error-con').innerHTML = ``;
+                        document.getElementById('panel-bottom').innerHTML = ``;
+                        document.getElementById('prs__con').innerHTML = `
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                            <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                            <span>Mentés folyamatban</span>
+                        </div>
+                        `;
+                    } else {
+                        document.getElementById('panel-error-con').innerHTML = `
+                        <div class="flex flex-row flex-align-c w-fa gap-1 text-danger">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                            <span class="small">A mentéshez kötelező választania egy státusz opciót!</span>
+                        </div>
+                        `;
+                    }
+                });
                 var x, i, j, l, ll, selElmnt, a, b, c; x = document.getElementsByClassName("csts-select"); l = x.length;
                 for (i = 0; i < l; i++) {
                 selElmnt = x[i].getElementsByTagName("select")[0]; ll = selElmnt.length; a = document.createElement("DIV"); a.setAttribute("class", "cst-sl-sltd adm__input item-bg border-soft text-secondary outline-none small pointer");
@@ -388,5 +414,16 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
         $('#cl__box').click(function () { c__wrapper.classList.add('fadeout'); c__box.classList.add('popout'); setTimeout(() => { c__wrapper.remove(); $('html').css("overflow-y", "unset"); }, 200); });
     }
 </script>
-<!-- <script src="/admin/assets/script/cst-drd.js"></script> -->
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footer.php'); ?>
+
+<!-- 
+
+    invoices : [
+        id - int PRIMARY KEY
+        uid - int
+        isProduct - tinyint
+        oid - int -> isProduct TRUE
+        date - TIMESTAMP
+    ]
+
+-->
