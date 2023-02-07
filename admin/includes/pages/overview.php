@@ -156,7 +156,7 @@ function get_time_ago( $time ) {
         <div class="flex flex-col item-bg border-soft w-50d-fam padding-05 gap-2 box-shadow">
             <div class="flex flex-col w-fa gap-05">
                 <div class="flex flex-col w-fa text-primary">
-                    <span class="larger bold">Legutóbbi tranzakciók</span>
+                    <span class="larger bold">Legutóbbi rendelések</span>
                     <span class="small-med">1 : 00</span>
                 </div>
             </div>

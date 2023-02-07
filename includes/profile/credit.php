@@ -449,5 +449,6 @@ if ($csub__stmt = $con->prepare('SELECT sub FROM customers__card__subscription W
 </div>
 <script>
     var bal__to__form = document.getElementsByClassName('money__form'); for (let i = 0; i < bal__to__form.length; i++) { bal__to__form[i].textContent = formatter.format(bal__to__form[i].getAttribute('default-data')); }
+    var guid = <?= $_SESSION['id']; ?>;
 </script>
 <script src="/includes/profile/script/credit.js"></script>

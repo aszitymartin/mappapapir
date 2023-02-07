@@ -1,5 +1,5 @@
 var tab__button = document.getElementsByClassName("prfc__item"); for (let i = 0; i < tab__button.length; i++) { tab__button[i].parentNode.addEventListener("click", function () { for (let j = 0; j < tab__button.length; j++) { tab__button[j].classList.remove("prfc__item__active"); }if (!tab__button[i].classList.contains("prfc__item__active")) { tab__button[i].classList.add("prfc__item__active"); }});}
-var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";let primCc = 1;
+var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";var primCc = 1;
 function gotoCredit () { document.getElementById('tabs-credit').click(); }
 function gotoEmail () { c__box.classList.replace("popup", "popout"); c__wrapper.classList.add("fadeout"); setTimeout(() => {c__wrapper.remove(); document.getElementById('tabs-email').click();},235); }
 function gotoTabSecu () { document.getElementById("tabs-security").click(); }

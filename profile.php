@@ -138,7 +138,7 @@
                                     if ($stmt = $con->prepare('SELECT date FROM u__password WHERE uid = ?')) { $stmt->bind_param('i', $uid); $stmt->execute(); $result = $stmt->get_result(); $data = $result->fetch_assoc();
                                         $myDate = date("Y-m-d", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );
                                         if (strtotime($data['date']) <= strtotime($myDate)) {
-                                            echo '<span class="badge badge-small badge-warning center-y right-5 absolute" id="tbp__pass__ind"></span>';
+                                            echo '<span class="badge badge-small padding-0 badge-warning center-y right-5 absolute" id="tbp__pass__ind"></span>';
                                         }
                                     }
                                 ?>
@@ -151,7 +151,7 @@
                                 <?php
                                     if ($stmt = $con->prepare('SELECT * FROM u__email WHERE uid = ?')) { $stmt->bind_param('i', $uid); $stmt->execute(); $result = $stmt->get_result(); $data = $result->fetch_assoc();
                                         if ($data['valid'] == false) {
-                                            echo '<span class="badge badge-small badge-danger right-5 center-y absolute"></span>';
+                                            echo '<span class="badge badge-small padding-0 badge-danger right-5 center-y absolute"></span>';
                                         }
                                     }
                                 ?>
