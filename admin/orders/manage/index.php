@@ -3,12 +3,7 @@
 if (!isset($_SESSION['loggedin'])) { echo '<script>window.location.href = "/"</script>'; header('Location: /'); exit(); }
 $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
 if ($privilege < 1) { echo '<script>window.location.href = "/"</script>'; header('Location: /'); }
-function get_time_ago( $time ) {
-    $time_difference = time() - $time;
-    if( $time_difference < 1 ) { return '< 1mp'; }
-    $condition = array( 12 * 30 * 24 * 60 * 60 =>  'éve',30 * 24 * 60 * 60 => 'hónapja',24 * 60 * 60 => 'napja',60 * 60 =>  'órája',60 =>  'perce',1 =>  'másodperce');
-    foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
-}
+
 $getOrderDetails = $con->prepare('SELECT orders.id, status, date, orders__invoice.zip, orders__invoice.settlement, orders__invoice.address, orders__invoice.tax, orders__ship.method, orders__ship.zip AS szip, orders__ship.settlement AS ssettlement, orders__ship.address AS saddress, orders__ship.note, orders__payment.cid, orders__payment.subTotal, orders__payment.voucherUsed, orders__payment.voucherCode, orders__payment.voucherDiscount, orders__user.fullname, orders__user.company, orders__user.email, orders__user.phone FROM orders INNER JOIN orders__invoice ON orders__invoice.oid = orders.id INNER JOIN orders__ship ON orders__ship.oid = orders.id INNER JOIN orders__payment ON orders__payment.oid = orders.id INNER JOIN orders__user ON orders__user.oid = orders.id WHERE orders.id = ?');
 $getOrderDetails->bind_param('i', $params['oid']); $getOrderDetails->execute(); $getOrderDetails->store_result();
 if ($getOrderDetails->num_rows() > 0) { $getOrderDetails->bind_result($getOrderId, $getOrderStatus, $getOrderDate, $getOrderZip, $getOrderSettlement, $getOrderAddress, $getOrderTax, $getOrderSMethod, $getOrderSZip, $getOrderSSettlement, $getOrderSAddress, $getOrderNote, $getOrderCid, $getOrderSubTotal, $getOrderVoucherUsed, $getOrderVoucherCode, $getOrderVoucherDiscount, $getOrderFullname, $getOrderCompany, $getOrderEmail, $getOrderPhone); $getOrderDetails->fetch(); $getOrderDetails->close(); }
@@ -18,16 +13,34 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
 <main class="flex flex-col gap-1">
     <nav class="flex flex-row flex-align-c flex-justify-con-sb gap-1 w-fa">
         <span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=orders">Megrendelések</a> / #<?= $params['oid'] ?></span>
-        <span class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer user-select-none" onclick="showPanel('manage')">Rendelés Kezelése</span>
+        <div class="flex flex-row flex-align-c gap-1">
+            <div id="nav-order-status-con">
+            <?php
+                switch ($getOrderStatus) {
+                    case 0: echo '<span class="label-warning smaller-light padding-025 border-soft-light user-select-none">Összekészítés</span>'; break;
+                    case 1: echo '<span class="label-primary smaller-light padding-025 border-soft-light user-select-none">Kiszállítás</span>'; break;
+                    case 2: echo '<span class="label-success smaller-light padding-025 border-soft-light user-select-none">Kiszállítva</span>'; break;
+                    case 4: echo '<span class="label-danger smaller-light padding-025 border-soft-light user-select-none">Sikertelen</span>'; break;
+                }
+            ?>
+            </div>
+            <span class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer user-select-none" id="manage" onclick="showPanel(this.id)">Rendelés Kezelése</span>
+        </div>
     </nav>
     <div class="flex flex-row flex-align-c gap-1">
         <div class="flex flex-row flex-justify-con-c flex-wrap-m gap-05 w-100">
             <div class="flex flex-col item-bg border-soft w-40d-fam padding-1 gap-2">
                 <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                     <span class="larger text-primary bold">Rendelés Részletei (#<?= $getOrderId; ?>)</span>
-                    <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
-                        <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" onclick="showPanel('general')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
-                    </div>
+                    <?php
+                        if ($getOrderStatus == 0 || $getOrderStatus == 4) {
+                            echo '
+                            <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                                <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" id="general" onclick="showPanel(this.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                            </div>      
+                            ';
+                        }
+                    ?>
                 </div>
                 <div class="flex flex-col gap-05 padding-05 margin-top-a text-muted small">
                     <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
@@ -59,9 +72,15 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
             <div class="flex flex-col item-bg border-soft w-40d-fam padding-1 gap-2">
                 <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                     <span class="larger text-primary bold">Vevő Adatai</span>
-                    <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
-                        <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" onclick="showPanel('user')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
-                    </div>
+                    <?php
+                        if ($getOrderStatus == 0 || $getOrderStatus == 4) {
+                            echo '
+                            <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                                <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" id="user" onclick="showPanel(this.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                            </div>
+                            ';
+                        }
+                    ?>
                 </div>
                 <div class="flex flex-col gap-05 padding-05 margin-top-a text-muted small">
                     <div class="flex flex-row flex-justify-con-sb gap-1 w-fa">
@@ -121,9 +140,15 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
         <div class="flex flex-col item-bg border-soft w-50d-fam padding-1 gap-2">
             <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                 <span class="larger text-primary bold">Számlázási Cím</span>
-                <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
-                    <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" onclick="showPanel('invoice')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
-                </div>
+                <?php
+                    if ($getOrderStatus == 0 || $getOrderStatus == 4) {
+                        echo '
+                        <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                            <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" id="invoice" onclick="showPanel(this.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                        </div>      
+                        ';
+                    }
+                ?>
             </div>
             <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-1 text-muted">
                 <div class="flex flex-col gap-025 small">
@@ -137,9 +162,15 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
         <div class="flex flex-col item-bg border-soft w-50d-fam padding-1 gap-2">
             <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05">
                 <span class="larger text-primary bold">Szállítási Cím</span>
-                <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
-                    <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" onclick="showPanel('shipping')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
-                </div>
+                <?php
+                    if ($getOrderStatus == 0 || $getOrderStatus == 4) {
+                        echo '
+                        <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1 user-select-none">
+                            <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" title="Szerkesztés" aria-label="Szekesztés" id="shipping" onclick="showPanel(this.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"/><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"/></svg></a>
+                        </div>
+                        ';
+                    }
+                ?>
             </div>
             <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-1 text-muted">
                 <div class="flex flex-col gap-025 small">
@@ -351,15 +382,69 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
                 $('#save-order').click(() => {
                     let status = new Array (0,1,2,4);
                     if (status.indexOf(Number(document.getElementById('product-status').value)) != -1) {
+                        let setStatus = Number(document.getElementById('product-status').value);
                         $('#save-order').off('click');
                         document.getElementById('panel-error-con').innerHTML = ``;
                         document.getElementById('panel-bottom').innerHTML = ``;
-                        document.getElementById('prs__con').innerHTML = `
-                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                            <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
-                            <span>Mentés folyamatban</span>
-                        </div>
-                        `;
+                        let apiKey = '739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544';
+                        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                            beforeSend: function() {
+                                    document.getElementById('prs__con').innerHTML = `
+                                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                                            <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                                            <span>Mentés folyamatban</span>
+                                        </div>
+                                    `;
+                            }, success : function (data) {
+                                let orderObject = {
+                                    option : "changeStatus",
+                                    status : setStatus,
+                                    oid    : <?= $getOrderId; ?>,
+                                    ip     : data.ip
+                                };
+                                var orderData = new FormData();
+                                orderData.append("order", JSON.stringify(orderObject));
+                                $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/classes/class.ManageOrder.php", data: orderData, dataType: 'json', contentType: false, processData: false,
+                                    success : function (s) {
+                                        if (s.status == 'success') {
+                                            document.getElementById('prs__con').innerHTML = `
+                                                <div class="flex flex-col flex-align-c flex-justify-con-c text-success user-select-none">
+                                                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
+                                                    <span class="small-med text-align-c">Sikeres mentés.</span>
+                                                </div>
+                                            `;
+                                            switch (setStatus) {
+                                                case 0: document.getElementById('nav-order-status-con').innerHTML = `<span class="label-warning smaller-light padding-025 border-soft-light user-select-none">Összekészítés</span>`; break;
+                                                case 1: document.getElementById('nav-order-status-con').innerHTML = `<span class="label-primary smaller-light padding-025 border-soft-light user-select-none">Kiszállítás</span>`; break;
+                                                case 2: document.getElementById('nav-order-status-con').innerHTML = `<span class="label-success smaller-light padding-025 border-soft-light user-select-none">Kiszállítva</span>`; break;
+                                                case 4: document.getElementById('nav-order-status-con').innerHTML = `<span class="label-danger smaller-light padding-025 border-soft-light user-select-none">Sikertelen</span>`; break;
+                                            }
+                                        } else {
+                                            document.getElementById('prs__con').innerHTML = `
+                                                <div class="flex flex-col flex-align-c flex-justify-con-c text-danger user-select-none">
+                                                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                                    <span class="small-med text-align-c">Sikertelen mentés.</span>
+                                                </div>
+                                            `;
+                                        }
+                                    }, error : function (e) {
+                                        document.getElementById('prs__con').innerHTML = `
+                                            <div class="flex flex-col flex-align-c flex-justify-con-c text-danger user-select-none">
+                                                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                                <span class="small-med text-align-c">Sikertelen mentés.</span>
+                                            </div>
+                                        `;
+                                    }
+                                });
+                            }, error : function (e) {
+                                document.getElementById('prs__con').innerHTML = `
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c text-danger user-select-none">
+                                        <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                        <span class="small-med text-align-c">Nem tudtuk kapcsolni a szolgáltatóhoz.<br>Kérjük próbálja újra később.</span>
+                                    </div>
+                                `;
+                            }
+                        });
                     } else {
                         document.getElementById('panel-error-con').innerHTML = `
                         <div class="flex flex-row flex-align-c w-fa gap-1 text-danger">
