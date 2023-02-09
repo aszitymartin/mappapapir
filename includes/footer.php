@@ -142,12 +142,23 @@
                     $('#staff-auth').on('keyup', (event) => {if (event.keyCode === 13) {event.preventDefault();document.getElementById("staff-auth-button-desktop").click();}});
                     $('#staff-auth').on('focus', function () {if (document.body.contains(document.getElementById('staff-indicator-inner'))) {$('#staff-indicator-inner').remove();}});
                 }
+                /*
                 $('#staff-auth-button-desktop').click(function () {
                     if (document.getElementById('staff-auth').value) {const getStaffTries = localStorage.getItem('staffTries');
                         if (!getStaffTries) {localStorage.setItem('staffTries', JSON.stringify(staffTries));}
                     $.ajax({
                         type: "POST",url: "/includes/staff/au.php",
-                        data: {password: document.getElementById('staff-auth').value,id: <?php if (isset($_SESSION['loggedin'])) {echo $_SESSION['id'];} else {echo "0";}?>},
+                        data: {
+                            password: document.getElementById('staff-auth').value,
+                            id: 
+                                <?php 
+
+                                    if (isset($_SESSION['loggedin'])) {
+                                        echo $_SESSION['id'];
+                                    }
+                                    else {echo "0";}
+                                ?>
+                        },
                         cache: false,
                         success: function(data) {
                             if (data === 'true') {
@@ -207,6 +218,7 @@
                     });
                 } else {document.getElementById('staff-auth').focus();}
                 });
+                */
                 if (panel == 'settings') {$('#profileHeaderContainer').load('/includes/header-menu/settings.php');}
             }
 
@@ -224,14 +236,15 @@
         <!-- <script src="/assets/script/internationalize/jquery.MultiLanguage.js" content-type="application/javascript"></script> -->
         <script content-type="application/javascript">
             function setTheme (themeType) {
-                $.ajax({ type: "POST",url: "/actions/theme/changeTheme.php",data: {theme: themeType.split('-')[1]},cache: false,
-                    success: function(data) {
-                        if (themeType.split('-')[1] === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                            if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
-                            else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                        } else {document.querySelector('html').dataset.theme = 'theme-' + themeType.split('-')[1];}
-                    },error: function () {console.log('Cannot change theme. Try again.');}
-                });
+                console.log(themeType);
+                // $.ajax({ type: "POST",url: "/actions/theme/changeTheme.php",data: {theme: themeType.split('-')[1]},cache: false,
+                //     success: function(data) {
+                //         if (themeType.split('-')[1] === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                //             if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
+                //             else {document.querySelector('html').dataset.theme = 'theme-dark';}
+                //         } else {document.querySelector('html').dataset.theme = 'theme-' + themeType.split('-')[1];}
+                //     },error: function () {console.log('Cannot change theme. Try again.');}
+                // });
             }
         </script>
         <script content-type="application/javascript"> // Fejlecben levo keresomezo beallitasa

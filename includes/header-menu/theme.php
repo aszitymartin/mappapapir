@@ -108,37 +108,83 @@
                                 ";
                             ?>
                             <?php
-                                if (isset($_SESSION['loggedin'])) {
-                                    echo "
-                                        <script>
-                                        if (theme === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                            if (isset($_SESSION['loggedin'])) {
+                                echo "
+                                    <script content-type='application/javascript'>const theme = '". $theme ."';
+                                        switch (theme) {
+                                            case 'auto' :
+                                                const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                                                if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = `theme-light`;}
+                                                else {document.querySelector('html').dataset.theme = `theme-dark`;}
+                                            break;
+                                            case 'schedule' :
+                                                var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
+                                                document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
+                                            break;
+                                            case 'dark' :
+                                                document.querySelector('html').dataset.theme = `theme-dark`;
+                                            break;
+                                            case 'light' :
+                                                document.querySelector('html').dataset.theme = `theme-light`;
+                                            break;
+                                            default :
+                                                var themeData = new FormData(); themeData.append('action', 'get'); themeData.append('uid', ".$_SESSION['id'].");
+                                                $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
+                                                    success: function(s) {
+                                                        if (s.satus == 'success') { document.querySelector('html').dataset.theme = `theme-`+s.theme; }
+                                                        else { document.querySelector('html').dataset.theme = `theme-light`; } 
+                                                    }, error: function (e) { document.querySelector('html').dataset.theme = `theme-light`; }
+                                                });
+                                            break;
+                                        }
+                                    </script>
+                                ";
+                            } else {
+                                echo "
+                                    <script content-type='application/javascript'>const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                                        if (!localStorage.getItem('theme')) {
                                             if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = `theme-light`;                            
                                             } else {document.querySelector('html').dataset.theme = `theme-dark`;   }
-                                        } else {document.querySelector('html').dataset.theme = 'theme-' + theme;   }
-                                        </script>
-                                    ";
-                                } else {
-                                    echo "
-                                        <script> const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                                            if (!localStorage.getItem('theme')) {
-                                                if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = `theme-light`;                            
-                                                } else {document.querySelector('html').dataset.theme = `theme-dark`;   }
-                                            } else {document.querySelector('html').dataset.theme = localStorage.getItem('theme');}
-                                        </script>
-                                    ";
-                                }
-                            ?>
+                                        } else {document.querySelector('html').dataset.theme = localStorage.getItem('theme');}
+                                    </script>
+                                ";
+                            }
+                        ?>
                             <script src="/assets/script/internationalize/jquery.MultiLanguage.js"></script>
                             <script>
-                                function setTheme (themeType) {
-                                    $.ajax({
-                                        type: "POST",url: "/actions/theme/changeTheme.php",data: {theme: themeType.split('-')[1]},cache: false,
-                                        success: function(data) {
-                                            if (themeType.split('-')[1] === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                                                if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = 'theme-light';
-                                                } else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                                            } else {document.querySelector('html').dataset.theme = 'theme-' + themeType.split('-')[1];}
-                                        },error: function () {console.log('Cannot change theme. Try again.');}
-                                    });
-                                }
+                                    function setTheme (themeType) {
+                                        var themeValue = themeType.split('-')[1];
+                                        const themeData = {
+                                            action : "set",
+                                            theme  : themeValue,
+                                            uid    : <?= $_SESSION['id']; ?>
+                                        };
+                                        $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
+                                            success: function(s) {
+                                                if (s.status == 'success') {
+                                                    switch (s.theme) {
+                                                        case 'auto' :
+                                                            const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                                                            if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
+                                                            else {document.querySelector('html').dataset.theme = 'theme-dark';}
+                                                        break;
+                                                        case 'dark' :
+                                                            document.querySelector('html').dataset.theme = 'theme-dark';
+                                                        break;
+                                                        case 'light' :
+                                                            document.querySelector('html').dataset.theme = 'theme-light';
+                                                        break;
+                                                        case 'schedule' :
+                                                            var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
+                                                            document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
+                                                        break;
+                                                        default :
+                                                            document.querySelector('html').dataset.theme = 'theme-light';
+                                                        break;
+                                                    }
+                                                } else { document.querySelector('html').dataset.theme = 'theme-light'; }
+                                            },error: function (e) { console.log(e); document.querySelector('html').dataset.theme = 'theme-light'; }
+                                        });
+
+                                    }
                             </script>

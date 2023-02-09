@@ -15,9 +15,15 @@ else { echo '<script>window.location.href = "/404"</script>'; header('Location: 
 <main class="flex flex-col gap-1">
     <nav class="flex flex-row flex-align-c flex-justify-con-sb gap-1 w-fa">
         <span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=orders">Megrendelések</a> / #<?= $params['id'] ?></span>
-        <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1">
-            <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" href="/orders/m/<?= $getOrderId; ?>">Rendelés kezelése</a>
-        </div>
+        <?php
+            if ($privilege > 0) {
+                echo '
+                <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1">
+                    <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" href="/orders/m/'. $getOrderId .'">Rendelés kezelése</a>
+                </div>
+                ';
+            }
+        ?>
     </nav>
     <div class="flex flex-row flex-align-c gap-1">
         <div class="flex flex-row flex-justify-con-c flex-wrap-m gap-05 prio__con w-100">

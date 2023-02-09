@@ -36,7 +36,7 @@ if ($stmt = $con->prepare('SELECT id, fullname, email, password, theme FROM cust
                         if ($setp__email = $con->prepare('DELETE FROM customers__deactivated WHERE uid = ?')) {
                             $setp__email->bind_param('i', $cuid); $setp__email->execute();
                             if ($setp__email = $con->prepare('DELETE FROM customers__deleted WHERE uid = ?')) {
-                                $setp__email->bind_param('i', $cuid); $setp__email->execute(); $_SESSION['loggedin'] = TRUE; die('200');
+                                $setp__email->bind_param('i', $cuid); $setp__email->execute(); $_SESSION['loggedin'] = TRUE; $_SESSION['id'] = $cuid; die('200');
                             }
                         }
                     } $setp__email->close();

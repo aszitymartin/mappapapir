@@ -1,4 +1,7 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); ?>
+<?php
+ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
+?>
 <!DOCTYPE html>
 <html lang="HU">
     <head>
@@ -6,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <?php
-            $sql = "SELECT meta, webmester, email FROM def__page"; $res = $con->query($sql);
+            $sql = "SELECT meta, webmester, email, description FROM def__page"; $res = $con->query($sql);
             while ($hdt = $res->fetch_assoc()) {
                 $ma = explode(";", $hdt['meta']);
                 for ($i = 0; $i < count($ma); $i++) {
@@ -36,14 +39,31 @@
             if (isset($_SESSION['loggedin'])) {
                 echo "
                     <script content-type='application/javascript'>const theme = '". $theme ."';
-                        if (theme === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                            if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = `theme-light`;}
-                            else {document.querySelector('html').dataset.theme = `theme-dark`;}
-                        } else {
-                            if (theme == 'schedule') {
+                        switch (theme) {
+                            case 'auto' :
+                                const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                                if (darkThemeMq.matches) {document.querySelector('html').dataset.theme = `theme-light`;}
+                                else {document.querySelector('html').dataset.theme = `theme-dark`;}
+                            break;
+                            case 'schedule' :
                                 var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
                                 document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
-                            } else { document.querySelector('html').dataset.theme = 'theme-' + theme; }
+                            break;
+                            case 'dark' :
+                                document.querySelector('html').dataset.theme = `theme-dark`;
+                            break;
+                            case 'light' :
+                                document.querySelector('html').dataset.theme = `theme-light`;
+                            break;
+                            default :
+                                var themeData = new FormData(); themeData.append('action', 'get'); themeData.append('uid', ".$_SESSION['id'].");
+                                $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
+                                    success: function(s) {
+                                        if (s.satus == 'success') { document.querySelector('html').dataset.theme = `theme-`+s.theme; }
+                                        else { document.querySelector('html').dataset.theme = `theme-light`; } 
+                                    }, error: function (e) { document.querySelector('html').dataset.theme = `theme-light`; }
+                                });
+                            break;
                         }
                     </script>
                 ";
