@@ -240,7 +240,7 @@
                 const themeData = {
                     action : "set",
                     theme  : themeValue,
-                    uid    : <?= $_SESSION['id']; ?>
+                    uid    : <?= isset($_SESSION['id']) ? $_SESSION['id'] : 0; ?>
                 };
                 $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
                     success: function(s) {

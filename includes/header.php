@@ -134,7 +134,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
                     uid : 1,
                     pid : 1,
                     ip  : ipAddress,
-                    action : 'delete'
+                    action : 'empty',
                 };
                 cartData.append('cart', JSON.stringify(cartObject));
                 $.ajax({ type: 'POST', url: '/assets/php/classes/class.Cart.php', data: cartData, dataType: 'json', contentType: false, processData: false,
