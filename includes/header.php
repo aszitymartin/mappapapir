@@ -32,6 +32,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
         <link href="/assets/script/tagify/dist/tagify.css" rel="stylesheet">
         <script src="/assets/script/jquery/jquery.js" content-type="application/javascript"></script>
         <script src="/assets/script/hammer.js"></script>
+        <script src="/assets/script/classes/class.ajax.js"></script>
         <title><?= $hsdt['title']; ?></title>
     </head>
     <body>
@@ -103,14 +104,14 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
                 <div id="hs--con"></div>
             </div>
         </header>
-        <span id="atc">ADD TO CART</span>
+        <span class="primary-bg padding-025 border-soft pointer user-select-none" id="atc">ADD TO CART</span>
         <script>
             var cartData = new FormData(); 
             $('#atc').click(() => {
                 var ipAddress = '192.168.1.1';
 
                 /*
-                    ADD / DELETE / EMPTY
+                    ADD / DELETE / EMPTY / COUNT / INFO / NOT IN CART
                     const cartObject = {
                         uid : 1,
                         pid : 1,
@@ -134,13 +135,27 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
                     uid : 1,
                     pid : 1,
                     ip  : ipAddress,
-                    action : 'empty',
+                    action : 'count',
                 };
+                
                 cartData.append('cart', JSON.stringify(cartObject));
-                $.ajax({ type: 'POST', url: '/assets/php/classes/class.Cart.php', data: cartData, dataType: 'json', contentType: false, processData: false,
-                    success: function(s) {
-                        console.log(s);
-                    }, error: function (e) { console.log(e); }
-                });
+
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Cart.php',
+                    data : cartData
+                }
+                const ajaxCall = new sendAjaxRequest(ajaxObject);
+                const ajaxResult = ajaxCall.sendRequest();
+                var asd = { ...ajaxResult };
+
+                console.log(asd);
+                
+
+                // cartData.append('cart', JSON.stringify(cartObject));
+                // $.ajax({ type: 'POST', url: '/assets/php/classes/class.Cart.php', data: cartData, dataType: 'json', contentType: false, processData: false,
+                //     success: function(s) {
+                //         console.log(s);
+                //     }, error: function (e) { console.log(e); }
+                // });
             });
         </script>

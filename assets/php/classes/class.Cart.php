@@ -13,7 +13,7 @@ Class Cart {
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
                 "status" => "error",
-                "message" => "Nincs elegendő adat a folytatáshoz"
+                "message" => "Nincs elegendő adat a folytatáshoz."
             ];
             return $this->returnObject;
         }
@@ -72,7 +72,7 @@ Class Cart {
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
                 "status" => "error",
-                "message" => "Nincs elegendő adat a folytatáshoz"
+                "message" => "Nincs elegendő adat a folytatáshoz."
             ];
             return $this->returnObject;
         }
@@ -130,7 +130,7 @@ Class Cart {
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
                 "status" => "error",
-                "message" => "Nincs elegendő adat a folytatáshoz"
+                "message" => "Nincs elegendő adat a folytatáshoz."
             ];
             return $this->returnObject;
         }
@@ -233,7 +233,7 @@ Class Cart {
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
                 "status" => "error",
-                "message" => "Nincs elegendő adat a folytatáshoz"
+                "message" => "Nincs elegendő adat a folytatáshoz."
             ];
             return $this->returnObject;
         }
@@ -286,15 +286,131 @@ Class Cart {
     }
 
     function countProducts ($object) {
-        
+        $requiredItems = array ('uid', 'pid', 'ip', 'action');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); }
+        if (isset($object['uid'])) { $uid = $object['uid']; }
+        else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Ehhez a tevékenységhez be kell jelentkeznie."
+            ]; return $this->returnObject;
+        }
+
+        if ($stmt = $con->prepare('SELECT id FROM cart WHERE uid = ?')) {
+            $stmt->bind_param('i', $uid); $stmt->execute(); $stmt->store_result();
+            $this->returnObject = [
+                "status" => "success",
+                "count" => $stmt->num_rows
+            ]; return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba lépett fel az adatbázisban feldolgozás közben."
+            ]; return $this->returnObject;
+        }
+
     }
 
     function productInfo ($object) {
+
+        $requiredItems = array ('uid', 'pid', 'ip', 'action');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); }
+        if (isset($object['uid'])) { $uid = $object['uid']; }
+        else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Ehhez a tevékenységhez be kell jelentkeznie."
+            ]; return $this->returnObject;
+        }
+
+        if ($stmt = $con->prepare('SELECT cart.pid, cart.quantity, products__inventory.quantity AS maxquantity FROM cart INNER JOIN products__inventory ON products__inventory.pid = cart.pid WHERE cart.uid = ? AND cart.pid = ?')) {
+            $stmt->bind_param('ii', $uid, $object['pid']); $stmt->execute(); $stmt->store_result(); $stmt->bind_result($itemId, $itemQuantity, $itemMaxQuantity); $stmt->fetch();
+            if ($stmt->num_rows > 0) {
+                $infoObject = [
+                    "pid" => $itemId,
+                    "quantity" => $itemQuantity,
+                    "maxQuantity" => $itemMaxQuantity
+                ];
+                $this->returnObject = [
+                    "status" => "success",
+                    "data" => $infoObject
+                ]; return $this->returnObject;
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Nem létezik ilyen termék a kosárban."
+                ]; return $this->returnObject;    
+            }
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba lépett fel az adatbázisban feldolgozás közben."
+            ]; return $this->returnObject;
+        }
 
     }
 
     function showProductsNotInCart ($object) {
 
+        $requiredItems = array ('uid', 'pid', 'ip', 'action');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); }
+        if (isset($object['uid'])) { $uid = $object['uid']; }
+        else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Ehhez a tevékenységhez be kell jelentkeznie."
+            ]; return $this->returnObject;
+        }
+
+        $gbisql = "SELECT pid FROM cart WHERE uid = $uid";
+        if ($gbires = $con->query($gbisql)) {
+            $gbitems = array();
+            while ($gbi = $gbires->fetch_assoc()) { array_push($gbitems, $gbi['pid']); }
+            if (count($gbitems) > 0) { $gbimp = implode(',', $gbitems); $exsql = " WHERE products.id NOT IN (".$gbimp.") "; } else { $exsql = " WHERE 1 "; }
+            $gbasql = "SELECT products.id, products.name, products.thumbnail, products__variations.brand, products__category.category FROM products INNER JOIN products__category ON products__category.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id $exsql";
+            $gbares = $con->query($gbasql); $gbaitem = array();
+            while ($gba = $gbares->fetch_assoc()) { $gbaObj = new stdClass();
+                $gbaObj->id = $gba['id']; $gbaObj->name = $gba['name']; $gbaObj->thumbnail = $gba['thumbnail']; $gbaObj->brand = $gba['brand']; $gbaObj->category = $gba['category']; array_push($gbaitem, $gbaObj);
+            }
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $gbaitem
+            ]; return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba lépett fel az adatbázisban feldolgozás közben."
+            ]; return $this->returnObject;
+        }
+
+        
     }
 
     function getResults () {
