@@ -236,15 +236,39 @@
         <!-- <script src="/assets/script/internationalize/jquery.MultiLanguage.js" content-type="application/javascript"></script> -->
         <script content-type="application/javascript">
             function setTheme (themeType) {
-                console.log(themeType);
-                // $.ajax({ type: "POST",url: "/actions/theme/changeTheme.php",data: {theme: themeType.split('-')[1]},cache: false,
-                //     success: function(data) {
-                //         if (themeType.split('-')[1] === 'auto') {const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                //             if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
-                //             else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                //         } else {document.querySelector('html').dataset.theme = 'theme-' + themeType.split('-')[1];}
-                //     },error: function () {console.log('Cannot change theme. Try again.');}
-                // });
+                var themeValue = themeType.split('-')[1];
+                const themeData = {
+                    action : "set",
+                    theme  : themeValue,
+                    uid    : <?= $_SESSION['id']; ?>
+                };
+                $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
+                    success: function(s) {
+                        if (s.status == 'success') {
+                            switch (s.theme) {
+                                case 'auto' :
+                                    const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                                    if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
+                                    else {document.querySelector('html').dataset.theme = 'theme-dark';}
+                                break;
+                                case 'dark' :
+                                    document.querySelector('html').dataset.theme = 'theme-dark';
+                                break;
+                                case 'light' :
+                                    document.querySelector('html').dataset.theme = 'theme-light';
+                                break;
+                                case 'schedule' :
+                                    var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
+                                    document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
+                                break;
+                                default :
+                                    document.querySelector('html').dataset.theme = 'theme-light';
+                                break;
+                            }
+                        } else { document.querySelector('html').dataset.theme = 'theme-light'; }
+                    },error: function (e) { console.log(e); document.querySelector('html').dataset.theme = 'theme-light'; }
+                });
+
             }
         </script>
         <script content-type="application/javascript"> // Fejlecben levo keresomezo beallitasa
