@@ -1,7 +1,5 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
-
 Class Cart {
 
     public $returnObject;
@@ -461,5 +459,5 @@ if (isset($postObject['uid']) && isset($postObject['action'])) {
     }
 } else {
     $returnObject->status = "error"; $returnObject->message = "Hiányzó adatok.";
-    die(json_encode($returnObject));
+    die(json_encode(array($returnObject)));
 }

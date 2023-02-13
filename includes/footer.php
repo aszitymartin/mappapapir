@@ -350,6 +350,7 @@
                 }
             }
         ?>
+        <script src="/assets/script/classes/class.ajax.js"></script>
         <script content-type="application/javascript">for (let i = 0; i < cardExpiryArray.length; i++) { if (cardExpiryArray[i] <= 14) { if (document.getElementById('header-user-badge-con')) { document.getElementById('header-user-badge-con').innerHTML = `<span class="badge badge-small absolute"></span>`; } } }</script>
         <noscript>
             <div class="noscript flex flex-col flex-align-c flex-justify-con-c fixed w-fa larger">

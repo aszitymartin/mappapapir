@@ -1,6 +1,4 @@
-<?php
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
-require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 ?>
 <!DOCTYPE html>
 <html lang="HU">
@@ -32,7 +30,6 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
         <link href="/assets/script/tagify/dist/tagify.css" rel="stylesheet">
         <script src="/assets/script/jquery/jquery.js" content-type="application/javascript"></script>
         <script src="/assets/script/hammer.js"></script>
-        <script src="/assets/script/classes/class.ajax.js"></script>
         <title><?= $hsdt['title']; ?></title>
     </head>
     <body>
@@ -108,18 +105,17 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
         <script>
             var cartData = new FormData(); 
             $('#atc').click(() => {
-                var ipAddress = '192.168.1.1';
-
+                
                 /*
                     ADD / DELETE / EMPTY / COUNT / INFO / NOT IN CART
                     const cartObject = {
-                        uid : 1,
-                        pid : 1,
-                        ip  : ipAddress,
-                        action : 'delete'
+                    uid : 1,
+                    pid : 1,
+                    ip  : ipAddress,
+                    action : 'delete'
                     };
 
-
+                    
                     UPDATE
                     const cartObject = {
                         uid : 1,
@@ -128,34 +124,56 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
                         action : 'update'
                         subaction : 'add' / 'delete'
                     };
-
+                    
                 */
-
-                const cartObject = {
-                    uid : 1,
-                    pid : 1,
-                    ip  : ipAddress,
-                    action : 'count',
-                };
-                
+                   
+                var ipAddress = '192.168.1.1';
+                const cartObject = { uid : 1, pid : 1, ip  : ipAddress, action : 'count' };
                 cartData.append('cart', JSON.stringify(cartObject));
 
                 const ajaxObject = {
-                    url : '/assets/php/classes/class.Cart.php',
-                    data : cartData
+                    url : '/assets/php/classes/class.Cart.php', data : cartData,
+                    // loaderContainer : "atc"
                 }
-                const ajaxCall = new sendAjaxRequest(ajaxObject);
-                const ajaxResult = ajaxCall.sendRequest();
-                var asd = { ...ajaxResult };
+                
+                
+                get(ajaxObject)
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((reason) => console.log(reason.message));
 
-                console.log(asd);
+                // console.log(getFromAjaxRequest(ajaxObject));
+                // const sentData = getFromAjaxRequest(ajaxObject)
+                // .then (response => {
+                //     setTimeout(() => {
+                //         console.log(Object.keys(response));
+                        
+                //     }, 250);
+                // })
+                // .then (data => {
+                //     console.log((data));
+                // });
+
+            });
+            // async function get(o) {
+            //     const dt = {};
+            //     const sentData = await getFromAjaxRequest(o)
+            //     .then (response => {
+            //         // console.log(response);
+            //         dt.res = response;
+            //     });
                 
 
-                // cartData.append('cart', JSON.stringify(cartObject));
-                // $.ajax({ type: 'POST', url: '/assets/php/classes/class.Cart.php', data: cartData, dataType: 'json', contentType: false, processData: false,
-                //     success: function(s) {
-                //         console.log(s);
-                //     }, error: function (e) { console.log(e); }
-                // });
-            });
+            //     console.log(Object.keys(dt.res));
+
+            // }
+
+                async function get (o) {
+                    let response = await getFromAjaxRequest(o);
+                    let data = await response;
+
+                    return data;
+                }
+
         </script>
