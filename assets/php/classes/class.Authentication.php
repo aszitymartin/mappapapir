@@ -6,6 +6,24 @@ Class Authentication {
 
     public $returnObject;
 
+    private function connect () {
+        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
+        $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        if ( mysqli_connect_errno() ) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $con
+            ];
+            return $this->returnObject;
+        }
+    }
+
     function loginUser ($object) {
 
         $requiredItems = array ('ip', 'action', 'email', 'password', 'device', 'city', 'region', 'country');
@@ -28,14 +46,17 @@ Class Authentication {
             }
         }
 
-        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
-        if ( mysqli_connect_errno() ) {
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
             $this->returnObject = [
                 "status" => "error",
                 "message" => "Nem sikerült kapcsolódni az adatbázishoz."
             ];
             return $this->returnObject;
         }
+
+
         function getBrowser() {
             $u_agent = $_SERVER['HTTP_USER_AGENT']; $bname = 'Ismeretlen'; $platform = 'Ismeretlen'; $version= "";
             if (preg_match('/linux/i', $u_agent)) { $platform = 'Linux'; } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) { $platform = 'Mac'; }
@@ -156,9 +177,52 @@ Class Authentication {
 
     function registerUser ($object) {
 
+        $requiredItems = array ('ip', 'action', 'email', 'password', 'device', 'city', 'region', 'country');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        
+
     }
 
     function logOutUser ($object) {
+        
+        unset($_COOKIE['__au__login']); setcookie("__au__login", null, -1, '/');
+        $_SESSION['loggedin'] = FALSE; unset($_SESSION['id']);
+        session_start(); session_destroy();
+        
+        $this->returnObject = [ "status" => "success" ];
+        return $this->returnObject;
+
+    }
+
+    function isLogged ($object) {
         
     }
 
@@ -177,6 +241,14 @@ if (isset($postObject['action'])) {
     switch ($postObject['action']) {
         case 'login':
             $authAction->loginUser($postObject);
+            die(json_encode($authAction->getResults()));
+        break;
+        case 'register':
+            $authAction->registerUser($postObject);
+            die(json_encode($authAction->getResults()));
+        break;
+        case 'logout':
+            $authAction->logOutUser($postObject);
             die(json_encode($authAction->getResults()));
         break;
         default:
