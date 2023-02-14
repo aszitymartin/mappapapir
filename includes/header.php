@@ -128,52 +128,41 @@
                 */
                    
                 var ipAddress = '192.168.1.1';
-                const cartObject = { uid : 1, pid : 1, ip  : ipAddress, action : 'count' };
+                const cartObject = { 
+                    uid : 1, 
+                    pid : 1, 
+                    ip  : ipAddress, 
+                    action : 'count' 
+                };
                 cartData.append('cart', JSON.stringify(cartObject));
 
                 const ajaxObject = {
                     url : '/assets/php/classes/class.Cart.php', data : cartData,
-                    // loaderContainer : "atc"
+                    loaderContainer : {
+                        isset : true,       // true / false
+                        id : 'atc',
+                        type : 'panel',     // types : button / panel
+                        iconSize : {
+                            iconWidth : '128',
+                            iconHeight : '128'
+                        },
+                        loaderText : {
+                            custom : false,
+                            customText : ''
+                        }
+                    }
                 }
                 
-                
-                get(ajaxObject)
+                let response = getFromAjaxRequest(ajaxObject)
                 .then((data) => {
-                    console.log(data);
-                })
-                .catch((reason) => console.log(reason.message));
-
-                // console.log(getFromAjaxRequest(ajaxObject));
-                // const sentData = getFromAjaxRequest(ajaxObject)
-                // .then (response => {
-                //     setTimeout(() => {
-                //         console.log(Object.keys(response));
-                        
-                //     }, 250);
-                // })
-                // .then (data => {
-                //     console.log((data));
-                // });
+                    console.log('then');
+                    if (data.status == 'success') {
+                        console.log('success');
+                    } else {
+                        console.log(data);
+                    }
+                }) .catch((reason) => console.log(reason.message));
 
             });
-            // async function get(o) {
-            //     const dt = {};
-            //     const sentData = await getFromAjaxRequest(o)
-            //     .then (response => {
-            //         // console.log(response);
-            //         dt.res = response;
-            //     });
-                
-
-            //     console.log(Object.keys(dt.res));
-
-            // }
-
-                async function get (o) {
-                    let response = await getFromAjaxRequest(o);
-                    let data = await response;
-
-                    return data;
-                }
 
         </script>

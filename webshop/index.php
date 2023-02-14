@@ -299,50 +299,68 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
                 `;
             }, success : function (api) {
                 var cartData = new FormData(); 
-                var ipAddress = api.ip;
                 const cartObject = {
                     uid : <?= $_SESSION['id']; ?>,
                     pid : <?= $params['id']; ?>,
-                    ip  : ipAddress,
+                    ip  : api.ip,
                     action : document.getElementById('add-to-cart').getAttribute('key-event') == 'add' ? 'add' : 'delete'
                 };
                 cartData.append('cart', JSON.stringify(cartObject));
-                $.ajax({
-                    type: 'POST', url: '/assets/php/classes/class.Cart.php', data: cartData, dataType: 'json', contentType: false, processData: false,
-                    success: function(s) {
-                        if (s.status == 'success') {
-                            if (document.getElementById('add-to-cart').getAttribute('key-event') == 'add') {
-                                document.getElementById("add-to-cart").innerHTML = `
-                                    <span>Kosárban</span>
-                                    <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
-                                `;
-                                document.getElementById('add-to-cart').setAttribute('key-event', 'delete');
-                            } else {
-                                document.getElementById('add-to-cart').setAttribute('key-event', 'add');
-                                document.getElementById("add-to-cart").innerHTML = `
-                                    <span>Kosárba</span>
-                                    <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
-                                `;
-                            }
-                            cartObject.action = "count";
-                            cartData.append('cart', JSON.stringify(cartObject));
-                            $.ajax({
-                                type: 'POST', url: '/assets/php/classes/class.Cart.php', data: cartData, dataType: 'json', contentType: false, processData: false,
-                                success: function(s) {
-                                    if (s.status == 'success') {
-                                        document.getElementById("bspc__ind").innerHTML = s.count;
-                                    }
-                                }
-                            });
-                        } else {
+                const ajaxObject = { 
+                    url : '/assets/php/classes/class.Cart.php',
+                    data : cartData,
+                    loaderContainer : {
+                        isset : true,
+                        id : 'add-to-cart',
+                        type : 'button',
+                        iconSize : {
+                            iconWidth : '19.2',
+                            iconHeight : '19.2'
+                        },
+                        loaderText : {
+                            custom : true,
+                            customText : 'Kosárba'
+                        }
+                    }
+                }
+                
+                let response = getFromAjaxRequest(ajaxObject)
+                .then((data) => {
+                    if (data.status == 'success') {
+                        if (document.getElementById('add-to-cart').getAttribute('key-event') == 'add') {
                             document.getElementById("add-to-cart").innerHTML = `
-                                <span>Hiba történt</span>
-                                <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                <span>Kosárban</span>
+                                <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
+                            `;
+                            document.getElementById('add-to-cart').setAttribute('key-event', 'delete');
+                        } else {
+                            document.getElementById('add-to-cart').setAttribute('key-event', 'add');
+                            document.getElementById("add-to-cart").innerHTML = `
+                                <span>Kosárba</span>
+                                <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg>
                             `;
                         }
-                    }, error: function (e) {
-                        console.log(e);
+                        cartObject.action = "count";
+                        cartData.append('cart', JSON.stringify(cartObject));
+                        ajaxObject.loaderContainer.isset = false;
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => {
+                            if (data.status == 'success') {
+                                document.getElementById("bspc__ind").innerHTML = data.count;
+                            }
+                        });
+                    } else {
+                        document.getElementById("add-to-cart").innerHTML = `
+                            <span>Hiba történt</span>
+                            <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                        `;
                     }
+                })
+                .catch((reason) => {
+                    document.getElementById("add-to-cart").innerHTML = `
+                        <span>Hiba történt</span>
+                        <svg width="19.2px" height="19.2px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    `;
                 });
             }, error : function () {
                 document.getElementById("add-to-cart").innerHTML = `

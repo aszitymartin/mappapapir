@@ -8,10 +8,10 @@ Class Themes {
         $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
         
         if($setUserTheme = $con->prepare("UPDATE customers SET theme = ? WHERE id = ?")) {
-            $setUserTheme->bind_param('si', $_POST['theme'], $_POST['uid']);$setUserTheme->execute();
+            $setUserTheme->bind_param('si', $theme, $uid);$setUserTheme->execute();
             $this->returnObject = [
                 "status" => "success",
-                "theme" => $_POST['theme']
+                "theme" => $theme
             ];
         } else {
             $this->returnObject = [
@@ -25,7 +25,7 @@ Class Themes {
     function getTheme ($uid) {
         $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
         if($getUserTheme = $con->prepare("SELECT theme FROM customers WHERE id = ?")) {
-            $getUserTheme->bind_param('i', $_POST['uid']); $getUserTheme->execute(); $getUserTheme->store_result(); $getUserTheme->bind_result($userTheme); $getUserTheme->fetch(); $getUserTheme->close();
+            $getUserTheme->bind_param('i', $uid); $getUserTheme->execute(); $getUserTheme->store_result(); $getUserTheme->bind_result($userTheme); $getUserTheme->fetch(); $getUserTheme->close();
             $this->returnObject = [
                 "status" => "success",
                 "theme" => $userTheme
@@ -46,14 +46,16 @@ Class Themes {
 
 $themeAction = new Themes();
 $returnObject = new stdClass();
-if (isset($_POST['uid']) && isset($_POST['action'])) {
-    switch ($_POST['action']) {
+$postObject = json_decode($_POST['theme'], true);
+
+if (isset($postObject['uid']) && isset($postObject['action'])) {
+    switch ($postObject['action']) {
         case 'set' :
-            $themeAction->setTheme($_POST['theme'], $_POST['uid']);
+            $themeAction->setTheme($postObject['theme'], $postObject['uid']);
             die(json_encode($themeAction->getResults()));
         break;
         case 'get' :
-            $themeAction->getTheme($_POST['uid']);
+            $themeAction->getTheme($postObject['uid']);
             die(json_encode($themeAction->getResults()));
         break;
     }

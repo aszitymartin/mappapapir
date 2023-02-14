@@ -188,33 +188,44 @@
             theme  : themeValue,
             uid    : <?= $_SESSION['id']; ?>
         };
-        $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
-            success: function(s) {
-                if (s.status == 'success') {
-                    switch (s.theme) {
-                        case 'auto' :
-                            const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                            if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
-                            else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                        break;
-                        case 'dark' :
-                            document.querySelector('html').dataset.theme = 'theme-dark';
-                        break;
-                        case 'light' :
-                            document.querySelector('html').dataset.theme = 'theme-light';
-                        break;
-                        case 'schedule' :
-                            var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
-                            document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
-                        break;
-                        default :
-                            document.querySelector('html').dataset.theme = 'theme-light';
-                        break;
-                    }
-                } else { document.querySelector('html').dataset.theme = 'theme-light'; }
-            },error: function (e) { console.log(e); document.querySelector('html').dataset.theme = 'theme-light'; }
-        });
 
+        var themeFormData = new FormData();
+        themeFormData.append('theme', JSON.stringify(themeData));
+
+        const ajaxObject = { 
+            url : '/assets/php/classes/class.Themes.php',
+            data : themeFormData,
+            loaderContainer : { isset : false, }
+        }
+
+        let response = getFromAjaxRequest(ajaxObject)
+        .then((data) => {
+            console.log(data);
+            if (data.status == 'success') {
+                switch (data.theme) {
+                    case 'auto' :
+                        const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
+                        if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
+                        else {document.querySelector('html').dataset.theme = 'theme-dark';}
+                    break;
+                    case 'dark' :
+                        document.querySelector('html').dataset.theme = 'theme-dark';
+                    break;
+                    case 'light' :
+                        document.querySelector('html').dataset.theme = 'theme-light';
+                    break;
+                    case 'schedule' :
+                        var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
+                        document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
+                    break;
+                    default :
+                        document.querySelector('html').dataset.theme = 'theme-light';
+                    break;
+                }
+            } else { document.querySelector('html').dataset.theme = 'theme-light'; }
+        }) .catch((reason) => {
+            document.querySelector('html').dataset.theme = 'theme-light';
+        });
     }
 
 </script>

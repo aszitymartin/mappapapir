@@ -459,5 +459,5 @@ if (isset($postObject['uid']) && isset($postObject['action'])) {
     }
 } else {
     $returnObject->status = "error"; $returnObject->message = "Hiányzó adatok.";
-    die(json_encode(array($returnObject)));
+    die(json_encode(($returnObject)));
 }
