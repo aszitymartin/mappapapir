@@ -85,8 +85,9 @@
                                     <span class='wizard_input_name'>E-mail cím</span>
                                     <div class='flex row'>
                                         <input class='wizard_input' type='email' name='register_email' id="register_email" placeholder='mintamisi@email.hu' autocomplete='email' />
-                                        <div class='wizard_input_status_button'></div>
+                                        <div class='wizard_input_status_button' id="register-email-status"></div>
                                     </div>
+                                    <div class='wizard_input_info' id="register-email-validate-con"></div>
                                     <label class='wizard_input_info'>Erre a címre küldjük a regisztráció visszaigazolására szolgáló emailt. Sehol sem jelenik meg az oldalon.</label>
                                 </div>
                                 <div class='wizard_tab_main_item'>
@@ -256,4 +257,40 @@
                     if (this.hasAttribute('emsg')) {tooltip.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><path d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z" class="svg"/><rect class="svg" opacity="0.3" x="10" y="16" width="4" height="4" rx="2"/></g></svg>` +this.getAttribute('emsg');this.parentNode.append(tooltip);}
                 }); status_btn[i].addEventListener('mouseleave', function() {if (this.hasAttribute('emsg')) {tooltip.remove();}});
             }
+
+            $('#register_email').on('blur', () => {
+                var authData = new FormData(); 
+                const authObject = {
+                    action : 'validateEmail',
+                    email : $('#register_email').val()
+                }; authData.append('auth', JSON.stringify(authObject));
+                const ajaxObject = { 
+                    url : '/assets/php/classes/class.Authentication.php',
+                    data : authData,
+                    loaderContainer : { isset : false, }
+                }
+                if ($('input[name="register_email"]')[0].value.match(/^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i) && $('input[name="register_email"]')[0].value !== '') {
+                    let response = getFromAjaxRequest(ajaxObject)
+                    .then((data) => {
+                        if (data.status == 'success') {
+                            if (data.isFree) {
+                                document.getElementById('register-email-validate-con').innerHTML = `<span class="text-success">Ez az e-mail cím még nincsen regisztrálva az adatbázisunkban.</span>`;  
+                                document.getElementById('register-email-status').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><polygon points="0 0 24 0 24 24 0 24"></polygon><path d="M6.26193932,17.6476484 C5.90425297,18.0684559 5.27315905,18.1196257 4.85235158,17.7619393 C4.43154411,17.404253 4.38037434,16.773159 4.73806068,16.3523516 L13.2380607,6.35235158 C13.6013618,5.92493855 14.2451015,5.87991302 14.6643638,6.25259068 L19.1643638,10.2525907 C19.5771466,10.6195087 19.6143273,11.2515811 19.2474093,11.6643638 C18.8804913,12.0771466 18.2484189,12.1143273 17.8356362,11.7474093 L14.0997854,8.42665306 L6.26193932,17.6476484 Z" fill="#1BC5BD " fill-rule="nonzero" transform="translate(11.999995, 12.000002) rotate(-180.000000) translate(-11.999995, -12.000002) "></path></g></svg>`;
+                            } else {
+                                document.getElementById('register-email-validate-con').innerHTML = `<span class="text-danger">Ez az e-mail cím már regisztrálva van. Kérjük válasszon másikat a folytatáshoz.</span>`;    
+                                document.getElementById('register-email-status').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)" fill="#F64E60 "><rect x="0" y="7" width="16" height="2" rx="1"></rect><rect transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000) " x="0" y="7" width="16" height="2" rx="1"></rect></g></g></svg>`;
+                            }
+                        } else {
+                            document.getElementById('register-email-validate-con').innerHTML = `
+                                <span>${data.message}</span>
+                            `;
+                        }
+                    })
+                }
+            });
+
+            $('#register_email').on('focus', () => {
+                document.getElementById('register-email-validate-con').innerHTML = ``;
+            });
+
         </script>

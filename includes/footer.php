@@ -234,43 +234,6 @@
         <script src="/assets/script/swiper/swiper-bundle.min.js" content-type="application/javascript"></script>
         <script src="/assets/script/main.js" content-type="application/javascript"></script>   
         <!-- <script src="/assets/script/internationalize/jquery.MultiLanguage.js" content-type="application/javascript"></script> -->
-        <script content-type="application/javascript">
-            function setTheme (themeType) {
-                var themeValue = themeType.split('-')[1];
-                const themeData = {
-                    action : "set",
-                    theme  : themeValue,
-                    uid    : <?= isset($_SESSION['id']) ? $_SESSION['id'] : 0; ?>
-                };
-                $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
-                    success: function(s) {
-                        if (s.status == 'success') {
-                            switch (s.theme) {
-                                case 'auto' :
-                                    const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                                    if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
-                                    else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                                break;
-                                case 'dark' :
-                                    document.querySelector('html').dataset.theme = 'theme-dark';
-                                break;
-                                case 'light' :
-                                    document.querySelector('html').dataset.theme = 'theme-light';
-                                break;
-                                case 'schedule' :
-                                    var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
-                                    document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
-                                break;
-                                default :
-                                    document.querySelector('html').dataset.theme = 'theme-light';
-                                break;
-                            }
-                        } else { document.querySelector('html').dataset.theme = 'theme-light'; }
-                    },error: function (e) { console.log(e); document.querySelector('html').dataset.theme = 'theme-light'; }
-                });
-
-            }
-        </script>
         <script content-type="application/javascript"> // Fejlecben levo keresomezo beallitasa
             function mainSearch () {
                 var input, filter, con, item, i, txtValue; input = document.getElementById("main_search");filter = input.value.toUpperCase();

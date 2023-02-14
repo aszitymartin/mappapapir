@@ -200,7 +200,6 @@
 
         let response = getFromAjaxRequest(ajaxObject)
         .then((data) => {
-            console.log(data);
             if (data.status == 'success') {
                 switch (data.theme) {
                     case 'auto' :

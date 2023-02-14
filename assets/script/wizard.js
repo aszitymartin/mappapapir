@@ -113,6 +113,7 @@ function showTab(n) {
     } else {document.getElementById("wizard_next_btn").innerHTML = "Következő";}fixStepIndicator(n);
 }
 function nextPrev(n) {
+    console.log('nextPrev');
     var x = document.getElementsByClassName("wizard_tab");
     if (n == 1 && !validateForm()) return false;
     x[currentTab].style.display = "none";currentTab = currentTab + n;

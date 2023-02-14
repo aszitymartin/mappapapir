@@ -377,43 +377,6 @@
             };
         </script>
         <script>
-                function setTheme (themeType) {
-                    var themeValue = themeType.split('-')[1];
-                    const themeData = {
-                        action : "set",
-                        theme  : themeValue,
-                        uid    : <?= $_SESSION['id']; ?>
-                    };
-                    $.ajax({ type: 'POST',url: '/assets/php/classes/class.Themes.php',data: themeData, cache: false,
-                        success: function(s) {
-                            if (s.status == 'success') {
-                                switch (s.theme) {
-                                    case 'auto' :
-                                        const darkThemeMq = window.matchMedia('(prefers-color-scheme: light)');
-                                        if (darkThemeMq.matches) { document.querySelector('html').dataset.theme = 'theme-light'; }
-                                        else {document.querySelector('html').dataset.theme = 'theme-dark';}
-                                    break;
-                                    case 'dark' :
-                                        document.querySelector('html').dataset.theme = 'theme-dark';
-                                    break;
-                                    case 'light' :
-                                        document.querySelector('html').dataset.theme = 'theme-light';
-                                    break;
-                                    case 'schedule' :
-                                        var hours = new Date().getHours(); var isDayTime = hours > 6 && hours < 20;
-                                        document.querySelector('html').dataset.theme = isDayTime == true ? 'theme-light' : 'theme-dark';
-                                    break;
-                                    default :
-                                        document.querySelector('html').dataset.theme = 'theme-light';
-                                    break;
-                                }
-                            } else { document.querySelector('html').dataset.theme = 'theme-light'; }
-                        },error: function (e) { console.log(e); document.querySelector('html').dataset.theme = 'theme-light'; }
-                    });
-
-                }
-        </script>
-        <script>
             const staff_widget_button = document.getElementsByClassName('staff-widget-setting');
             for (let i = 0; i < staff_widget_button.length; i++) {staff_widget_button[i].id = "staff_widget_button" + i;
                 const staff_widget_settings = document.createElement('div');staff_widget_settings.classList = 'staff_widget_settings flex flex-col border-soft item-bg box-shadow-dark absolute';staff_widget_settings.id = 'staff_widget_setting' + i;

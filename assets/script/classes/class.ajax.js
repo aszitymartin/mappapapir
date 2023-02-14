@@ -38,7 +38,6 @@ class sendAjaxRequest {
                     }
                 }
             }, success: function(s) {
-                console.log(s);
                 if (s !== null) {
                     for (let i = 0; i < Object.keys(s).length; i++) {
                         returnObjectConst[Object.keys(s)[i]] = s[Object.keys(s)[i]];
@@ -47,7 +46,7 @@ class sendAjaxRequest {
                     returnObjectConst.status = 'error';
                     returnObjectConst.message = 'Hiba történt a folyamat közben.';
                 }
-            }, error: function (e) { console.log(e); returnObjectConst.res = e; }
+            }, error: function (e) { returnObjectConst.res = e; }
         }); return returnObjectConst;
     }
 

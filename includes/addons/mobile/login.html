@@ -48,19 +48,20 @@
 </div>
 <script>
 function tryLogin () {
-    document.getElementById("wizard_next_btn").textContent = "Ellenőrzés..."; let apiKey = '739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544';
-    $.getJSON('https://api.ipdata.co?api-key=' + apiKey, function(data) { var log__data = new FormData();
-        const getDeviceType = () => { const ua = navigator.userAgent;
-            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) { return "tablet"; }
-            if ( /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) { return "mobile";}
-            return "desktop";
-        }; log__data.append("email", $('#login__email').val()); log__data.append("password", $('#login__password').val()); log__data.append("device", getDeviceType()); log__data.append("ip", data.ip); log__data.append("city", data.city); log__data.append("region", data.region); log__data.append("country", data.country_name);
-        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/actions/auth.php", data: log__data, dataType: 'json', contentType: false, processData: false,
-            success: function(res) { closeSidenav();
-                if (res === 200) { notificationSystem(0, 0, 0, 'Bejelentkezés', 'Sikeres bejelentkezés'); window.location.reload(true); }
-                if (res === 410) { notificationSystem(0, 1, 0, 'Bejelentkezés', 'Sikertelen bejelentkezés'); }
-            }, error: function (res) { console.log(res); }
-        });
-    }); 
+    alert('/includes/addons/mobile/login.html');
+    // document.getElementById("wizard_next_btn").textContent = "Ellenőrzés..."; let apiKey = '739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544';
+    // $.getJSON('https://api.ipdata.co?api-key=' + apiKey, function(data) { var log__data = new FormData();
+    //     const getDeviceType = () => { const ua = navigator.userAgent;
+    //         if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) { return "tablet"; }
+    //         if ( /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) { return "mobile";}
+    //         return "desktop";
+    //     }; log__data.append("email", $('#login__email').val()); log__data.append("password", $('#login__password').val()); log__data.append("device", getDeviceType()); log__data.append("ip", data.ip); log__data.append("city", data.city); log__data.append("region", data.region); log__data.append("country", data.country_name);
+    //     $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/actions/auth.php", data: log__data, dataType: 'json', contentType: false, processData: false,
+    //         success: function(res) { closeSidenav();
+    //             if (res === 200) { notificationSystem(0, 0, 0, 'Bejelentkezés', 'Sikeres bejelentkezés'); window.location.reload(true); }
+    //             if (res === 410) { notificationSystem(0, 1, 0, 'Bejelentkezés', 'Sikertelen bejelentkezés'); }
+    //         }, error: function (res) { console.log(res); }
+    //     });
+    // }); 
 }
 </script>

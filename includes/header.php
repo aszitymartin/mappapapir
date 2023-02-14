@@ -101,7 +101,7 @@
                 <div id="hs--con"></div>
             </div>
         </header>
-        <span class="primary-bg padding-025 border-soft pointer user-select-none" id="atc">ADD TO CART</span>
+        <!-- <span class="primary-bg padding-025 border-soft pointer user-select-none" id="atc">ADD TO CART</span> -->
         <script>
             var cartData = new FormData(); 
             $('#atc').click(() => {

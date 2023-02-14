@@ -335,23 +335,24 @@
         setTimeout(function () {$('#sidenav').load('/includes/addons/sidenav.php');}, 400);
     }
     function logout () {
-        location.href = '/actions/logout';
-
         var authData = new FormData(); 
-        const authObject = {
-            action : 'logout',
-        };
+        const authObject = { action : 'logout' };
         authData.append('auth', JSON.stringify(authObject));
         const ajaxObject = { 
             url : '/assets/php/classes/class.Authentication.php',
-            data : authData,
-            loaderContainer : {
-                isset : false
-            }
-        }
-
-        
-
+            data : authData, loaderContainer : { isset : false }
+        }; document.getElementById('profileHeaderContainer').remove();
+        let response = getFromAjaxRequest(ajaxObject)
+        .then((data) => {
+            if (data.status == 'success') { const now = new Date();
+                const notifParams = {
+                    notifType : '0', notifIcon : '3', notifTheme : '0',
+                    notifTitle : 'Üzenet', notifDesc : 'Sikeres kijelentkezés.',
+                    expiry : now.setSeconds(60)
+                }; localStorage.setItem('NP', JSON.stringify(notifParams));
+                window.location.reload(true);
+            } else { notificationSystem(0, 3, 0, 'Üzenet', data.message); }
+        }).catch((reason) => { notificationSystem(0, 3, 0, 'Üzenet', reason.message); });
     }
     function sidenavRedirect () {location.href = "/profile";}
     async function fetchHtmlAsText(url) {return await (await fetch(url)).text();}

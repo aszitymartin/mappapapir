@@ -211,7 +211,14 @@ function validate(name) {
         for (var rect_index = 0; rect_index < connector[connector_index].querySelector('svg').querySelector('g').querySelectorAll('rect').length; rect_index++) {if (connector[n].querySelector('svg').querySelector('g').querySelectorAll('rect')[rect_index].hasAttribute('fill')) {connector[n].querySelector('svg').querySelector('g').querySelectorAll('rect')[rect_index].removeAttribute('fill');connector[n].querySelector('svg').querySelector('g').querySelectorAll('rect')[rect_index].setAttribute('fill', '#0A3556');}}
         for (var path_index = 0; path_index < connector[connector_index].querySelector('svg').querySelector('g').querySelectorAll('path').length; path_index++) {if (connector[n].querySelector('svg').querySelector('g').querySelectorAll('path')[path_index].hasAttribute('fill')) {connector[n].querySelector('svg').querySelector('g').querySelectorAll('path')[path_index].removeAttribute('fill');connector[n].querySelector('svg').querySelector('g').querySelectorAll('path')[path_index].setAttribute('fill', '#0A3556');}}
     } document.getElementsByClassName("wizard_breadcrumb_item")[n].className += " breadcrumb_desc_active";
-} function openLoginForm () { profileHeaderContainer.innerHTML = `<div class='user_action_con' id='wizard_con'><div class='user_action_con_mobile_handler' id='user_action_con_mobile_handler'></div><div class='user_act_wrapper'><div class='user_act_breadcrumb align_left_h'><div class="user_act_breadcrumb_con"><div class="wizard_breadcrumb_item"><span class="wizard_title">Belépési adatok</span></div></div></div><div class='user_act_wizard col login_wizard_con'><div class='wizard_main_image_con wizard_login_img_con'></div><form id='wizard_login_form' method='POST' action='/actions/auth.php'><div class='wizard_tab_login'><div class='wizard_tab_main'><div class='wizard_tab_main_item'><span class='wizard_input_name'>E-mail cím</span><div class='flex row'><input class='wizard_input wizard_login_input' type='text' name='register_email' id="login__email" placeholder='mintamisi@email.hu' autocomplete='email' /></div></div><div class='wizard_tab_main_item'><span class='wizard_input_name'>Jelszó</span><div class='flex row'><input class='wizard_input wizard_login_input wizard_login_input_pass' type="password" name='register_password' id="login__password" autocomplete='new-password' style="width: 100% !important;" /><div class='wizard_input_password_show wizard_login_status' onclick="showPass('register_password')"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" class="svg" fill-rule="nonzero" opacity="0.4"/><path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" class="svg" opacity="0.5"/></g></svg></div></div><label class='wizard_input_info flex flex-row flex-align-c flex-justify-con-sb' id="logerr__con"><a href="#">Elfelejtett jelszó?</a></label></div></div></div></form></div><div class='wizard_act_btn_con'><div><div id='wizard_back_to_main' class='wizard_act_btn button button-secondary' onclick='wizardHome();'>Kilépés</div></div><div class='flex'><div id='wizard_next_btn' class='wizard_act_btn button button-primary' onclick="tryLogin()">Belépés</div></div></div></div></div>`;}
+} function openLoginForm () { 
+    profileHeaderContainer.innerHTML = `<div class='user_action_con' id='wizard_con'><div class='user_action_con_mobile_handler' id='user_action_con_mobile_handler'></div><div class='user_act_wrapper'><div class='user_act_breadcrumb align_left_h'><div class="user_act_breadcrumb_con"><div class="wizard_breadcrumb_item"><span class="wizard_title">Belépési adatok</span></div></div></div><div class='user_act_wizard col login_wizard_con'><div class='wizard_main_image_con wizard_login_img_con'></div><form id='wizard_login_form'><div class='wizard_tab_login'><div class='wizard_tab_main'><div class='wizard_tab_main_item'><span class='wizard_input_name'>E-mail cím</span><div class='flex row'><input class='wizard_input wizard_login_input' type='email' name='register_email' id="login__email" placeholder='mintamisi@email.hu' autocomplete='email' /></div></div><div class='wizard_tab_main_item'><span class='wizard_input_name'>Jelszó</span><div class='flex row'><input class='wizard_input wizard_login_input wizard_login_input_pass' type="password" name='register_password' id="login__password" autocomplete='new-password' style="width: 100% !important;" /><div class='wizard_input_password_show wizard_login_status' onclick="showPass('register_password')"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" class="svg" fill-rule="nonzero" opacity="0.4"/><path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" class="svg" opacity="0.5"/></g></svg></div></div><label class='wizard_input_info flex flex-row flex-align-c flex-justify-con-sb' id="logerr__con"><a href="#">Elfelejtett jelszó?</a></label></div></div></div></form></div><div class='wizard_act_btn_con padding-1'><div><div id='wizard_back_to_main' class='text-primary pointer user-select-none' onclick='wizardHome();'>Kilépés</div></div><div class='flex'><div id='wizard_next_btn' class='primary-bg primary-bg-hover padding-05 border-soft-light pointer user-select-none' onclick="tryLogin()">Belépés</div></div></div></div></div>`;
+    document.onkeydown=function(){
+        if(window.event.keyCode=='13'){
+            tryLogin();
+        }
+    }
+}
 var logerr = document.createElement('span'); logerr.classList = "small-med text-danger"; logerr.textContent = "Hibás adatokat adott meg!";
 function tryLogin () {
     var ce__wrapper = document.createElement('div'); ce__wrapper.classList = "wrapper_dark fadein z-index-100"; var ce__box = document.createElement('div'); ce__box.id = "adcrd__incon"; ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";
@@ -226,44 +233,24 @@ function tryLogin () {
     `;
     $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
         beforeSend: function() {
-
-            /*
-
-                Uj panel megjelenitese ami toltokepernyokent fog szolgani,
-                ide fog visszaterni az eredmeny a bejelentkeyes sikeressegerol.
-
-            */
-
             document.getElementById('ce__body').innerHTML = `
                 <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
                     <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
                     <span id="loaderText">Adatok elküldése folyamatban</span>
                 </div>
-            `;
-            $("#cl__ebox").click(() => { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
-
-            // document.getElementById("wizard_next_btn").textContent = "Ellenőrzés...";
+            `; $("#cl__ebox").click(() => { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
         }, success : function (api) {
-
             const getDeviceType = () => { const ua = navigator.userAgent;
                 if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) { return "tablet"; }
                 if ( /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) { return "mobile";}
                 return "desktop";
-            };
-            
-            var authData = new FormData(); 
+            }; var authData = new FormData(); 
             const authObject = {
-                ip  : api.ip,
-                action : 'login',
-
-                email : $('#login__email').val(),
-                password : $('#login__password').val(),
-                device : getDeviceType(),
-                city : api.city,
-                region : api.region,
-                country : api.country_name
-            };
-            authData.append('auth', JSON.stringify(authObject));
+                ip  : api.ip, action : 'login',
+                email : $('#login__email').val(), password : $('#login__password').val(),
+                device : getDeviceType(), city : api.city,
+                region : api.region, country : api.country_name
+            }; authData.append('auth', JSON.stringify(authObject));
             const ajaxObject = { 
                 url : '/assets/php/classes/class.Authentication.php',
                 data : authData,
@@ -284,7 +271,6 @@ function tryLogin () {
 
             let response = getFromAjaxRequest(ajaxObject)
             .then((data) => {
-                console.log(data);
                 if (data.status == 'success') {
                     document.getElementById('ce__body').innerHTML = `
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
@@ -295,6 +281,13 @@ function tryLogin () {
                             </div>
                         </div>
                     `;
+                    setTimeout(() => {
+                        $("#cl__ebox").click();
+                        closeHeaderProfileAction();
+                        setTimeout(() => {
+                            window.location.reload(true);
+                        }, 750);
+                    }, 500);
                 } else {
                     document.getElementById('ce__body').innerHTML = `
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
@@ -316,8 +309,6 @@ function tryLogin () {
                     </div>
                 `;
             });
-
-
         }, error : function () {
             document.getElementById('ce__body').innerHTML = `
                 <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
@@ -328,31 +319,6 @@ function tryLogin () {
         }
     });
     $("#cl__ebox").click(() => { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
-    /*
-        $.getJSON('https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544', function(data) {
-            const getDeviceType = () => { const ua = navigator.userAgent;
-                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) { return "tablet"; }
-                if ( /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) { return "mobile";}
-                return "desktop";
-            };
-            var log__data = new FormData();
-            log__data.append("email", $('#login__email').val());
-            log__data.append("password", $('#login__password').val());
-            log__data.append("device", getDeviceType());
-            log__data.append("ip", data.ip);
-            log__data.append("city", data.city);
-            log__data.append("region", data.region);
-            log__data.append("country", data.country_name);
-
-            $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/actions/auth.php", data: log__data, dataType: 'json', contentType: false, processData: false,
-                success: function(res) {
-                    if (res === 200) { closeHeaderProfileAction(); notificationSystem(0, 0, 0, 'Bejelentkezés', 'Sikeres bejelentkezés'); window.location.reload(true); }
-                    if (res === 410) { document.getElementById("wizard_next_btn").textContent = "Belépés"; document.getElementById("login__email").value = ""; document.getElementById("login__password").value = ""; if (!document.getElementById('logerr__con').contains(logerr)) { document.getElementById('logerr__con').append(logerr); } }
-                }, error: function (res) { document.getElementById("wizard_next_btn").textContent = "Belépés"; document.getElementById("login__email").value = ""; document.getElementById("login__password").value = ""; if (!document.getElementById('logerr__con').contains(logerr)) { document.getElementById('logerr__con').append(logerr); } }
-            });
-        }); 
-
-    */
 }
 function wizardHome () { setWizardHome(); wizard_form_script.remove();}
 function closeHeaderProfileAction() { document.getElementsByTagName('html')[0].classList.remove('stop-scroll', 'stop-scroll-mobile'); document.getElementById('wizard_con').classList.remove('panelSlideUp'); document.getElementById('wizard_con').classList.add('panelSlideDown');setTimeout(function () { wrapper.remove(); profileHeaderContainer.remove(); document.body.style.overflowX = 'hidden'; document.body.style.width = '100%'; wizard_form_script.remove(); }, 340); enableSwipers();}
@@ -411,7 +377,8 @@ function notificationSystem(type, icon, theme, title, desc) {
     var notificationIcons = [
         `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="`+ notificationThemes[theme] +`" opacity="0.3" cx="12" cy="12" r="10"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="10" width="2" height="7" rx="1"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="7" width="2" height="2" rx="1"/></g></svg>`,
         `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M11.1669899,4.49941818 L2.82535718,19.5143571 C2.557144,19.9971408 2.7310878,20.6059441 3.21387153,20.8741573 C3.36242953,20.9566895 3.52957021,21 3.69951446,21 L21.2169432,21 C21.7692279,21 22.2169432,20.5522847 22.2169432,20 C22.2169432,19.8159952 22.1661743,19.6355579 22.070225,19.47855 L12.894429,4.4636111 C12.6064401,3.99235656 11.9909517,3.84379039 11.5196972,4.13177928 C11.3723594,4.22181902 11.2508468,4.34847583 11.1669899,4.49941818 Z" fill="`+ notificationThemes[theme] +`" opacity="0.3"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="9" width="2" height="7" rx="1"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="17" width="2" height="2" rx="1"/></g></svg>`,
-        `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="`+ notificationThemes[theme] +`" opacity="0.3" cx="12" cy="12" r="10"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="7" width="2" height="8" rx="1"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="16" width="2" height="2" rx="1"/></g></svg>`
+        `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="`+ notificationThemes[theme] +`" opacity="0.3" cx="12" cy="12" r="10"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="7" width="2" height="8" rx="1"/><rect fill="`+ notificationThemes[theme] +`" x="11" y="16" width="2" height="2" rx="1"/></g></svg>`,
+        `<svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="`+ notificationThemes[theme] +`"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="`+ notificationThemes[theme] +`"/></svg>`
     ];
     $(document).ready(function () {
         for (let i = 0; i < notification.length; i++) {
