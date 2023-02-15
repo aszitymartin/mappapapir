@@ -20,7 +20,7 @@ function __loadreviews (model) { urldata.append("model", model);
             document.getElementById('reviews-container').innerHTML = `
             <div class="flex flex-col flex-align-c w-fa gap-05 text-muted">
                 <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
-                <span>Vélemények megjelenítése folyamatban</span>
+                <span>Értékelések megjelenítése folyamatban</span>
             </div>
             `;
         }, success: function(data) { var aunum = 0; document.getElementById('reviews-container').innerHTML = '';
@@ -117,20 +117,47 @@ function __loadreviews (model) { urldata.append("model", model);
         });
     }
 } function __postreview (stars) {
-    if (stars > 0) { var revpostData = new FormData(); revpostData.append("pid", urlpid); revpostData.append('description', document.getElementById('add-review-editor').getElementsByClassName('ql-editor')[0].innerHTML); revpostData.append('stars', stars); if (document.getElementById('product-review-privacy')) { revpostData.append('privacy', document.getElementById('product-review-privacy').checked ? 0 : 1); }
-        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/post.php", data: revpostData, dataType: "json", contentType: false, processData: false,
-            beforeSend: function () {
-                document.getElementById('write-review').innerHTML = `
-                <div class="flex flex-row flex-align-c gap-05">
-                    <svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>
-                </div>
-                `;
-            }, success: function (data) { if (Number(data) == 200) { document.getElementById('add-review-con').innerHTML = ``; document.getElementById('add-review-con').classList.replace('flex', 'display-none');  __loadreviews(urlmodel); } }
+    if (stars > 0) { 
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
+                var reviewData = new FormData(); 
+                const reviewObject = {
+                    ip  : api.ip,
+                    action : 'post',
+                    
+                    pid:  urlpid,
+                    description:  document.getElementById('add-review-editor').getElementsByClassName('ql-editor')[0].innerHTML,
+                    stars:  stars,
+                    privacy : (document.getElementById('product-review-privacy')) ? (document.getElementById('product-review-privacy').checked ? 0 : 1) : false
+
+                }; reviewData.append('review', JSON.stringify(reviewObject));
+                const ajaxObject = { 
+                    url : '/assets/php/classes/class.Reviews.php',
+                    data : reviewData,
+                    loaderContainer : { isset : false }
+                }
+                let response = getFromAjaxRequest(ajaxObject)
+                .then((data) => {
+                    document.getElementById('add-review-con').innerHTML = ``;
+                    document.getElementById('add-review-con').classList.replace('flex', 'display-none'); 
+                    __loadreviews(urlmodel);
+                    if (data.status == 'success') {
+                        notificationSystem(0, 3, 0, 'Üzenet', 'Sikeres publikálás.');
+                    } else {
+                        notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen publikálás.');
+                    }
+                }) .catch((reason) => {
+                    document.getElementById('add-review-con').innerHTML = ``;
+                    document.getElementById('add-review-con').classList.replace('flex', 'display-none'); 
+                    __loadreviews(urlmodel);
+                    notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen publikálás.');
+                });
+            }
         });
     }
 } function __canceladdreview () {
     document.getElementById('write-review-con').innerHTML = ``; document.getElementById('review-cancel').remove();
-    document.getElementById('write-review').textContent = "Vélemény írása"; document.getElementById('write-review').classList.add('pointer');document.getElementById('write-review').classList.add('background-bg-hover'); document.getElementById('write-review').classList.remove('not-allowed'); document.getElementById('write-review').setAttribute('onclick', '__addreview()');
+    document.getElementById('write-review').textContent = "Értékelés írása"; document.getElementById('write-review').classList.add('pointer');document.getElementById('write-review').classList.add('background-bg-hover'); document.getElementById('write-review').classList.remove('not-allowed'); document.getElementById('write-review').setAttribute('onclick', '__addreview()');
 } function __flagreview (rid) { var revactData = new FormData(); revactData.append("rid", rid);
     $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/flag.php", data: revactData, dataType: "json", contentType: false, processData: false,
         success: function (data) { if (Number(data) == 200) { document.getElementById('review-action-'+rid).textContent = 'Hasznos'; $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/flagcount.php", data: revactData, dataType: "json", contentType: false, processData: false, success: function (data) { document.getElementById('review-helpful-ind-'+rid).textContent = data + ' ember találta ezt hasznosnak'; } }); } if (Number(data) == 201) { document.getElementById('review-action-'+rid).textContent = 'Nem hasznos'; $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/flagcount.php", data: revactData, dataType: "json", contentType: false, processData: false, success: function (data) { document.getElementById('review-helpful-ind-'+rid).textContent = data + ' ember találta ezt hasznosnak'; } }); } }
@@ -162,18 +189,72 @@ function __loadreviews (model) { urldata.append("model", model);
     document.getElementById('review-editor').getElementsByClassName('ql-editor')[0].innerHTML = desc;
     document.getElementById('review-action-'+rid).removeAttribute('onclick');  document.getElementById('review-secact-'+rid).setAttribute('onclick', '__cancelreview('+rid+', "'+desc+'", '+privacy+', '+upriv+')');
     document.getElementById('review-action-'+rid).textContent = "Mentés"; document.getElementById('review-secact-'+rid).textContent = "Mégsem";
-} function __savereview (rid, privacy, stars) { var revData = new FormData(); revData.append("rid", rid); revData.append("stars", stars);  revData.append("description", document.getElementById('review-editor').getElementsByClassName('ql-editor')[0].innerHTML);
-    if (document.getElementById('product-review-privacy')) { if (document.getElementById('product-review-privacy').checked) { revData.append("privacy", 0); } else { revData.append("privacy", 1); } }
-    $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/edit.php", data: revData, dataType: "json", contentType: false, processData: false,
-        success: function (data) { __loadreviews(urlmodel); }, error: function (data) { alert(data.responseText); }
+} function __savereview (rid, privacy, stars) {
+    $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+        success : function (api) {
+            var reviewData = new FormData(); 
+            const reviewObject = {
+                ip  : api.ip,
+                action : 'update',
+                
+                rid:  rid,
+                stars : stars,
+                description : document.getElementById('review-editor').getElementsByClassName('ql-editor')[0].innerHTML,
+                privacy : (document.getElementById('product-review-privacy')) ? (document.getElementById('product-review-privacy').checked ? 0 : 1) : false
+            }; reviewData.append('review', JSON.stringify(reviewObject));
+            const ajaxObject = { 
+                url : '/assets/php/classes/class.Reviews.php',
+                data : reviewData,
+                loaderContainer : { isset : false }
+            }
+            let response = getFromAjaxRequest(ajaxObject)
+            .then((data) => {
+                __loadreviews(urlmodel);
+                if (data.status == 'success') {
+                    notificationSystem(0, 3, 0, 'Üzenet', 'Sikeres szerkesztés.');
+                } else {
+                    notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen szerkesztés.');
+                }
+            }) .catch((reason) => {
+                __loadreviews(urlmodel);
+                notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen szerkesztés.');
+            });
+        }
     });
+
 } function __cancelreview (rid, desc, privacy, upriv) { document.getElementById('review-action-'+rid).classList.add('background-bg-hover'); document.getElementById('review-action-'+rid).classList.add('pointer'); document.getElementById('review-action-'+rid).classList.remove('not-allowed');
     document.getElementById('review-description-'+rid).innerHTML = desc;document.getElementById('review-action-'+rid).setAttribute('onclick', '__editreview('+rid+', "'+desc+'", '+privacy+', '+upriv+')'); document.getElementById('review-secact-'+rid).setAttribute('onclick', '__removereview('+rid+')');
     document.getElementById('review-action-'+rid).textContent = "Szerkesztés"; document.getElementById('review-secact-'+rid).textContent = "Eltávolítás"; document.getElementById('review-secact-'+rid).setAttribute('onclick', '__removereview('+rid+')');
 } function __removereview (rid) {
-    if (confirm('Biztosan törölni szeretné értékelését?') == true) { var revData = new FormData(); revData.append("rid", rid);
-        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/delete.php", data: revData, dataType: 'json', contentType: false, processData: false,
-            success: function(data) { console.log(data); __loadreviews(urlmodel); }, error: function (data) { alert(data.responseText); }
+    if (confirm('Biztosan törölni szeretné értékelését?') == true) {
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
+                var reviewData = new FormData(); 
+                const reviewObject = {
+                    ip  : api.ip,
+                    action : 'delete',
+                    
+                    rid:  rid
+
+                }; reviewData.append('review', JSON.stringify(reviewObject));
+                const ajaxObject = { 
+                    url : '/assets/php/classes/class.Reviews.php',
+                    data : reviewData,
+                    loaderContainer : { isset : false }
+                }
+                let response = getFromAjaxRequest(ajaxObject)
+                .then((data) => {
+                    __loadreviews(urlmodel);
+                    if (data.status == 'success') {
+                        notificationSystem(0, 3, 0, 'Üzenet', 'Sikeres törlés.');
+                    } else {
+                        notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen törlés.');
+                    }
+                }) .catch((reason) => {
+                    __loadreviews(urlmodel);
+                    notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen törlés.');
+                });
+            }
         });
     }
 } function __reportreview (rid) {

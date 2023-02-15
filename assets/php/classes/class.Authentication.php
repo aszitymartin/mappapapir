@@ -229,12 +229,6 @@ Class Authentication {
             return $this->returnObject;
         }
 
-        $this->returnObject = [
-            "status" => "error",
-            "message" => "Regisztracio folyamatban..."
-        ];
-        return $this->returnObject;
-
         if ($stmt = $con->prepare('SELECT id, password FROM customers WHERE email = ?')) {
             $stmt->bind_param('s', $object['email']);$stmt->execute();$stmt->store_result(); 
             if ($stmt->num_rows > 0) { echo "<script>const now = new Date();const notifParams = {notifType : '0',notifIcon : '0',notifTheme : '0',notifTitle : 'Regisztráció',notifDesc : 'Ez az email cím már foglalt!',expiry : now.setSeconds(60)};localStorage.setItem('NP', JSON.stringify(notifParams));window.location.href= '../';</script>"; exit; }
