@@ -289,13 +289,202 @@ Class Review {
 
     }
 
+    function flagReview ($object) {
+
+        $requiredItems = array ('ip', 'action', 'rid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $uid = $_SESSION['id'];
+        $rid = $object['rid']; $sql = "SELECT id FROM reviews WHERE id = $rid"; $res = $con-> query($sql);
+        if ($res-> num_rows > 0) {
+            $act__sql = "SELECT rid FROM rv__u WHERE rid = $rid AND uid = $uid"; $act__res = $con-> query($act__sql);
+            if ($act__res-> num_rows > 0) {
+                if ($stmt = $con->prepare('DELETE FROM rv__u WHERE rid = ? AND uid = ?')) {
+                    $stmt->bind_param('ii', $object['rid'], $uid); $stmt->execute();
+                    $log_categ = "Értékelés tevékenység"; $log_desc = "#".$_SESSION['id']." nem találta hasznosnak következő véleményt: #".$object['rid'];
+                    if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
+                        $log->bind_param('isss', $_SESSION['id'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
+                        $this->returnObject = [
+                            "status" => "success",
+                            "result" => "unflagged"
+                        ];
+                        return $this->returnObject;
+                    } else {
+                        $this->returnObject = [
+                            "status" => "error",
+                            "message" => "Hiba történt a naplózás közben."
+                        ]; return $this->returnObject;
+                    }
+                    return $this->returnObject;
+                } else {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Hiba történt a folyamat közben."
+                    ];
+                    return $this->returnObject;
+                }
+            } else {
+                if ($stmt = $con->prepare('INSERT INTO rv__u (rid, uid) VALUES (?, ?)')) {
+                    $stmt->bind_param('ii', $object['rid'], $uid); $stmt->execute();
+                    $log_categ = "Értékelés tevékenység"; $log_desc = "#".$_SESSION['id']." hasznosnak találta a következő véleményt: #".$object['rid'];
+                    if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
+                        $log->bind_param('isss', $_SESSION['id'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
+                        $this->returnObject = [
+                            "status" => "success",
+                            "result" => "flagged"
+                        ];
+                        return $this->returnObject;
+                    } else {
+                        $this->returnObject = [
+                            "status" => "error",
+                            "message" => "Hiba történt a naplózás közben."
+                        ]; return $this->returnObject;
+                    }
+                    return $this->returnObject;
+                }
+                else {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Hiba történt a folyamat közben."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function flagCountReview ($object) {
+
+        $requiredItems = array ('ip', 'action', 'rid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $rid = $object['rid'];
+        $sql = "SELECT COUNT(id) AS 'amount' FROM rv__u WHERE rid = $rid";
+        $res = $con-> query($sql);
+        $am = $res-> fetch_assoc();
+        $this->returnObject = [
+            "status" => "success",
+            "count" => $am['amount']
+        ];
+        return $this->returnObject;
+
+    }
+
+    function reportReview ($object) {
+        
+        $requiredItems = array ('ip', 'action', 'rid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($stmt = $con->prepare('SELECT id FROM rv__r WHERE uid = ? AND rid = ?')) {
+            $stmt->bind_param('ii', $_SESSION['id'], $object['rid']);
+            $stmt->execute(); $stmt->store_result();
+            if ($stmt->num_rows > 0) {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Ön már jelentette ezt az értékelést."
+                ];
+                return $this->returnObject;
+            }
+            else {
+                if ($stmt = $con->prepare('INSERT INTO rv__r (uid, rid) VALUES (?, ?)')) {
+                    $stmt->bind_param('ii', $_SESSION['id'], $object['rid']); $stmt->execute();
+                    $log_categ = "Értékelés tevékenység"; $log_desc = "#".$_SESSION['id']." jelentette a következő véleményt: #".$object['rid'];
+                    if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
+                        $log->bind_param('isss', $_SESSION['id'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
+                        $this->returnObject = [
+                            "status" => "success"
+                        ];
+                        return $this->returnObject;
+                    } else {
+                        $this->returnObject = [
+                            "status" => "error",
+                            "message" => "Hiba történt a naplózás közben."
+                        ]; return $this->returnObject;
+                    }
+                    return $this->returnObject;
+                } else {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Hiba történt a folyamat közben."
+                    ];
+                    return $this->returnObject;
+                }
+                $stmt->close();
+            }
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+        $stmt->close();
+
+    }
+
     function getResults () {
         return $this->returnObject;
     }
 
 }
-
-
 
 $reviewAction = new Review();
 $returnObject = new stdClass();
@@ -316,10 +505,18 @@ if (isset($postObject['action'])) {
             $reviewAction->deleteReview($postObject);
             die(json_encode($reviewAction->getResults()));
         break;
-        // case 'report':
-        //     $reviewAction->reportReview($Reviewt);
-        //     die(json_encode($reviewAction->getResultsReview));
-        // break;
+        case 'flag':
+            $reviewAction->flagReview($postObject);
+            die(json_encode($reviewAction->getResults()));
+        break;
+        case 'flagCount':
+            $reviewAction->flagCountReview($postObject);
+            die(json_encode($reviewAction->getResults()));
+        break;
+        case 'report':
+            $reviewAction->reportReview($postObject);
+            die(json_encode($reviewAction->getResults()));
+        break;
         default:
             $returnObject->status = "error"; $returnObject->message = "Érvénytelen kérés.";
             die(json_encode($returnObject));

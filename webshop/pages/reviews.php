@@ -158,10 +158,56 @@ function __loadreviews (model) { urldata.append("model", model);
 } function __canceladdreview () {
     document.getElementById('write-review-con').innerHTML = ``; document.getElementById('review-cancel').remove();
     document.getElementById('write-review').textContent = "Értékelés írása"; document.getElementById('write-review').classList.add('pointer');document.getElementById('write-review').classList.add('background-bg-hover'); document.getElementById('write-review').classList.remove('not-allowed'); document.getElementById('write-review').setAttribute('onclick', '__addreview()');
-} function __flagreview (rid) { var revactData = new FormData(); revactData.append("rid", rid);
-    $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/flag.php", data: revactData, dataType: "json", contentType: false, processData: false,
-        success: function (data) { if (Number(data) == 200) { document.getElementById('review-action-'+rid).textContent = 'Hasznos'; $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/flagcount.php", data: revactData, dataType: "json", contentType: false, processData: false, success: function (data) { document.getElementById('review-helpful-ind-'+rid).textContent = data + ' ember találta ezt hasznosnak'; } }); } if (Number(data) == 201) { document.getElementById('review-action-'+rid).textContent = 'Nem hasznos'; $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/flagcount.php", data: revactData, dataType: "json", contentType: false, processData: false, success: function (data) { document.getElementById('review-helpful-ind-'+rid).textContent = data + ' ember találta ezt hasznosnak'; } }); } }
+} function __flagreview (rid) {
+
+    $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+        success : function (api) {
+            var reviewData = new FormData(); 
+            const reviewObject = {
+                ip  : api.ip,
+                action : 'flag',
+                
+                rid:  rid
+            }; reviewData.append('review', JSON.stringify(reviewObject));
+            const ajaxObject = { 
+                url : '/assets/php/classes/class.Reviews.php',
+                data : reviewData,
+                loaderContainer : { isset : false }
+            }
+            let response = getFromAjaxRequest(ajaxObject)
+            .then((data) => {
+                if (data.status == 'success') {
+                    if (data.result == 'flagged') {
+                        document.getElementById('review-action-'+rid).textContent = 'Nem hasznos';
+                    } if (data.result == 'unflagged') {
+                        document.getElementById('review-action-'+rid).textContent = 'Hasznos';
+                    }
+                    reviewObject.action = 'flagCount';
+                    reviewData.append('review', JSON.stringify(reviewObject));
+                    const ajaxObject = { 
+                        url : '/assets/php/classes/class.Reviews.php',
+                        data : reviewData,
+                        loaderContainer : { isset : false }
+                    }
+                    let response = getFromAjaxRequest(ajaxObject)
+                    .then((data) => {
+                        if (data.status == 'success') {
+                            document.getElementById('review-helpful-ind-'+rid).textContent = data.count + ' ember találta ezt hasznosnak';
+                        } else {
+                            document.getElementById('review-helpful-ind-'+rid).textContent = 'Hiba történt a megjelenítés közben.';
+                        }
+                    }) .catch((reason) => {
+                        document.getElementById('review-helpful-ind-'+rid).textContent = 'Hiba történt a megjelenítés közben.';
+                    });
+                } else {
+                    notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen művelet.');
+                }
+            }) .catch((reason) => {
+                notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen művelet.');
+            });
+        }
     });
+
 } function __editreview (rid, desc, privacy, upriv) {
     document.getElementById('review-description-'+rid).innerHTML = `
     <hr style="border: 1px solid var(--background);" class="w-100">
@@ -258,10 +304,36 @@ function __loadreviews (model) { urldata.append("model", model);
         });
     }
 } function __reportreview (rid) {
-    if (confirm('Biztosan jelenteni szeretné ezt az értékelést?')) { var revData = new FormData(); revData.append('rid', rid);
-        $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/reviews/report.php", data: revData, dataType: 'json', contentType: false, processData: false,
-            success: function(data) { document.getElementById('review-secact-'+rid).textContent = 'Jelentve'; }, error: function (data) { alert(data.responseText); }
-        });
+    if (confirm('Biztosan jelenteni szeretné ezt az értékelést?')) {
+        
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
+                var reviewData = new FormData(); 
+                const reviewObject = {
+                    ip  : api.ip,
+                    action : 'report',
+                    
+                    rid:  rid
+
+                }; reviewData.append('review', JSON.stringify(reviewObject));
+                const ajaxObject = { 
+                    url : '/assets/php/classes/class.Reviews.php',
+                    data : reviewData,
+                    loaderContainer : { isset : false }
+                }
+                let response = getFromAjaxRequest(ajaxObject)
+                .then((data) => {
+                    if (data.status == 'success') {
+                        document.getElementById('review-secact-'+rid).textContent = 'Jelentve';
+                    } else {
+                        notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen jelentés.');
+                    }
+                }) .catch((reason) => {
+                    notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen jelentés.');
+                });
+            }
+        });        
+
     }
 } function __loadstars () {
     $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/stars.php", data: urldata, dataType: 'json', contentType: false, processData: false,
@@ -272,6 +344,5 @@ function __loadreviews (model) { urldata.append("model", model);
         }
     });
 }
-
 </script>
 <?php require_once('includes/footer.php'); ?>
