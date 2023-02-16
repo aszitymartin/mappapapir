@@ -453,6 +453,46 @@ Class Authentication {
 
     }
 
+    function getCookie ($object) {
+
+        // setcookie("__au__history", '1:192.168.1.1:linux:2023.02.16 21:53:12;2:192.168.1.1:linux:2023.02.16 21:55:12', time() + (1 * 365 * 24* 60 * 60), "/");
+
+        $requiredItems = array ('action', 'cookie');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if (isset($_COOKIE[$object['cookie']])) {
+            $this->returnObject = [
+                "status" => "success",
+                "cookie" => $_COOKIE[$object['cookie']]
+            ];
+            return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "A keresett cookie nem létezik."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
     function getResults () {
         return $this->returnObject;
     }
@@ -480,6 +520,10 @@ if (isset($postObject['action'])) {
         break;
         case 'validateEmail':
             $authAction->validateRegisterEmail($postObject);
+            die(json_encode($authAction->getResults()));
+        break;
+        case 'getCookie':
+            $authAction->getCookie($postObject);
             die(json_encode($authAction->getResults()));
         break;
         default:

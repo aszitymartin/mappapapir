@@ -300,7 +300,7 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
             }, success : function (api) {
                 var cartData = new FormData(); 
                 const cartObject = {
-                    uid : <?= $_SESSION['id']; ?>,
+                    uid : <?= isset($_SESSION['id']) ? $_SESSION['id'] : 'false'; ?>,
                     pid : <?= $params['id']; ?>,
                     ip  : api.ip,
                     action : document.getElementById('add-to-cart').getAttribute('key-event') == 'add' ? 'add' : 'delete'

@@ -123,6 +123,7 @@
     .w-75d-100m { width: 75% !important; }
     .w-70d-100m { width: 70% !important; }
     .w-63d-93m { width: 62.5% !important; }
+    .w-60d-fam { width: 60% !important; }
     .w-60d-100m { width: 60% !important; }
     .w-60d-90m { width: 60% !important; }
     .w-50d-100m { width: 50% !important; }
@@ -154,4 +155,5 @@
     .smallmed-d-smallerlight-m { font-size: .75rem !important; }
     .text-align-c-m { text-align: unset !important; }
     .border-primary-right-d { border-right: 1px solid var(--section-title) !important; }
+    .margin-2-a-2m { margin: 2rem auto !important; }
 }
