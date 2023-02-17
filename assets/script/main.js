@@ -113,43 +113,7 @@ function setWizardHome () {
                             <span class="text-muted text-secondary-hover padding-07-2 pointer" onclick='openRegisterForm();'>Regisztráció</span>
                         </div>
                         <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-1" id="auth-page-con">
-                            <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-05" id="login-history-container">
-                                <span class="text-primary text-align-l bold small">Bejelentkezett felhasználók</span>
-                                <div class="flex flex-col gap-025 w-fa prio__con user-select-none" style="max-height: 260px !important;">
-
-                                    <div class="flex flex-row flex-align-c flex-justify-con-c w-fa gap-1 item-bg item-bg-hover pointer border-soft border-muted padding-1 login-history-item" data-uid="1">
-                                        <div class="flex flex-col flex-align-c flex-justify-con-c">
-                                            <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white curron__head circle padding-05 small" title="Minta Misi" style="background-color: #9b59b6">MM</span>
-                                        </div>
-                                        <div class="flex flex-col flex-align-l flex-justify-con-c w-fa gap-025">
-                                            <span class="text-secondary small-med">E-mail cím</span>
-                                            <span class="text-primary bold small">mintamisi@email.com</span>
-                                        </div>
-                                        <div class="flex flex-col flex-align-c flex-justify-con-c text-muted login-history-icon-con">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/></svg>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex flex-row flex-align-c flex-justify-con-c w-fa gap-1 item-bg item-bg-hover pointer border-soft border-muted padding-1 login-history-item" data-uid="2">
-                                        <div class="flex flex-col flex-align-c flex-justify-con-c">
-                                            <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white curron__head circle padding-05 small" title="Minta Misi" style="background-color: #9b59b6">MM</span>
-                                        </div>
-                                        <div class="flex flex-col flex-align-l flex-justify-con-c w-fa gap-025">
-                                            <span class="text-secondary small-med">E-mail cím</span>
-                                            <span class="text-primary bold small">mintamisi@email.com</span>
-                                        </div>
-                                        <div class="flex flex-col flex-align-c flex-justify-con-c text-muted login-history-icon-con">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/></svg>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                            <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
-                                <span class="menu-bg text-secondary padding-1 border-soft text-align-c not-allowed user-select-none w-fa" id="loginFromHistory">Folytatás</span>
-                                <span class="text-primary pointer user-select-none small">Bejelentkezés másik fiókkal</span>
-                            </div>
+                            
                         </div>
                     </div>
                     <div class="margin-top-a">
@@ -204,6 +168,162 @@ function setWizardHome () {
 
 }
 setWizardHome();
+function initWizardHome () {
+
+    const authObject = { 
+        action : 'getCookie',
+        cookie : '__au__history'
+    };
+    var authData = new FormData();
+    authData.append('auth', JSON.stringify(authObject));
+
+    const ajaxObject = {
+        url : '/assets/php/classes/class.Authentication.php', data : authData,
+        loaderContainer : {
+            isset : true,
+            id : 'auth-page-con',
+            type : 'panel',
+            iconSize : {
+                iconWidth : '128',
+                iconHeight : '128'
+            },
+            loaderText : {
+                custom : false,
+                customText : ''
+            }
+        }
+    }
+    
+    let response = getFromAjaxRequest(ajaxObject)
+    .then((data) => {
+        if (data.status == 'success') {
+            var userCount = data.cookie.split(';');
+            var userIds = Array();
+            for (let i = 0; i < userCount.length; i++) {
+                userIds.push(userCount[i].split(':')[0]);
+            }
+            authObject.action = 'getLoginDetails';
+            authObject.data = userIds.toString();
+            delete(authObject['cookie']);
+            authData.append('auth', JSON.stringify(authObject));
+            let response = getFromAjaxRequest(ajaxObject)
+            .then((data) => {
+                if (data.status == 'success') {
+                    document.getElementById('auth-page-con').innerHTML = `
+                        <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-05" id="login-history-container">
+                            <span class="text-primary text-align-l bold small">Bejelentkezett felhasználók</span>
+                            <div class="flex flex-col gap-025 w-fa prio__con user-select-none" id="login-history-item-con" style="max-height: 260px !important;">
+
+                            </div>
+                        </div>
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
+                            <span class="menu-bg text-secondary padding-1 border-soft text-align-c not-allowed user-select-none w-fa" id="loginFromHistory">Folytatás</span>
+                            <span class="text-primary pointer user-select-none small" onclick="initManualLogin();">Bejelentkezés másik fiókkal</span>
+                        </div>
+                    `;
+                    for (let i = 0; i < data.object.length; i++) {
+                        document.getElementById('login-history-item-con').innerHTML += `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c w-fa gap-1 item-bg item-bg-hover pointer border-soft border-muted padding-1 login-history-item" data-uid="${data.object[i].uid}">
+                                <div class="flex flex-col flex-align-c flex-justify-con-c">
+                                    <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white curron__head circle padding-05 small" title="${data.object[i].fullname}" style="background-color: #${data.object[i].color}">${data.object[i].initials}</span>
+                                </div>
+                                <div class="flex flex-col flex-align-l flex-justify-con-c w-fa gap-025">
+                                    <span class="text-secondary small-med">E-mail cím</span>
+                                    <span class="text-primary bold small">${data.object[i].email}</span>
+                                </div>
+                                <div class="flex flex-col flex-align-c flex-justify-con-c text-muted login-history-icon-con">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/></svg>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    var loginHistoryItem = document.getElementsByClassName('login-history-item');
+                    for (let i = 0; i < loginHistoryItem.length; i++) {
+                        loginHistoryItem[i].addEventListener('mouseenter', () => {
+                            if (!loginHistoryItem[i].classList.contains('login-history-item-active')) {
+                                loginHistoryItem[i].getElementsByClassName('login-history-icon-con')[0].classList.replace('text-muted', 'text-primary');
+                                loginHistoryItem[i].getElementsByClassName('login-history-icon-con')[0].innerHTML = `
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M11.9343 12.5657L9.53696 14.963C9.22669 15.2733 9.18488 15.7619 9.43792 16.1204C9.7616 16.5789 10.4211 16.6334 10.8156 16.2342L14.3054 12.7029C14.6903 12.3134 14.6903 11.6866 14.3054 11.2971L10.8156 7.76582C10.4211 7.3666 9.7616 7.42107 9.43792 7.87962C9.18488 8.23809 9.22669 8.72669 9.53696 9.03696L11.9343 11.4343C12.2467 11.7467 12.2467 12.2533 11.9343 12.5657Z" fill="currentColor"/></svg>
+                                `;
+                            }
+                        });
+                        loginHistoryItem[i].addEventListener('mouseleave', () => {
+                            if (!loginHistoryItem[i].classList.contains('login-history-item-active')) {
+                                loginHistoryItem[i].getElementsByClassName('login-history-icon-con')[0].classList.replace('text-primary', 'text-muted');
+                                loginHistoryItem[i].getElementsByClassName('login-history-icon-con')[0].innerHTML = `
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/></svg>
+                                `;
+                            }
+                        });
+                        loginHistoryItem[i].addEventListener('click', () => {
+                            for (let j = 0; j < loginHistoryItem.length; j++) {
+                                loginHistoryItem[j].getElementsByClassName('login-history-icon-con')[0].classList.replace('text-primary', 'text-muted');
+                                loginHistoryItem[j].getElementsByClassName('login-history-icon-con')[0].innerHTML = `
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/></svg>
+                                `;
+                                loginHistoryItem[j].classList.remove('login-history-item-active');
+                            }
+                            loginHistoryItem[i].classList.add('login-history-item-active');
+                            loginHistoryItem[i].getElementsByClassName('login-history-icon-con')[0].classList.replace('text-muted', 'text-primary');
+                            loginHistoryItem[i].getElementsByClassName('login-history-icon-con')[0].innerHTML = `
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M11.9343 12.5657L9.53696 14.963C9.22669 15.2733 9.18488 15.7619 9.43792 16.1204C9.7616 16.5789 10.4211 16.6334 10.8156 16.2342L14.3054 12.7029C14.6903 12.3134 14.6903 11.6866 14.3054 11.2971L10.8156 7.76582C10.4211 7.3666 9.7616 7.42107 9.43792 7.87962C9.18488 8.23809 9.22669 8.72669 9.53696 9.03696L11.9343 11.4343C12.2467 11.7467 12.2467 12.2533 11.9343 12.5657Z" fill="currentColor"/></svg>
+                            `;
+                            document.getElementById('loginFromHistory').setAttribute('onclick', 'loginFromHistory('+loginHistoryItem[i].getAttribute('data-uid')+')');
+                            document.getElementById('loginFromHistory').classList.replace('not-allowed', 'pointer');
+                            document.getElementById('loginFromHistory').classList.replace('menu-bg', 'primary-bg');
+                            document.getElementById('loginFromHistory').classList.add('primary-bg-hover');
+                            document.getElementById('loginFromHistory').classList.remove('text-secondary');
+                        });
+
+                    }
+                } else {
+                    initManualLogin();
+                }
+            }) .catch((reason) => {
+                console.log(reason);
+                initManualLogin();
+            });
+        } else {
+            initManualLogin();
+        }
+    }) .catch((reason) => {
+        console.log(reason);
+        initManualLogin();
+    });
+
+} function initManualLogin () {
+
+    if (document.getElementById('auth-page-con')) {
+        document.getElementById('auth-page-con').innerHTML = `
+            <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-05" id="login-history-container">
+                <div class="wizard_tab_main_item">
+                    <span class="wizard_input_name">E-mail cím</span>
+                    <div class="flex row border-soft item-bg  overflow-hidden">
+                        <input class="wizard_input wizard_login_input" type="email" name="register_email" id="login__email" placeholder="mintamisi@email.hu" autocomplete="email">
+                    </div>
+                </div>
+                <div class="wizard_tab_main_item">
+                    <span class="wizard_input_name">Jelszó</span>
+                    <div class="flex row border-soft item-bg  overflow-hidden">
+                        <input class="wizard_input wizard_login_input wizard_login_input_pass" type="password" name="register_password" id="login__password" autocomplete="new-password" style="width: 100% !important;">
+                        <div class="wizard_input_password_show wizard_login_status" onclick="showPass('register_password')">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" class="svg" fill-rule="nonzero" opacity="0.4"></path><path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" class="svg" opacity="0.5"></path></g></svg>
+                        </div>
+                    </div>
+                    <label class="wizard_input_info flex flex-row flex-align-c flex-justify-con-sb">
+                        <a class="pointer link">Elfelejtett jelszó?</a>
+                    </label>
+                </div>
+            </div>
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
+                <span class="primary-bg primary-bg-hover padding-1 border-soft text-align-c pointer user-select-none w-fa" id="loginFromManual" onclick="tryLogin();">Folytatás</span>
+            </div>
+        `;
+    } else {
+        notificationSystem(0, 1, 0, 'Üzenet', 'Érvénytelen konténer');
+    }
+
+}
 function openHeaderProfileAction (device_type) { document.getElementsByTagName('html')[0].classList.add('stop-scroll', 'stop-scroll-mobile');
     document.body.append(wrapper); document.getElementById('header_con').append(profileHeaderContainer);
     
@@ -247,9 +367,17 @@ function openHeaderProfileAction (device_type) { document.getElementsByTagName('
 
     }
 
+    initWizardHome();
+
+    document.body.style.overflowX = 'hidden'; document.body.style.width = '100%';
+    document.getElementById('wizard_con').classList.remove('panelSlideDown'); document.getElementById('wizard_con').classList.add('panelSlideUp'); disableSwipers();
+}
+function loginFromHistory (uid) {
+
+    document.getElementById('loginFromHistory').removeAttribute('onclick');
     const authObject = { 
-        action : 'getCookie',
-        cookie : '__au__history'
+        action : 'getLoginDetails',
+        data : uid
     };
     var authData = new FormData();
     authData.append('auth', JSON.stringify(authObject));
@@ -270,71 +398,177 @@ function openHeaderProfileAction (device_type) { document.getElementsByTagName('
             }
         }
     }
-    
+
     let response = getFromAjaxRequest(ajaxObject)
     .then((data) => {
-        console.log(data);
         if (data.status == 'success') {
-            var userCount = data.cookie.split(';');
-            var userIds = Array();
-            for (let i = 0; i < userCount.length; i++) {
-                userIds.push(userCount[i].split(':')[0]);
+            document.getElementById('auth-page-con').innerHTML = `
+                <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-05" id="login-history-container">
+                    <span class="text-primary text-align-l bold small">Bejelentkezett felhasználók</span>
+                    <div class="flex flex-col gap-025 w-fa prio__con user-select-none" id="login-history-item-con" style="max-height: 260px !important;">
+
+                    </div>
+                </div>
+                <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
+                    <span class="menu-bg text-secondary padding-1 border-soft text-align-c not-allowed user-select-none w-fa" id="loginFromHistory">Folytatás</span>
+                    <span class="text-primary pointer user-select-none small" onclick="initManualLogin();">Bejelentkezés másik fiókkal</span>
+                </div>
+            `;
+            if (document.getElementById('login-history-container')) {
+                document.getElementById('login-history-container').innerHTML = `
+                <div class="flex flex-col gap-1 w-fa">
+                    <div class="flex flex-col gap-05 w-fa">
+                        <span class="text-primary text-align-l bold small">Folytatás, mint</span>
+                        <div class="flex flex-row flex-align-c flex-justify-con-c w-fa gap-1 border-primary shape-pill item-bg">
+                            <div class="flex flex-col w-fc">
+                                <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white curron__head circle padding-05 smaller" title="${data.object[0].fullname}" style="background-color: #${data.object[0].color}">${data.object[0].initials}</span>
+                            </div>
+                            <div class="flex flex-row w-fa">
+                                <span class="text-primary bold small">${data.object[0].email}</span>
+                            </div>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c text-secondary padding-025 pointer user-select-none relative has-tooltip" onclick="setWizardHome(); initWizardHome();" aria-label="Másik fiók választása" aria-describedby="tooltip-back">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg>
+                                <span class="tooltip absolute" id="tooltip-back"><span key="tooltip-back" key="tooltip-back">Másik fiók választása</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard_tab_main_item">
+                        <span class="wizard_input_name">Jelszó</span>
+                        <div class="flex row border-soft item-bg  overflow-hidden">
+                            <input class="wizard_input wizard_login_input wizard_login_input_pass" type="password" name="register_password" id="login__password" autocomplete="new-password" style="width: 100% !important;">
+                            <div class="wizard_input_password_show wizard_login_status" onclick="showPass('register_password')">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" class="svg" fill-rule="nonzero" opacity="0.4"></path><path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" class="svg" opacity="0.5"></path></g></svg>
+                            </div>
+                        </div>
+                        <label class="wizard_input_info flex flex-row flex-align-c flex-justify-con-sb" id="logerr__con">
+                            <a class="pointer link">Elfelejtett jelszó?</a>
+                        </label>
+                    </div>
+                </div>
+                `;
             }
-            console.log(userIds.toString());
-        } else {
-            console.log('manual login');    
-        }
-    }) .catch((reason) => {
-        console.log(reason);
-        console.log('manual login');
-    });
+            
+            $('#login__password').on('input', () => {
+                if ($('#login__password').val().length > 7) {
+                    document.getElementById('loginFromHistory').classList.replace('menu-bg', 'primary-bg');
+                    document.getElementById('loginFromHistory').classList.replace('not-allowed', 'pointer');
+                    document.getElementById('loginFromHistory').classList.add('primary-bg-hover');
+                    document.getElementById('loginFromHistory').setAttribute('onclick', 'submitHistoryLogin("'+data.object[0].email+'")');
+                    
+                } else {
+                    document.getElementById('loginFromHistory').classList.replace('pointer', 'not-allowed');
+                    document.getElementById('loginFromHistory').classList.replace('primary-bg', 'menu-bg');
+                    document.getElementById('loginFromHistory').classList.remove('primary-bg-hover');
+                    document.getElementById('loginFromHistory').removeAttribute('onclick');
+                    
+                }
+            });
+            
+        } else { initManualLogin(); }
+    }) .catch((reason) => initManualLogin());
 
-    document.body.style.overflowX = 'hidden'; document.body.style.width = '100%';
-    document.getElementById('wizard_con').classList.remove('panelSlideDown'); document.getElementById('wizard_con').classList.add('panelSlideUp'); disableSwipers();
-}
-function loginFromHistory (uid) {
-    console.log(uid);
+} function submitHistoryLogin (e) {
+    console.log('submitted : ' + e);
 
-    /*
-
-        LOADER MEGJELENITESE AMIG LEKERDEZI
-        A KIVALASZTOTT FELHASZNALO ADATAIT
-
-    */
-        document.getElementById('loginFromHistory').removeAttribute('onclick');
-    if (document.getElementById('login-history-container')) {
-        document.getElementById('login-history-container').innerHTML = `
-        <div class="flex flex-col gap-1 w-fa">
-            <div class="flex flex-col gap-05 w-fa">
-                <span class="text-primary text-align-l bold small">Folytatás, mint</span>
-                <div class="flex flex-row flex-align-c flex-justify-con-c w-fa gap-1 border-primary shape-pill item-bg">
-                    <div class="flex flex-col w-fc">
-                        <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white curron__head circle padding-05 smaller" title="Minta Misi" style="background-color: #9b59b6">MM</span>
-                    </div>
-                    <div class="flex flex-row w-fa">
-                        <span class="text-primary bold small">mintamisi@email.com</span>
-                    </div>
-                    <div class="flex flex-col flex-align-c flex-justify-con-c text-secondary padding-025 pointer user-select-none relative has-tooltip" onclick="setWizardHome()" aria-label="Másik fiók választása" aria-describedby="tooltip-back">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg>
-                        <span class="tooltip absolute" id="tooltip-back"><span key="tooltip-back" key="tooltip-back">Másik fiók választása</span></span>
-                    </div>
-                </div>
-            </div>
-            <div class="wizard_tab_main_item">
-                <span class="wizard_input_name">Jelszó</span>
-                <div class="flex row border-soft item-bg  overflow-hidden">
-                    <input class="wizard_input wizard_login_input wizard_login_input_pass" type="password" name="register_password" id="login__password" autocomplete="new-password" style="width: 100% !important;">
-                    <div class="wizard_input_password_show wizard_login_status" onclick="showPass('register_password')">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" class="svg" fill-rule="nonzero" opacity="0.4"></path><path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" class="svg" opacity="0.5"></path></g></svg>
-                    </div>
-                </div>
-                <label class="wizard_input_info flex flex-row flex-align-c flex-justify-con-sb" id="logerr__con">
-                    <a href="#">Elfelejtett jelszó?</a>
-                </label>
-            </div>
+    var ce__wrapper = document.createElement('div'); ce__wrapper.classList = "wrapper_dark fadein z-index-100"; var ce__box = document.createElement('div'); ce__box.id = "adcrd__incon"; ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";
+    document.getElementById('profileHeaderContainer').append(ce__wrapper); ce__wrapper.append(ce__box); $('html').css("overflow-y", "hidden");
+    ce__box.innerHTML = `
+        <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa">
+            <span class="text-primary pointer user-select-none" id="cl__ebox" title="Bezárás" aria-label="Bezárás">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg>
+            </span>
         </div>
-        `;
-    }
+        <div id="ce__body"></div>
+    `;
+    $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+        beforeSend: function() {
+            document.getElementById('ce__body').innerHTML = `
+                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span id="loaderText">Adatok elküldése folyamatban</span>
+                </div>
+            `; $("#cl__ebox").click(() => { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
+        }, success : function (api) {
+            const getDeviceType = () => { const ua = navigator.userAgent;
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) { return "tablet"; }
+                if ( /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) { return "mobile";}
+                return "desktop";
+            }; var authData = new FormData(); 
+            const authObject = {
+                ip  : api.ip, action : 'login',
+                email : e, password : $('#login__password').val(),
+                device : getDeviceType(), city : api.city,
+                region : api.region, country : api.country_name
+            }; authData.append('auth', JSON.stringify(authObject));
+            const ajaxObject = { 
+                url : '/assets/php/classes/class.Authentication.php',
+                data : authData,
+                loaderContainer : {
+                    isset : true,
+                    id : 'ce__body',
+                    type : 'panel',
+                    iconSize : {
+                        iconWidth : '128',
+                        iconHeight : '128'
+                    },
+                    loaderText : {
+                        custom : true,
+                        customText : '<span>Adatok ellenőrzése folyamatban.</span>'
+                    }
+                }
+            }
+
+            let response = getFromAjaxRequest(ajaxObject)
+            .then((data) => {
+                if (data.status == 'success') {
+                    document.getElementById('ce__body').innerHTML = `
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                            <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-025">
+                                <span class="bold" id="loaderText">Sikeres bejelentkezés</span>
+                                <span calss="small-med italic">${data.email}</span>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        $("#cl__ebox").click();
+                        closeHeaderProfileAction();
+                        setTimeout(() => {
+                            window.location.reload(true);
+                        }, 750);
+                    }, 500);
+                } else {
+                    document.getElementById('ce__body').innerHTML = `
+                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                            <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                            <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-025">
+                                <span class="bold" id="loaderText">Sikertelen bejelentkezés</span>
+                                <span calss="small-med italic">${data.message}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }) .catch((reason) => {
+                document.getElementById('ce__body').innerHTML = `
+                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                        <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                        <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-025">
+                            <span class="bold" id="loaderText">Sikertelen bejelentkezés</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }, error : function () {
+            document.getElementById('ce__body').innerHTML = `
+                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span id="loaderText">Adatok elküldése folyamatban</span>
+                </div>
+            `;
+        }
+    });
+    $("#cl__ebox").click(() => { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
+
 }
 function openRegisterForm () { $('#profileHeaderContainer').load('/includes/addons/register.html'); }
 var currentTab = 0; var bool_fname, bool_email, bool_passw, bool_passc, bool_comus, bool_settl, bool_addri, bool_zipin, bool_taxad, bool_shset, bool_shadd, bool_shzip, bool_phone, bool_lsfax, bool_accep = false;

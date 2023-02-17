@@ -493,6 +493,77 @@ Class Authentication {
 
     }
 
+    function getLoginDetails ($object) {
+
+        $requiredItems = array ('action', 'data');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $loginId = explode(',', $object['data']);
+        $userArray = array();
+        for ($i = 0; $i < count($loginId); $i++) {
+
+            if ($getUserInfo = $con->prepare('SELECT customers.id, initials, color, email, fullname FROM customers INNER JOIN customers__header ON customers__header.uid = customers.id WHERE customers.id = ?')) {
+                $getUserInfo->bind_param('i', $loginId[$i]); $getUserInfo->execute(); $getUserInfo->store_result();
+                if ($getUserInfo->num_rows > 0) {
+                    $getUserInfo->bind_result($luid, $initials, $color, $email, $fullname); $getUserInfo->fetch();
+                    $getUserInfo->free_result();
+                    $con->next_result();
+
+                    $userObject = new stdClass();
+                    $userObject->uid = $luid;
+                    $userObject->initials = $initials;
+                    $userObject->color = $color;
+                    $userObject->email = $email;
+                    $userObject->fullname = $fullname;
+                    array_push($userArray, $userObject);
+
+                }
+                $getUserInfo->close();
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
+            }
+
+        }
+
+        $this->returnObject = [
+            "status" => "success",
+            "object" => $userArray
+        ];
+        return $this->returnObject;
+
+    }
+
     function getResults () {
         return $this->returnObject;
     }
@@ -524,6 +595,10 @@ if (isset($postObject['action'])) {
         break;
         case 'getCookie':
             $authAction->getCookie($postObject);
+            die(json_encode($authAction->getResults()));
+        break;
+        case 'getLoginDetails':
+            $authAction->getLoginDetails($postObject);
             die(json_encode($authAction->getResults()));
         break;
         default:
