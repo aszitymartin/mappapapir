@@ -91,6 +91,18 @@ Class Authentication {
                                     if ($setp__email = $con->prepare('DELETE FROM customers__deleted WHERE uid = ?')) {
                                         $setp__email->bind_param('i', $cuid); $setp__email->execute(); $_SESSION['loggedin'] = TRUE; $_SESSION['id'] = $cuid;
                                         
+                                        if (isset($_COOKIE['__au__history'])) {
+                                            $cookieArray = explode(";", $_COOKIE['__au__history']);
+                                            for ($i = 0; $i < count($cookieArray); $i++) {
+                                                if ($cuid == explode(':', $cookieArray[$i])[0]) {
+                                                    unset($cookieArray[$i]); break;
+                                                }
+                                            }
+                                            setcookie("__au__history", $cuid.':'.$object['ip'].':'.$agent.';'.implode(';', $cookieArray), time() + (1 * 365 * 24* 60 * 60), "/");
+                                        } else {
+                                            setcookie("__au__history", $cuid.':'.$object['ip'].':'.$agent, time() + (1 * 365 * 24* 60 * 60), "/");
+                                        }
+
                                         $this->returnObject = [
                                             "status" => "success",
                                             "email" => $object['email']
@@ -381,7 +393,7 @@ Class Authentication {
 
     }
 
-    function logOutUser ($object) {
+    function logOutUser () {
         
         unset($_COOKIE['__au__login']); setcookie("__au__login", null, -1, '/');
         $_SESSION['loggedin'] = FALSE; unset($_SESSION['id']);
@@ -392,8 +404,103 @@ Class Authentication {
 
     }
 
-    function isLogged ($object) {
-        
+    function logOutNoSave ($object) {
+
+        $requiredItems = array ('action', 'uid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if (isset($_COOKIE['__au__history'])) { $cookieIndex;
+            $cookieArray = explode(';', $_COOKIE['__au__history']);
+            for ($i = 0; $i < count($cookieArray); $i++) {
+                if ($object['uid'] == explode(':', $cookieArray[$i])[0]) {
+                    unset($cookieArray[$i]); break;
+                }
+            } setcookie("__au__history", implode(';', $cookieArray), time() + (1 * 365 * 24* 60 * 60), "/");
+            $this->logOutUser();
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincsen beállítva ilyen cookie."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function deleteLoginHistory ($object) {
+
+        $requiredItems = array ('action', 'uid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if (isset($_COOKIE['__au__history'])) { $cookieIndex;
+            $cookieArray = explode(';', $_COOKIE['__au__history']);
+            for ($i = 0; $i < count($cookieArray); $i++) {
+                if ($object['uid'] == explode(':', $cookieArray[$i])[0]) {
+                    unset($cookieArray[$i]); break;
+                }
+            } setcookie("__au__history", implode(';', $cookieArray), time() + (1 * 365 * 24* 60 * 60), "/");
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincsen beállítva ilyen cookie."
+            ];
+            return $this->returnObject;
+        }
+
     }
 
     function validateRegisterEmail ($object) {
@@ -455,7 +562,7 @@ Class Authentication {
 
     function getCookie ($object) {
 
-        // setcookie("__au__history", '1:192.168.1.1:linux:2023.02.16 21:53:12;2:192.168.1.1:linux:2023.02.16 21:55:12', time() + (1 * 365 * 24* 60 * 60), "/");
+        // setcookie("__au__history", '1:192.168.1.1:linux:2023.02.16 21:53:12;8:192.168.1.1:linux:2023.02.16 21:55:12', time() + (1 * 365 * 24* 60 * 60), "/");
 
         $requiredItems = array ('action', 'cookie');
         $objectKeys = array_keys((array)$object);
@@ -586,7 +693,15 @@ if (isset($postObject['action'])) {
             die(json_encode($authAction->getResults()));
         break;
         case 'logout':
-            $authAction->logOutUser($postObject);
+            $authAction->logOutUser();
+            die(json_encode($authAction->getResults()));
+        break;
+        case 'logOutNoSave':
+            $authAction->logOutNoSave($postObject);
+            die(json_encode($authAction->getResults()));
+        break;
+        case 'deleteLoginHistory':
+            $authAction->deleteLoginHistory($postObject);
             die(json_encode($authAction->getResults()));
         break;
         case 'validateEmail':

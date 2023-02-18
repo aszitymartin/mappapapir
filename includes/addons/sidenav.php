@@ -299,7 +299,7 @@
         <?php
             if (isset($_SESSION['loggedin'])) {
                 echo '
-                    <span class="sidenav-item sidenav-item-sb flex flex-row no-bm-des" onclick="logout();">
+                    <span class="sidenav-item sidenav-item-sb flex flex-row no-bm-des" id="logout" onclick="openSidenavAddons(this.id)">
                         <span class="sidenav-item-group-item">
                             <span class="flex flex-row flex-align-c">
                                 <span class="sidenav-item-in flex">

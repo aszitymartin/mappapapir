@@ -86,20 +86,6 @@ function setWizardHome () {
                         </div>
                     </div>
                 </div>
-                <!--
-                <div class='user_act_wizard'>
-                    <div class='wizard_container'>
-                        <div class='wizard_main_image_con'></div>
-                        <div class='wizard_selection_con'>
-                            <div class='wizard_sl_btn button button-primary' onclick='openRegisterForm();'>Regisztráció</div>
-                            <div class='wizard_sl_btn button button-secondary' onclick='openLoginForm();'>Bejelentkezés</div>
-                        </div>
-                        <div class='small_info'>
-                            <span>A Regisztráció gombra kattintva elfogadja feltételeinket. Az <a href="#">Adatvédelmi szabályzatunkban</a> megtudhatja, hogyan gyűjtjük, használjuk és osztjuk meg az Ön adatait, és hogyan használjuk a cookie-kat és a hasonló technológiát a <a href="#">Cookie-szabályzatunkban</a>. SMS-értesítéseket kaphat tőlünk, és bármikor <a href="#">leiratkozhat</a>.</span>
-                        </div>
-                    </div>
-                </div>
-                -->
                 <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-60d-fam h-fa margin-2-a-2m">
                     <div class="wizard_container">
                         <div class="flex flex-col flex-align-c flex-justify-con-c w-fa">
@@ -109,7 +95,7 @@ function setWizardHome () {
                     </div>
                     <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1">
                         <div class="flex flex-row flex-align-c flex-justify-con-c border-soft item-bg padding-025 w-fc gap-025 user-select-none">
-                            <span class="background-bg padding-07-2 border-soft text-primary pointer" onclick='openLoginForm();'>Bejelentkezés</span>
+                            <span class="background-bg padding-07-2 border-soft text-primary pointer" onclick='setWizardHome(); initWizardHome();'>Bejelentkezés</span>
                             <span class="text-muted text-secondary-hover padding-07-2 pointer" onclick='openRegisterForm();'>Regisztráció</span>
                         </div>
                         <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-1" id="auth-page-con">
@@ -162,6 +148,12 @@ function setWizardHome () {
             document.getElementById('loginFromHistory').classList.replace('menu-bg', 'primary-bg');
             document.getElementById('loginFromHistory').classList.add('primary-bg-hover');
             document.getElementById('loginFromHistory').classList.remove('text-secondary');
+
+            document.getElementById('delete-login-history-item').classList.replace('text-secondary', 'text-primary');
+            document.getElementById('delete-login-history-item').classList.replace('not-allowed', 'pointer');
+            document.getElementById('delete-login-history-item').classList.add('link');
+            document.getElementById('delete-login-history-item').setAttribute('onclick', 'removeLoginHistoryItem('+loginHistoryItem[i].getAttribute('data-uid')+')');
+
         });
 
     }
@@ -170,12 +162,8 @@ function setWizardHome () {
 setWizardHome();
 function initWizardHome () {
 
-    const authObject = { 
-        action : 'getCookie',
-        cookie : '__au__history'
-    };
-    var authData = new FormData();
-    authData.append('auth', JSON.stringify(authObject));
+    const authObject = { action : 'getCookie', cookie : '__au__history' };
+    var authData = new FormData(); authData.append('auth', JSON.stringify(authObject));
 
     const ajaxObject = {
         url : '/assets/php/classes/class.Authentication.php', data : authData,
@@ -197,23 +185,19 @@ function initWizardHome () {
     let response = getFromAjaxRequest(ajaxObject)
     .then((data) => {
         if (data.status == 'success') {
-            var userCount = data.cookie.split(';');
-            var userIds = Array();
-            for (let i = 0; i < userCount.length; i++) {
-                userIds.push(userCount[i].split(':')[0]);
-            }
-            authObject.action = 'getLoginDetails';
-            authObject.data = userIds.toString();
-            delete(authObject['cookie']);
-            authData.append('auth', JSON.stringify(authObject));
+            var userCount = data.cookie.split(';'); var userIds = Array();
+            for (let i = 0; i < userCount.length; i++) { userIds.push(userCount[i].split(':')[0]); }
+            authObject.action = 'getLoginDetails'; authObject.data = userIds.toString();
+            delete(authObject['cookie']); authData.append('auth', JSON.stringify(authObject));
             let response = getFromAjaxRequest(ajaxObject)
             .then((data) => {
                 if (data.status == 'success') {
                     document.getElementById('auth-page-con').innerHTML = `
                         <div class="flex flex-col flex-align-l flex-justify-con-fs w-fa gap-05" id="login-history-container">
                             <span class="text-primary text-align-l bold small">Bejelentkezett felhasználók</span>
-                            <div class="flex flex-col gap-025 w-fa prio__con user-select-none" id="login-history-item-con" style="max-height: 260px !important;">
-
+                            <div class="flex flex-col gap-025 w-fa prio__con user-select-none" id="login-history-item-con" style="max-height: 260px !important;"></div>
+                            <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fa user-select-none">
+                                <span class="text-secondary not-allowed user-select-none smaller-light" id="delete-login-history-item">Eltávolítás</span>
                             </div>
                         </div>
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
@@ -273,23 +257,19 @@ function initWizardHome () {
                             document.getElementById('loginFromHistory').classList.replace('menu-bg', 'primary-bg');
                             document.getElementById('loginFromHistory').classList.add('primary-bg-hover');
                             document.getElementById('loginFromHistory').classList.remove('text-secondary');
+
+                            document.getElementById('delete-login-history-item').classList.replace('text-secondary', 'text-primary');
+                            document.getElementById('delete-login-history-item').classList.replace('not-allowed', 'pointer');
+                            document.getElementById('delete-login-history-item').classList.add('link');
+                            document.getElementById('delete-login-history-item').setAttribute('onclick', 'removeLoginHistoryItem('+loginHistoryItem[i].getAttribute('data-uid')+')');
+
                         });
 
                     }
-                } else {
-                    initManualLogin();
-                }
-            }) .catch((reason) => {
-                console.log(reason);
-                initManualLogin();
-            });
-        } else {
-            initManualLogin();
-        }
-    }) .catch((reason) => {
-        console.log(reason);
-        initManualLogin();
-    });
+                } else { initManualLogin(); }
+            }) .catch((reason) => { initManualLogin(); });
+        } else { initManualLogin(); }
+    }) .catch((reason) => { initManualLogin(); });
 
 } function initManualLogin () {
 
@@ -319,8 +299,6 @@ function initWizardHome () {
                 <span class="primary-bg primary-bg-hover padding-1 border-soft text-align-c pointer user-select-none w-fa" id="loginFromManual" onclick="tryLogin();">Folytatás</span>
             </div>
         `;
-    } else {
-        notificationSystem(0, 1, 0, 'Üzenet', 'Érvénytelen konténer');
     }
 
 }
@@ -363,6 +341,11 @@ function openHeaderProfileAction (device_type) { document.getElementsByTagName('
             document.getElementById('loginFromHistory').classList.replace('menu-bg', 'primary-bg');
             document.getElementById('loginFromHistory').classList.add('primary-bg-hover');
             document.getElementById('loginFromHistory').classList.remove('text-secondary');
+
+            document.getElementById('delete-login-history-item').classList.replace('text-secondary', 'text-primary');
+            document.getElementById('delete-login-history-item').classList.replace('not-allowed', 'pointer');
+            document.getElementById('delete-login-history-item').classList.add('link');
+            document.getElementById('delete-login-history-item').setAttribute('onclick', 'removeLoginHistoryItem('+loginHistoryItem[i].getAttribute('data-uid')+')');
         });
 
     }
@@ -468,7 +451,6 @@ function loginFromHistory (uid) {
     }) .catch((reason) => initManualLogin());
 
 } function submitHistoryLogin (e) {
-    console.log('submitted : ' + e);
 
     var ce__wrapper = document.createElement('div'); ce__wrapper.classList = "wrapper_dark fadein z-index-100"; var ce__box = document.createElement('div'); ce__box.id = "adcrd__incon"; ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";
     document.getElementById('profileHeaderContainer').append(ce__wrapper); ce__wrapper.append(ce__box); $('html').css("overflow-y", "hidden");
@@ -568,6 +550,35 @@ function loginFromHistory (uid) {
         }
     });
     $("#cl__ebox").click(() => { ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
+
+} function removeLoginHistoryItem (uid) {
+
+    const authObject = { action : 'deleteLoginHistory', uid : uid };
+    var authData = new FormData(); authData.append('auth', JSON.stringify(authObject));
+
+    const ajaxObject = {
+        url : '/assets/php/classes/class.Authentication.php', data : authData,
+        loaderContainer : {
+            isset : true,
+            id : 'auth-page-con',
+            type : 'panel',
+            iconSize : {
+                iconWidth : '128',
+                iconHeight : '128'
+            },
+            loaderText : {
+                custom : false,
+                customText : ''
+            }
+        }
+    }
+    
+    let response = getFromAjaxRequest(ajaxObject)
+    .then((data) => {
+        if (data.status == 'success') {
+            setWizardHome(); initWizardHome();
+        } else { setWizardHome(); initWizardHome(); notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen eltávolítás'); }
+    }) .catch((reason) => { setWizardHome(); initWizardHome(); notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen eltávolítás'); });
 
 }
 function openRegisterForm () { $('#profileHeaderContainer').load('/includes/addons/register.html'); }
@@ -723,7 +734,6 @@ function validate(name) {
                 }
                 let response = getFromAjaxRequest(ajaxObject)
                 .then((data) => {
-                    console.log(data);
                     if (data.status == 'success') {
                         document.getElementById('ce__body').innerHTML = `
                             <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
@@ -753,7 +763,6 @@ function validate(name) {
                         `;
                     }
                 }) .catch((reason) => {
-                    console.log(reason);
                     document.getElementById('ce__body').innerHTML = `
                         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
                             <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
