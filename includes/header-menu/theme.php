@@ -87,8 +87,7 @@
                                         } else {document.querySelector('html').dataset.theme = 'theme-' + '". $theme ."';}
                                     </script>
                                 ";
-                                $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-                                $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                                include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                                 $stmt = $con->prepare('SELECT theme FROM customers WHERE id = ?');
                                 $stmt->bind_param('i', $_SESSION['id']);$stmt->execute();$stmt->bind_result($getTheme);
                                 $stmt->fetch();$stmt->close();

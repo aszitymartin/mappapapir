@@ -1,5 +1,5 @@
 <?php
-$DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 $con->query("SET CHARACTER SET utf8mb4"); if (mysqli_connect_errno()) {header ("Location: /500");} $pid = $_POST['pid'];
 $msql = "SELECT model FROM products__variations WHERE pid = $pid"; $mres = $con-> query($msql); while($data = $mres-> fetch_assoc()) { $model = $data['model']; }
 $ssql = "SELECT stars FROM reviews INNER JOIN products__variations ON products__variations.pid = reviews.pid WHERE model = '$model'"; $sres = $con-> query($ssql); $son = 0; $stw = 0; $sth = 0; $sfo = 0; $sfi = 0; $savg = 0; $strs = new stdClass();

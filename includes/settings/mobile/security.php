@@ -1,6 +1,5 @@
 <?php session_start();
-    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-    $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
     if (mysqli_connect_errno()) {header ("Location: /500");
         echo "
             <script>const now = new Date();const notifParams = {notifType : '1',notifIcon : '2',notifTheme : '2',notifTitle : 'Hiba',notifDesc : 'Szerver oldali hiba történt.',expiry : now.setSeconds(60)};

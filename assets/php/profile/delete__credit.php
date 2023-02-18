@@ -1,4 +1,4 @@
-<?php session_start(); $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); } if (isset($_SESSION['id'])) {$uid = $_SESSION['id'];} else {die("43"); }
+<?php session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php'); if (mysqli_connect_errno()) { die ("0"); } if (isset($_SESSION['id'])) {$uid = $_SESSION['id'];} else {die("43"); }
 if ($csub__stmt = $con->prepare('SELECT sub FROM customers__card__subscription WHERE uid = ?')) { $csub__stmt->bind_param('i', $uid);$csub__stmt->execute();$csub__stmt->execute(); $cs__result = $csub__stmt->get_result();$cs = $cs__result->fetch_assoc(); $cursub = $cs['sub'];}
 if ($cursub < 2) { if ($setdelc = $con->prepare('INSERT INTO customers__card__deleted (cid, uid) VALUES (?, ?)')) { $setdelc->bind_param('si', $_POST['cid'], $uid); $setdelc->execute(); $setdelc->store_result(); } else { die ("25"); }  }
 if ($stmt = $con->prepare('SELECT cid FROM customers__card WHERE uid = ? AND cid = ?')) {

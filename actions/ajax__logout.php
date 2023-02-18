@@ -1,1 +1,4 @@
-<?php unset($_COOKIE['__au__login']); setcookie("__au__login", null, -1, '/'); session_start();$link = mysqli_connect("localhost", "root", "eKi=0630OG", "mappapapir"); session_destroy(); die('200'); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
+unset($_COOKIE['__au__login']); setcookie("__au__login", null, -1, '/');
+session_start(); session_destroy(); die('200');
+?>

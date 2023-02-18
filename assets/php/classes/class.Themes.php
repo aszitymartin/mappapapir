@@ -5,7 +5,7 @@ Class Themes {
     public $returnObject;
 
     function setTheme ($theme, $uid) {
-        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
         
         if($setUserTheme = $con->prepare("UPDATE customers SET theme = ? WHERE id = ?")) {
             $setUserTheme->bind_param('si', $theme, $uid);$setUserTheme->execute();
@@ -23,7 +23,7 @@ Class Themes {
     }
 
     function getTheme ($uid) {
-        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
         if($getUserTheme = $con->prepare("SELECT theme FROM customers WHERE id = ?")) {
             $getUserTheme->bind_param('i', $uid); $getUserTheme->execute(); $getUserTheme->store_result(); $getUserTheme->bind_result($userTheme); $getUserTheme->fetch(); $getUserTheme->close();
             $this->returnObject = [

@@ -15,8 +15,7 @@
        echo "<script>if (localStorage.getItem('staffLock')) {localStorage.removeItem('staffLock');}</script>";
     }
 
-    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-    $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
     if (mysqli_connect_errno()) {header ("Location: /500");echo "<script>const now = new Date();const notifParams = {notifType : '1',notifIcon : '2',notifTheme : '2',notifTitle : 'Hiba',notifDesc : 'Szerver oldali hiba történt.',expiry : now.setSeconds(60)};localStorage.setItem('NP', JSON.stringify(notifParams));window.location.href= '../';</script>";}
 
     $stmt = $con->prepare('SELECT id, fullname, email, theme FROM customers WHERE id = ?');
@@ -188,8 +187,7 @@
                             <div class="staff-info-value flex flex-col w-100 flex-align-c flex-justify-con-c">
                                 <span class="text-primary bold"> 
                                     <?php
-                                    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-                                    $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                                    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                                     if (mysqli_connect_errno()) {die ("0");}$sql = "SELECT * FROM customers WHERE 1";
                                     if ($result = mysqli_query($con, $sql)) {$num = mysqli_num_rows($result);}echo $num;
                                     ?>
@@ -619,8 +617,7 @@
                                     } else {document.querySelector('html').dataset.theme = `theme-dark`;   }
                                 } else {document.querySelector('html').dataset.theme = 'theme-' + stafftheme;   }
                             ";
-                            $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-                            $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                            include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                             $stmt = $con->prepare('SELECT theme FROM customers WHERE id = ?');
                             $stmt->bind_param('i', $_SESSION['id']);$stmt->execute();$stmt->bind_result($getTheme);
                             $stmt->fetch();$stmt->close();

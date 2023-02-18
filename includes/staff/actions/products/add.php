@@ -1,6 +1,5 @@
 <?php session_start();
-$DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 if (mysqli_connect_errno()) { die ("0"); }
 $countfiles = count($_FILES['product-image-input']['name']); $upload_location = $_SERVER['DOCUMENT_ROOT'].'/assets/images/uploads/'; $coded_name; $files_arr = array();
 for($index = 0; $index < $countfiles;$index++){

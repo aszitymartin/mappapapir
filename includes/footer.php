@@ -249,7 +249,7 @@
         <script src="/assets/script/search.js" content-type="application/javascript"></script>
         <script content-type="application/javascript">var cardExpiryArray = [];</script>
         <?php
-            function rememberMe () { $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+            function rememberMe () { include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                 $cookie = isset($_COOKIE['__au__login']) ? $_COOKIE['__au__login'] : '';
                 if ($cookie) { $token = $_COOKIE['__au__login'];
                     $sql = "SELECT * FROM customers__token WHERE token LIKE '$token'";

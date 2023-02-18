@@ -1,4 +1,4 @@
-<?php session_start(); $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+<?php session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 if (mysqli_connect_errno()) { die ("0"); } if (isset($_SESSION['id'])) {$uid = $_SESSION['id'];} else {die("43"); }
 $rid = $_POST['rid']; $sql = "SELECT id FROM reviews WHERE id = $rid"; $res = $con-> query($sql);
 if ($res-> num_rows > 0) { $act__sql = "SELECT rid FROM rv__u WHERE rid = $rid AND uid = $uid"; $act__res = $con-> query($act__sql);

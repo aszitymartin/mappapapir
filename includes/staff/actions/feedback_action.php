@@ -1,6 +1,5 @@
 <?php
-$DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 if (mysqli_connect_errno()) {die ("0"); }
 $id = $_POST['id'];$status = $_POST['status'];$type = $_POST['type'];
 $sql = "SELECT feedbacks.*, customers.id, customers.fullname, customers.email FROM feedbacks INNER JOIN customers ON (feedbacks.uid = customers.id) WHERE feedbacks.status = $status AND feedbacks.id = $id";

@@ -1,5 +1,4 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php');
-$DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php'); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 if (mysqli_connect_errno()) { echo "<script>const now = new Date();const notifParams = {notifType : '0',notifIcon : '0',notifTheme : '0',notifTitle : 'Hiba',notifDesc : 'Szerver oldali hiba történt.',expiry : now.setSeconds(60)};localStorage.setItem('NP', JSON.stringify(notifParams));window.location.href= '../';</script>"; }
 if ($stmt = $con->prepare('SELECT id, password FROM customers WHERE email = ?')) {
 	$stmt->bind_param('s', $_POST['email']);$stmt->execute();$stmt->store_result(); 

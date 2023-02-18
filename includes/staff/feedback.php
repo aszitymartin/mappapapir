@@ -126,8 +126,7 @@
                                     <div class="menuLoaded flex flex-col gap-1 h-100">
                                         <div class="theme-button-con flex flex-col relative" id="feedback-webpage">
                                                 <?php
-                                                    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-                                                    $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                                                    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                                                     if (mysqli_connect_errno()) {die ("0");}
                                                     $sql = "SELECT * FROM feedbacks WHERE status = 0 AND type = 6";
                                                     if ($result = mysqli_query($con, $sql)) {$num = mysqli_num_rows($result);
@@ -150,7 +149,7 @@
                                             </div>
                                             <div class="theme-button-con flex flex-col relative" id="feedback-webshop">
                                                 <?php
-                                                    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                                                    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                                                     if (mysqli_connect_errno()) {die ("0"); }
                                                     $sql = "SELECT * FROM feedbacks WHERE status = 0 AND type = 0";
                                                     if ($result = mysqli_query($con, $sql)) {$num = mysqli_num_rows($result);

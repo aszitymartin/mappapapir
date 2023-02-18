@@ -61,7 +61,7 @@ $("#set-discount").click(function () {
                 <input type="search" class="sidenav-search-input" style="background-color: var(--background);" onInput="searchDiscount()" id="discount-search" name="discount-search" placeholder="Keresés a termékek között..">
                 <div class="products-con padding-bot-05 flex flex-row flex-align-c flex-justify-con-c flex-wrap gap-05" id="discount-items-con">
                     <?php
-                        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                         $con->query("SET CHARACTER SET utf8mb4"); if (mysqli_connect_errno()) {header ("Location: /500");}
                         $pr_sql = "SELECT * FROM `products` WHERE product_id NOT IN (SELECT product_discount.product_id FROM product_discount WHERE product_discount.end > NOW())";
                         $pr_res = $con-> query($pr_sql);
@@ -165,7 +165,7 @@ $("#set-discount").click(function () {
                 <input type="search" class="sidenav-search-input" style="background-color: var(--background);" onkeyup="searchDiscount()" id="discount-search" name="discount-search" placeholder="Keresés a termékek között..">
                 <div class="products-con padding-bot-05 flex flex-row flex-align-c flex-justify-con-c flex-wrap gap-05" id="discount-items-con">
                     <?php
-                        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                         $con->query("SET CHARACTER SET utf8mb4"); if (mysqli_connect_errno()) {header ("Location: /500");}
                         $pr_sql = "SELECT products.*, product_discount.discount, product_discount.new_price FROM `products` INNER JOIN product_discount ON products.product_id = product_discount.product_id WHERE products.product_id IN (SELECT product_discount.product_id FROM product_discount WHERE product_discount.end > NOW())";
                         $pr_res = $con-> query($pr_sql);
@@ -237,7 +237,7 @@ $("#set-discount").click(function () {
                     <input type="search" class="sidenav-search-input" style="background-color: var(--background);" onkeyup="searchDiscount()" id="discount-search" name="discount-search" placeholder="Keresés a termékek között..">
                     <div class="products-con padding-bot-05 flex flex-row flex-align-c flex-justify-con-c flex-wrap gap-05" id="discount-items-con">
                         <?php
-                            $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+                            include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
                             $con->query("SET CHARACTER SET utf8mb4"); if (mysqli_connect_errno()) {header ("Location: /500");}
                             $pr_sql = "SELECT products.*, product_discount.discount, product_discount.new_price FROM `products` INNER JOIN product_discount ON products.product_id = product_discount.product_id WHERE products.product_id IN (SELECT product_discount.product_id FROM product_discount WHERE product_discount.end > NOW())";
                             $pr_res = $con-> query($pr_sql);

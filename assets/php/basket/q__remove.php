@@ -1,6 +1,5 @@
 <?php session_start();
-$DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 if (mysqli_connect_errno()) { die("Connection failed: " . mysqli_connect_error()); }
 if (isset($_SESSION['id'])) {$uid = $_SESSION['id'];} else { die("Nem bejelentkezett felhasználó"); }
 if ($stmt = $con->prepare('SELECT pid FROM cart WHERE uid = ? AND pid = ?')) {

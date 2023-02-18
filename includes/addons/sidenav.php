@@ -1,4 +1,4 @@
-<?php session_start(); $DATABASE_HOST = 'localhost'; $DATABASE_USER = 'root'; $DATABASE_PASS = 'eKi=0630OG'; $DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+<?php session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
     if (mysqli_connect_errno()) { header ("Location: /500"); echo "<script>const now = new Date();const notifParams = { notifType : '1', notifIcon : '2', notifTheme : '2', notifTitle : 'Hiba', notifDesc : 'Szerver oldali hiba történt.', expiry : now.setSeconds(60) };localStorage.setItem('NP', JSON.stringify(notifParams));window.location.href= '../';</script>";}
     $stmt = $con->prepare('SELECT customers.id, customers.fullname, customers.email, customers__money.money FROM customers INNER JOIN customers__money ON customers__money.uid = customers.id WHERE customers.id = ?');
     if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute();$stmt->bind_result($id, $fullname, $email, $money);

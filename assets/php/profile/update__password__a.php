@@ -1,4 +1,4 @@
-<?php session_start(); $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); } if (isset($_POST['id'])) {$uid = $_POST['id'];} else {die("43"); }
+<?php session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php'); if (mysqli_connect_errno()) { die ("0"); } if (isset($_POST['id'])) {$uid = $_POST['id'];} else {die("43"); }
 $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 if ($stmt = $con->prepare('UPDATE customers SET password = ? WHERE id = ?')) {
     $stmt->bind_param('si', $password, $uid); $stmt->execute();

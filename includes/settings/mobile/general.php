@@ -1,6 +1,5 @@
 <?php session_start();
-    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-    $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
     $stmt = $con->prepare('SELECT customer_id, full_name, email_address, inv_company_name, inv_settlement, inv_address_line, inv_postal_code, inv_tax_id, ship_settlement, ship_address_line, ship_postal_code, phone_number, fax_number, theme FROM customers WHERE customer_id = ?');
     if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];}
     $stmt->bind_param('i', $id);$stmt->execute();

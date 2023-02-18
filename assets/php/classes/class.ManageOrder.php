@@ -6,8 +6,7 @@ class ManageOrder {
 
     function changeStatus ($status, $oid, $ip) {
 
-        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-        $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 
         if ($updateOrderStatus = $con->prepare('UPDATE orders SET status = ? WHERE id = ?')) {
             $updateOrderStatus->bind_param('si', $status, $oid); $updateOrderStatus->execute(); $updateOrderStatus->close();

@@ -1,4 +1,4 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); session_start(); $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); } if (isset($_POST['uid'])) {$uid = $_POST['uid'];} else {die("43"); } $cid= $_POST['cid'];
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php'); if (mysqli_connect_errno()) { die ("0"); } if (isset($_POST['uid'])) {$uid = $_POST['uid'];} else {die("43"); } $cid= $_POST['cid'];
 $arr = array(); array_push($arr, $_POST); $narr = array(); $iarr = array(); $tarr = array();
 
 foreach($_POST as $key=>$value) { 

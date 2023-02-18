@@ -72,7 +72,7 @@ function proceedOrder ($e) {
     $dieArguments = new stdClass();
     if (count($e->errors) < 1) {
         $finalSubTotal = $e->voucher['voucherUsed'] == 1 ? round(($e->subTotal - (($e->subTotal * $e->voucher['voucherPercentage']) / 100))) : round($e->subTotal); $orderStatus = 0;
-        $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
         $orderedItemsImplode = ""; for ($i = 0; $i < count($e->items); $i++) { $orderedItemsImplode .= $e->items[$i]['id'] . ':' . $e->items[$i]['quantity'] . ';'; }
         if ($updateUserBalance = $con->prepare('UPDATE customers__card SET value = (value - ?) WHERE uid = ? AND cid LIKE ?')) {
             $updateUserBalance->bind_param('iis', $finalSubTotal, $e->user['general']['uid'], $e->user['payment']['paymentMethod']); $updateUserBalance->execute();
@@ -129,7 +129,7 @@ function proceedOrder ($e) {
 }
 
 function updateInventoryExtended ($a, $b, $c, $d, $e, $f) { $jsonInventoryCheck = (array)json_decode($a); $jsonItemsData = $b; $jsonUserData = $c; $jsonVoucherData = $d; $jsonLogData = $e; $grossTotal = $f;
-    $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+    include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
     if (count((array)($jsonInventoryCheck)) > 0) {
         $inventoryKeys = array_keys((array)$jsonInventoryCheck); $inventoryItems = array(); 
         $inventoryOptions = array(); $orderedItemsArray = array(); $inventoryErrorData = array();                                            

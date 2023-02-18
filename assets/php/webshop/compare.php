@@ -1,5 +1,5 @@
 <?php
-$DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 $con->query("SET CHARACTER SET utf8mb4"); if (mysqli_connect_errno()) {header ("Location: /500");} $pid = $_POST['pid']; $category = $_POST['category']; $tags = $_POST['tags']; $pmodel = $_POST['pmodel'];
 $pr_sql = "SELECT DISTINCT products__variations.model, products__category.category FROM `products` INNER JOIN products__category ON products__category.pid = products.id INNER JOIN products__variations ON products__variations.pid = products.id 
 WHERE products__category.category LIKE '$category' AND products.id != $pid AND products__variations.model NOT LIKE '$pmodel' ORDER BY RAND() LIMIT 4";

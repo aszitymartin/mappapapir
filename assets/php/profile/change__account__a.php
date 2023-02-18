@@ -1,4 +1,4 @@
-<?php session_start(); $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir'; $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME); if (mysqli_connect_errno()) { die ("0"); } $uid = $_POST['uid'];
+<?php session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php'); if (mysqli_connect_errno()) { die ("0"); } $uid = $_POST['uid'];
 $arr = array(); array_push($arr, $_POST); $narr = array(); foreach($_POST as $key=>$value) { if ($key != 'ip' && $key != 'uid') { array_push($narr, "$key=$value"); } }
 if ($narr[0] == "email=".$_POST['email']) {
     unset($narr[0]);

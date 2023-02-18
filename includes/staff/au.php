@@ -1,5 +1,4 @@
-<?php session_start(); $DATABASE_HOST = 'localhost';$DATABASE_USER = 'root';$DATABASE_PASS = 'eKi=0630OG';$DATABASE_NAME = 'mappapapir';
-$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+<?php session_start(); include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
 if ($_POST['id'] == 0) {die ('false');}
 if ($stmt = $con->prepare('SELECT password FROM customers WHERE id = ?')) {
     $stmt->bind_param('i', $_POST['id']);$stmt->execute();$stmt->store_result();
