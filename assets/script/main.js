@@ -782,15 +782,6 @@ function validate(name) {
             }
         });
         $("#cl__ebox").click(() => { openRegisterForm(); ce__box.classList.replace("popup", "popout"); ce__wrapper.classList.add("fadeout"); setTimeout(() => {ce__wrapper.remove();},235); });
-        
-        // $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
-        //     success: function (api) { regd.append("ip", api.ip);
-        //         $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/actions/register_setup.php", data: regd, dataType: 'json', contentType: false, processData: false,
-        //             success: function(data) { closeHeaderProfileAction(); notificationSystem(0, 0, 0, 'Regisztráció', 'Ön sikeresen regisztrált!'); },
-        //             error: function (data) { notificationSystem(0, 1, 0, 'Regisztráció', 'Sikertelen regisztráció!'); }
-        //         });
-        //     }, error: function () { notificationSystem(0, 1, 0, 'Regisztráció', 'Sikertelen kapcsolatfelvétel.'); }
-        // });
         return false;
     }
     showTab(currentTab);
