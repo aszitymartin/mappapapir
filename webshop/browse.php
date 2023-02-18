@@ -1,52 +1,62 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); ?>
 <script>var formatter = new Intl.NumberFormat('hu-HU', {style: 'currency',currency: 'HUF',maximumFractionDigits: 0,minimumFractionDigits: 0});</script>
 <main id="main">
-<div class="prod-con" id="tabs">
-    <div class="leftcolumn w-25d-100m">
-        <div class="card flex flex-col border-soft box-shadow gap-1" style="margin-top: 0;">
-            <div class="flex flex-col gap-05">
-                <div class="flex flex-row">
-                    <h3 class="text-primary margin-none">Kiemelt kategóriák</h3>
-                </div><hr style="border: 1px solid var(--background); width: 100%;">
-                <div class="flex flex-col gap-025 text-primary" id="main-categ-con">
-                    <?php
-                        $sql = "SELECT DISTINCT category FROM products__category"; $res = $con->query($sql);
-                        while ($dt = $res->fetch_assoc()) { $categ = $dt['category'];
-                            $tsql = "SELECT thumbnail FROM `products` INNER JOIN products__category ON products__category.pid = products.id WHERE category LIKE '$categ' ORDER BY RAND() LIMIT 1";
-                            $tres = $con->query($tsql); $th = $tres->fetch_assoc(); $thumb = $th['thumbnail'];
-                            echo '
-                            <span class="flex flex-row flex-align-c flex-justify-con-sb gap-1 padding-1 border-soft pointer background-bg-hover mn-ctg-sh">
-                                <span>'.$categ.'</span>
-                                <div class="product-miniature-variation drop-shadow pointer" style="background-image: url(&quot;/assets/images/uploads/'.$thumb.'&quot;); width: 2rem; height: 2rem;"></div>
-                            </span>
-                            ';
-                        }
-                    ?>
+<div class="prod-con w-fa" id="tabs">
+    <div class="flex flex-col w-fa">
+        <section class="main_section">
+            <div class="swiper br-shc-swiper relative w-fa border-soft">
+                <div class="swiper-wrapper w-fa">
+                    <div class="swiper-slide w-fa">
+                        <div class="news_container_noscript flex flex-col flex-align-c relative flex flex-col flex-align-c relative" style="background: linear-gradient(to right, rgb(0 0 0 / 0.5), rgb(0 0 0/ 0.2)), url(&quot;/assets/images/banners/sl-1.jpg&quot;);">
+                            <div class="news_con_wrapper">
+                                <div class="news_desc_con_nobg flex flex-col absolute flex flex-col absolute gap-1 padding-1">
+                                    <div class="flex flex-col text-align-j gap-05 padding-1">
+                                        <span class="news_desc_title text-xxl">Karácsonyi leárazás</span>
+                                        <span class="news_desc_info">50% kedvezmény minden termékünkre karácsony alkalmából.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide w-fa">
+                        <div class="news_container_noscript flex flex-col flex-align-c relative flex flex-col flex-align-c relative" style="background: linear-gradient(to right, rgb(0 0 0 / 0.5), rgb(0 0 0/ 0.2)), url(&quot;/assets/images/banners/sl-2.jpg&quot;);">
+                            <div class="news_con_wrapper">
+                                <div class="news_desc_con_nobg flex flex-col absolute flex flex-col absolute gap-1 padding-1">
+                                    <div class="flex flex-col text-align-j gap-05 padding-1">
+                                        <span class="news_desc_title text-xxl">Karácsonyi leárazás</span>
+                                        <span class="news_desc_info">50% kedvezmény minden termékünkre karácsony alkalmából.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <div class="swiper-button-pr h-fa flex-align-c flex flex-col flex-justify-con-c absolute text-white border-white-bold-hover border-trans-bold padding-025 border-soft-light h-fa center-y z-90" style="left: 0; margin-top: 0 !important;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor"/></svg></div>
+                <div class="swiper-button-ne h-fa flex-align-c flex flex-col flex-justify-con-c absolute text-white border-white-bold-hover border-trans-bold padding-025 border-soft-light h-fa center-y z-90" style="right: 0; margin-top: 0 !important;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg></div>
             </div>
-        </div>
-    </div>
-    <div class="spancolumn w-75d-100m">
-        <div class="swiper br-shc-swiper relative w-fa">
-            <div class="swiper-wrapper w-fa">
-                <div class="swiper-slide w-fa">
-                    <img src="/assets/images/banners/bn1.jpg" class="w-fa border-soft" usemap="#tabletek" />
-                    <map name="tabletek"><area shape="rect" coords="42, 184, 270, 248" href="/search/tabletek" /></map>
-                </div>
-                <div class="swiper-slide w-fa">
-                    <img src="/assets/images/banners/bn2.jpg" class="w-fa border-soft" usemap="#iskolakezdes" />
-                    <map name="iskolakezdes"><area shape="rect" coords="42, 184, 220, 248" href="/iskolakezdes" /></map>
-                </div>
+        </section>
+        <section class="main_section padding-1 border-soft" style="background-color: var(--hl-bg);">
+            <div class="section_body overflow-auto flex gap-1">
+                <?php
+                    $sql = "SELECT DISTINCT category FROM products__category ORDER BY RAND()"; $res = $con->query($sql);
+                    while ($dt = $res->fetch_assoc()) { $categ = $dt['category'];
+                        $tsql = "SELECT thumbnail FROM `products` INNER JOIN products__category ON products__category.pid = products.id WHERE category LIKE '$categ' ORDER BY RAND() LIMIT 1";
+                        $tres = $con->query($tsql); $th = $tres->fetch_assoc(); $thumb = $th['thumbnail'];
+                        echo '
+                        <span class="flex flex-col flex-align-c flex-justify-con-sb gap-1 padding-1 border-soft pointer background-bg-hover mn-ctg-sh">
+                            <div class="product-miniature drop-shadow pointer" style="background-image: url(&quot;/assets/images/uploads/'.$thumb.'&quot;); width: 2rem; height: 2rem;"></div>
+                            <span>'.$categ.'</span>
+                        </span>
+                        ';
+                    }
+                ?>
             </div>
-            <div class="swiper-button-pr h-fa flex-align-c flex flex-col flex-justify-con-c absolute text-white border-white-bold-hover border-trans-bold padding-025 border-soft-light h-fa center-y z-90" style="left: 0; margin-top: 0 !important;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor"/></svg></div>
-            <div class="swiper-button-ne h-fa flex-align-c flex flex-col flex-justify-con-c absolute text-white border-white-bold-hover border-trans-bold padding-025 border-soft-light h-fa center-y z-90" style="right: 0; margin-top: 0 !important;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg></div>
-        </div><br>
+        </section>
         <section class="main_section">
             <div class="flex flex-align-c flex-justify-con-sb">
                 <span class="section_title">Leárazott termékek</span>
-            </div><br>
-            <div class="swiper browse-swiper relative">
-                <div class="swiper-wrapper">
+            </div>
+            <div class="section_body overflow-auto flex gap-1" style="flex-wrap: nowrap !important;">
                 <?php
                     $pd_ct_in_sql = "SELECT products.id AS gpid FROM products__pricing INNER JOIN products ON products.id = products__pricing.pid WHERE discounted = 1";
                     $pd_ct_in_res = $con-> query($pd_ct_in_sql);
@@ -57,7 +67,7 @@
                             if ($res-> num_rows > 0) {
                                 while ($product = $res-> fetch_assoc()) { $pid = $product['id'];
                                     echo '
-                                    <div class="swiper-slide">
+                                    <div class="">
                                         <a class="flex flex-col item-bg border-soft-light box-shadow nwp__card__sm  pointer" href="/product/'.$product['id'].'/'; echo str_replace(',', '', str_replace(' ', '-',strtolower(strtr($product['brand'], $unwanted_array)))).'-'.str_replace(',', '', str_replace(' ', '-',strtolower(strtr($product['name'], $unwanted_array)))).'-'.str_replace(',', '', str_replace(' ', '-', strtolower(strtr($product['color'], $unwanted_array)))); echo '">
                                             <div class="product-hover" auid="'.$product['id'].'" data-pid="'.$product['id'].'" data-model="'.$model.'" id="'.$newname.'-'.$product['id'].'">
                                                 <label search-key="'; echo $product['brand'] . ' '; echo strtr($product['brand'], $unwanted_array) . ' '; echo $product['name'] . ' '; echo strtr($product['name'], $unwanted_array) . ' '; echo $product['base'] . ' '; echo $product['code']; echo '"></label>
@@ -110,8 +120,6 @@
                         }
                     } 
                 ?>
-                <div class="swiper-button-prev h-fa border-primary-bold-hover border-trans-bold padding-025 border-soft-light h-fa center-y" style="left: 0; margin-top: 0 !important;"></div>
-                <div class="swiper-button-next h-fa border-primary-bold-hover border-trans-bold padding-025 border-soft-light h-fa center-y" style="right: 0; margin-top: 0 !important;"></div>
             </div>
         </section>
         <!-- Hirlevel szekcio -->

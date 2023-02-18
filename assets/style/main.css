@@ -208,6 +208,7 @@ a { color: unset; text-decoration: none; }
 .padding-05-105 { padding: .5rem 1.5rem !important; }
 .padding-05 { padding: .5rem !important; }
 .padding-025 { padding: .25rem !important; }
+.padding-015 { padding: .15rem !important; }
 .padding-l-0 { padding-left: 0 !important; }
 .padding-bot-05 { padding-bottom: .5rem !important; }
 .padding-bot-025 { padding-bottom: .25rem !important; }
@@ -307,6 +308,7 @@ a { color: unset; text-decoration: none; }
 .border-trans-bold { border: 2px solid transparent; }
 .border-none { border: none; }
 .border-white-bold-hover:hover { border: 2px solid #FAFAFA !important; }
+.border-primary-bold { border: 1.5px solid var(--section-title); }
 .border-primary-dk { border: 1px solid #0380fd24 !important; }
 .border-primary, .border-primary-hover:hover, .login-history-item-active { border: 1px solid var(--section-title) !important; }
 .border-primary-right-d { border-right: none; }
@@ -434,8 +436,9 @@ header { padding: 0; position: fixed; top: 0; left: 0; width: -webkit-fill-avail
 /* .swiper-slide img { width: 100%; height: 100%; object-fit: fill; } */
 
 /* News */
-.news_container { height: 15rem;padding: .5rem;background-color: #FAFAFA;background-repeat: no-repeat;background-size: cover;object-fit: contain;box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; }
-.news_desc_con { width: 90%;padding: .5rem;background: rgba(0, 0, 0, 0.6);border-radius: 16px;box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(5px);-webkit-backdrop-filter: blur(5px);border: 1px solid rgba(0, 0, 0, 0.1);bottom: .5rem;left: 50%;transform: translate(-50%); }
+.news_container, .news_container_noscript { height: 15rem;padding: .5rem;background-color: #FAFAFA;background-repeat: no-repeat;background-size: cover;object-fit: contain;box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; }
+.news_desc_con, .news_desc_con_nobg { width: 90%;padding: .5rem;background: rgba(0, 0, 0, 0.6);border-radius: 16px;box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(5px);-webkit-backdrop-filter: blur(5px);border: 1px solid rgba(0, 0, 0, 0.1);bottom: .5rem;left: 50%;transform: translate(-50%); }
+.news_desc_con_nobg { background: none !important; backdrop-filter: none !important; box-shadow: none !important; border: none !important; }
 .news_desc_title { font-size: 1.1rem;color: #FAFAFA;font-weight: 700;margin-bottom: .25rem; }
 .news_desc_info { font-size: .75rem;color: #FFF; }
 .news_image { display: none; }

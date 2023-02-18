@@ -240,7 +240,7 @@ function get_time_ago( $time ) {
             ?>
         </div>
     </section>
-    --><br><br>
+    -->
     <?php
         $pd_ct_sql = "SELECT COUNT(pid) AS 'amount', category, AVG(products.added) AS date FROM products__category INNER JOIN products ON products.id = products__category.pid GROUP BY category ORDER BY amount DESC LIMIT 6";
         $pd_ct_res = $con-> query($pd_ct_sql);
@@ -298,7 +298,7 @@ function get_time_ago( $time ) {
                                             echo '
                                         </div>
                                         <div class="flex flex-col flex-align-c gap-1">
-                                            <div class="flex flex-col flex-align-c pointer product-image-container" style="max-width: 8rem !important;">
+                                            <div class="flex flex-col flex-align-c pointer product-image-container gap-025" style="max-width: 8rem !important;">
                                                 <img src="/assets/images/uploads/'.$product['thumbnail'].'" alt="'.mb_substr($product['description'], 0, 60).'" class="ind-prd-crd-img drop-shadow" />
                                             </div>
                                             <div class="flex flex-row flex-justify-con-sb">
