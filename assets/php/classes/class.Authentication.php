@@ -246,27 +246,44 @@ Class Authentication {
             else { $password = password_hash($object['password'], PASSWORD_DEFAULT);
                 if ($stmt = $con->prepare('INSERT INTO customers (fullname, email, password, phone, fax) VALUES (?,?,?,?,?)')) {
                     $stmt->bind_param('sssii', $object['fullname'], $object['email'], $password, $object['phone'], $object['fax']); $stmt->execute();
+                    echo 'inserted in customers; ';
                     if ($ep__stmt = $con->prepare('SELECT * FROM customers WHERE email = ?')) { $ep__stmt->bind_param('s', $object['email']); $ep__stmt->execute(); $ep__res = $ep__stmt->get_result(); $epd = $ep__res->fetch_assoc(); $cuid = $epd['id']; }$ep__stmt->close();
                     if ($stmt = $con->prepare('INSERT INTO customers__inv (uid, company, settlement, address, postal, tax) VALUES (?,?,?,?,?,?)')) {
                         $stmt->bind_param('isssii', $cuid, $object['company'], $object['settlement'], $object['address'], $object['postal'], $object['tax']); $stmt->execute();
+                        echo 'inserted in customers__inv; ';
                         if ($stmt = $con->prepare('INSERT INTO customers__money (uid) VALUES (?)')) {
                             $stmt->bind_param('i', $cuid); $stmt->execute();
+                            echo 'inserted in customers__money; ';
                             if ($stmt = $con->prepare('INSERT INTO customers__ship (uid, settlement, address, postal) VALUES (?,?,?,?)')) {
                                 $stmt->bind_param('issi', $cuid, $object['sh__settl'], $object['sh__addr'], $object['sh__zip']); $stmt->execute();
+                                echo 'inserted in customers__ship; ';
                                 if ($ue__stmt = $con->prepare('INSERT INTO u__email (uid, email) VALUES (?, ?)')) {
                                     $ue__stmt->bind_param('is', $cuid, $object['email']); $ue__stmt->execute();
+                                    echo 'inserted in u__email; ';
                                     if ($up__stmt = $con->prepare('INSERT INTO u__password (uid, password) VALUES (?, ?)')) {
                                         $up__stmt->bind_param('is', $cuid, $password); $up__stmt->execute();
+                                        echo 'inserted in u__password; ';
                                         if ($pr__stmt = $con->prepare('INSERT INTO customers__priv (uid) VALUES (?)')) {
                                             $pr__stmt->bind_param('i', $cuid); $pr__stmt->execute();
+                                            echo 'customers__priv; ';
                                             if ($pr__stmt = $con->prepare('INSERT INTO customers__lang (uid) VALUES (?)')) {
                                                 $pr__stmt->bind_param('i', $cuid); $pr__stmt->execute();
-        
+
+                                                echo 'inserted customers__lang; ';
+
+                                                $unwanted_array = array('Š'=>'S', 'š'=>'s', 'Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+                                                'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ő'=> 'O', 'Ø'=>'O', 'Ù'=>'U',
+                                                'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ű'=> 'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss', 'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c',
+                                                'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o',
+                                                'ö'=>'o', 'ő'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'ü'=>'u', 'ű'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y' );
+                                                $in = "";
+                                                
                                                 $fne = explode(' ', strtr($object['fullname'], $unwanted_array)); for ($i = 0; $i < sizeof($fne); $i++) { $in .= $fne[$i][0]; }
                                                 $colors = array('A'=>'1abc9c','B'=>'16a085','C'=>'f1c40f','D'=>'f39c12','E'=>'2ecc71','F'=>'27ae60','G'=>'6ace27','H'=>'d35400','I'=>'3498db','J'=>'2980b9','K'=>'e74c3c','L'=>'c0392b','M'=>'9b59b6','N'=>'8e44ad','O'=>'bdc3c7','P'=>'34495e','Q'=>'2c3e50','R'=>'95a5a6','S'=>'7f8c8d','T'=>'ec87bf','U'=>'d870ad','V'=>'f69785','W'=>'9ba37e','X'=>'b49255','Y'=>'b49255','Z'=>'a94136');
-                                                $key = $fne[0][0]; $getcolor = isset($colors[$key]) ? $colors[$key] : null;
+                                                $key = $fne[0][0]; $getcolor = isset($colors[$key]) ? $colors[$key] : '1abc9c';
                                                 if ($init__stmt = $con->prepare('INSERT INTO customers__header (uid, initials, color) VALUES (?, ?, ?)')) {
                                                     $init__stmt->bind_param('iss', $cuid, $in, $getcolor); $init__stmt->execute();
+                                                    echo 'inserted customers__header; ';
                                                 }
         
                                                 $header = str_replace("=", "", base64_encode($object['fullname']));
@@ -279,15 +296,20 @@ Class Authentication {
         
                                                 if ($pr__stmt = $con->prepare('INSERT INTO customers__card (uid, cid, cardname, cardnum, expiry, cvc) VALUES (?, ?, ?, ?, ?, ?)')) {
                                                     $pr__stmt->bind_param('issisi', $cuid, $cid, $cardname, $cardshort, $exp, $cvc); $pr__stmt->execute(); 
+                                                    echo 'inserted customers__card; ';
                                                     if ($pr__stmt = $con->prepare('INSERT INTO customers__card__info (uid, cid, number, holder, type, provider) VALUES (?, ?, ?, ?, ?, ?)')) {
                                                         $pr__stmt->bind_param('isisss', $cuid, $cid, $cardnum, $object['fullname'], $cardtype, $cardprovider); $pr__stmt->execute();
+                                                        echo 'inserted customers__card__info; ';
                                                         if ($pr__stmt = $con->prepare('INSERT INTO customers__card__primary (uid, cid) VALUES (?, ?)')) {
                                                             $pr__stmt->bind_param('is', $cuid, $cid); $pr__stmt->execute(); 
+                                                            echo 'inserted customers__card__primary; ';
                                                             if ($pr__stmt = $con->prepare('INSERT INTO customers__card__subscription (uid, sub) VALUES (?, 1)')) {
                                                                 $pr__stmt->bind_param('i', $cuid); $pr__stmt->execute();
+                                                                echo 'customers__card__subscription; ';
                                                                 $log_categ = "Regisztráció"; $log_desc = "#".$cuid." felhasználó sikeresen regisztrált";
                                                                 if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
                                                                     $log->bind_param('isss', $cuid, $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close();
+                                                                    echo 'inserted log';
                                                                     $this->returnObject = [
                                                                         "status" => "success",
                                                                         "message" => "Sikeres regisztráció."
