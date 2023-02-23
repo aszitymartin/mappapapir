@@ -86,6 +86,7 @@ a { color: unset; text-decoration: none; }
 .gap-5 { gap: 5rem; }
 .gap-3 { gap: 3rem; }
 .gap-2 { gap: 2rem; }
+.gap-105 { gap: 1.5rem; }
 .gap-1 { gap: 1rem; }
 .gap-05 { gap: .5rem; }
 .gap-025 { gap: .25rem; }
@@ -560,6 +561,7 @@ footer { display: flex;align-items: center;flex-direction: column;justify-conten
 .profcondesc ul li { font-size: .8rem;color:rgba(99, 99, 99, 1); }
 .profcondesc ul li a:hover { text-decoration: underline; }
 .list-style-none { list-style: none; }
+.profile-act-icon-con { width: 2.5rem; height: 2.5rem; }
 
 /* Notificaions */
 .notification { font-size: 1rem;padding-bottom: 0;border-radius: .4rem;background: var(--items);box-shadow: rgba(0, 0, 0, 0.34) 0px 3px 8px;top: 5%;left: 50%;z-index: 999;width: 15rem;min-width: 15rem;max-width: 15rem;transform: translate3d(calc(100% - 150%), calc(100% - 50%), 0px); }

@@ -12,11 +12,6 @@
 <div class="prod-con" id="tabs">
     <div class="leftcolumn">
         <div class="card border-soft box-shadow relative">
-            <div class="pr__edit absolute border-soft pointer user-select-none">
-                <div class="flex flex-col flex-align-c flex-justify-con-c padding-05 border-soft ease pr__other">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle class="svg-secondary" cx="5" cy="12" r="2"/><circle class="svg-secondary" cx="12" cy="12" r="2"/><circle class="svg-secondary" cx="19" cy="12" r="2"/></g></svg>
-                </div>
-            </div><br>
             <div class="flex flex-row flex-align-c flex-justify-con-c gap-1 w-100">
                 <div class="flex flex-row">
                     <img src="/assets/images/blank.png" class="border-soft box-shadow" style="border: 3px solid #fff; width: 120px; height: 120px;">
