@@ -39,7 +39,7 @@
                             </div>
                             <div class="flex flex-col gap-05">
                                 <div class="flex flex-col">
-                                    <a class="text-primary small pointer link bold" href="/orders/v/${s.data[i].oid}" target="_blank">(#${s.data[i].oid}) Titan Guide sorozatú hűtő hátizsák</a>
+                                    <a class="text-primary small pointer link bold" href="/orders/v/${s.data[i].oid}" target="_blank">(#${s.data[i].oid}) <span id="order-items-name-${s.data[i].oid}"></span></a>
                                     <span class="text-muted small-med">${s.data[i].odate}</span>
                                 </div>
                                 <span class="flex flex-row gap-05 text-primary bold">
@@ -76,6 +76,7 @@
                             `;
                         break;
                     }
+                    document.getElementById('order-items-name-' + s.data[i].oid).textContent = (s.data[i].item[0].name.length > 80 ? s.data[i].item[0].name.substring(1, 80) + '...' : s.data[i].item[0].name);
                     switch (s.data[i].item.length) {
                         case 1:
                             document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `

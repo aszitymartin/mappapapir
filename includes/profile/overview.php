@@ -76,31 +76,71 @@ function get_time_ago( $time ) {
                 <span class="larger text-primary bold">Rendelt Kategóriák</span>
                 <span class="text-muted small-med">38db kategóriából rendelt</span>
             </div>
-            <div class="flex flex-col gap-05">
+            <div class="flex flex-col gap-05 margin-auto">
                 <div class="flex flex-row gap-05">
-                    <div class="flex flex-row flex-wrap-no w-fa" id="dailysales__chart__con">
-                        <canvas id="dailysales__chart" class="w-fa" height="76" style="display: block; box-sizing: border-box; height: 76px; width: 286px;" width="286"></canvas>
+                    <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap-no w-fa" id="dailysales__chart__con">
+                        <canvas id="dailysales__chart" class="w-fa" height="76" style="display: block; box-sizing: border-box; height: 76px; width: 286px; max-height: 20rem;" width="286"></canvas>
                         <script id="dlysls__script">
                             var recentchart = document.getElementById('dailysales__chart');
-                            var footer = (tooltipItems) => { let sum = 0; tooltipItems.forEach(function(tooltipItem) { sum += tooltipItem.parsed.y; }); return 'Rendelve: ' + sum; };
-                            var rcChart = new Chart(recentchart, { type: 'polarArea',
+                            var footer = (tooltipItems) => { let sum = 0; tooltipItems.forEach(function(tooltipItem) { sum += tooltipItem.parsed.y; }); return tooltipItems[0].label + ' : ' + tooltipItems[0].formattedValue };
+                            var rcChart = new Chart(recentchart, { type: 'pie',
                                 data: {
-                                    // labels: ['2023-01-18','2023-01-19','2023-01-20','2023-01-21','2023-01-22','2023-01-23','2023-01-24'],
-                                    labels : ['as', 'sa', 'ab'],
+                                    labels : [
+                                        'harom', 'ketto', 'egy'
+
+                                        // <?php
+
+                                        //     // ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
+                                        //     if ($selectItems = $con->prepare('SELECT items FROM orders WHERE uid = ?')) {
+                                        //         $selectItems->bind_param('i', $_SESSION['id']); $selectItems->execute(); $selectItems->store_result();
+                                        //         while ($selectItems->fetch()) {
+                                        //             $selectItems->bind_result($items); $selectItems->fetch();
+                                        //             $ritems = rtrim($items, ';');
+                                        //             for ($i = 0; $i < count(explode(';', $ritems)); $i++) {
+                                        //                 $eritems = explode(';', $ritems);
+                                        //                 print_r($eritems);
+                                        //                 for ($j = 0; $j < count($eritems); $j++) {
+                                        //                     $seritems = explode(':', $eritems[$j])[0];
+                                        //                     // echo $seritems . ';';
+                                        //                     if ($selectCategory = $con->prepare('SELECT DISTINCT category FROM products__category WHERE pid = ?')) {
+                                        //                         $selectCategory->bind_param('i', $seritems); $selectCategory->execute(); $selectCategory->store_result();
+                                        //                         while ($selectCategory->fetch()) {
+                                        //                             $selectCategory->bind_result($category); $selectCategory->fetch();
+                                        //                             // echo $category . ';';
+                                        //                         }
+                                        //                     } else {
+                                        //                         echo 'alert("asd")';
+                                        //                     }    
+                                        //                 }
+                                        //             }
+                                        //         }
+                                        //     }
+
+                                        // ?>
+
+                                    ],
                                     datasets: [{
-                                        data: ['1', '2', ' 3'], backgroundColor: 'rgb(0, 158, 247)', hoverOffset: 2, borderRadius: 50, maxBarThickness: 10
+                                        data: ['3', '2', ' 1'],
+                                        backgroundColor: 'rgb(54, 153, 255)',
+                                        hoverOffset: 2, borderRadius: 7, maxBarThickness: 10
                                     }]
                                 },
-                                options: { plugins: { legend: { display: false },
-                                tooltip: {
-                                    tooltipItems: ['asd', 'dsa', 'asd'],
-                                    // callbacks: { footer: footer, },
-                                    bodySpacing: 0,
-                                    bodyFont: { size: '0' },
-                                    bodyColor: 'transparent', displayColors: false
-                                } 
-                            }, scales: { x: { display: false, }, y: { display: false, } } }
+                                options: { 
+                                    plugins: { legend: { display: false },
+                                    tooltip: {
+                                        callbacks: { footer: footer, },
+                                        bodySpacing: 0,
+                                        bodyFont: { size: '0' },
+                                        bodyColor: 'transparent', displayColors: false
+                                    } 
+                                }, scales: { x: { display: false, }, y: { display: false, } } }
                             });
+                            // console.log(rcChart['data']);
+                            // rcChart['data'].labels.push('negy');
+                            // rcChart['data'].datasets[0].data.push('4');
+
+
                         </script>
                     </div>
                 </div>
@@ -108,24 +148,285 @@ function get_time_ago( $time ) {
         </div>
         <div class="flex flex-col item-bg border-soft w-40d-fam padding-05 gap-2">
             <div class="flex flex-col w-fa gap-05">
-                <span class="larger text-primary bold">6</span>
+                <span class="larger text-primary bold">Termék Rendelések</span>
                 <div class="flex flex-col w-fa">
-                    <span class="text-muted small-med">Rendelések a hónapban</span>
-                    <span class="text-muted smaller">* Minden év elején nullázódik</span>
+                    <span class="text-muted small-med"><span id="delivered-sum"></span> Rendelés lett kiszállítva eddig</span>
                 </div>
             </div>
-            <div class="flex flex-col gap-05 margin-top-a">
-                <div class="flex flex-row flex-align-c flex-justify-con-sb">
-                    <span class="small-med text-primary bold">Előző havi: <span class="bold" id="orders__goal">25</span></span>
-                    <span class="small text-muted">24%</span>
-                </div>
-                <div class="flex flex-row gap-05">
-                    <div class="flex flex-row border-soft background-bg w-fa">
-                        <div class="flex flex-row padding-025 border-soft loader-danger" style="width: 24%;"></div>
-                    </div>
-                </div>
+            <div class="flex flex-col gap-1 w-fa prio__con" style="max-height: 450px !important;" id="orders-container">
             </div>
         </div>
     </div>
-        
 </div>
+
+<?php
+
+    // ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
+    $sql = "SELECT items FROM orders WHERE uid = " . $_SESSION['id']; $res = $con->query($sql);
+    if ($res->num_rows > 0) {
+        
+        $itemsArray = array();
+        $uniqueItems = array();
+
+        while ($dt = $res->fetch_assoc()) {
+            $ritems = rtrim($dt['items'], ';');
+            $eritems = explode(';', $ritems);
+            for ($i = 0; $i < count($eritems); $i++) {
+                $eeritems = explode(':', $eritems[$i]);
+                array_push($itemsArray, ($eeritems[0] . ':' . $eeritems[1]));
+                array_push($uniqueItems, $eeritems[0]);
+            }
+        }
+    }
+
+    echo '<br> itemsArray <br>';
+    print_r(($itemsArray));
+    echo '<br><br>';
+
+    echo '<br> uniqueItems <br>';
+    print_r(array_unique($uniqueItems));
+    echo '<br><br>';
+
+
+
+    /*
+
+        $counts = array_count_values($itemsArray);
+        $itemIdArray = array();
+        for ($i = 0; $i < count($itemsArray); $i++) {
+            array_push($itemIdArray, explode(':', $itemsArray[$i])[0]);
+        }
+
+        $itemsCounted = array();
+        $uniqueItems = array();
+        $itemNames = array();
+        $itemUniqueName = array();
+        $itemUnique = array();
+        $itemsQuantity = 0;
+        for ($i = 0; $i < count(array_unique($itemIdArray)); $i++) { $itemsQuantity = 0;
+            for ($j = 0; $j < count($itemsArray); $j++) {
+                if ($itemIdArray[$i] == explode(':', $itemsArray[$j])[0]) {
+                    $itemsQuantity += explode(':', $itemsArray[$j])[1];
+                }
+            }
+            array_push($itemsCounted, ($itemIdArray[$i] . ':' . $itemsQuantity));
+        }
+
+        // print_r(array_unique($itemsCounted));
+        
+        // array_unique($itemsCounted);
+
+        echo '<br> itemsArray <br>';
+        print_r(($itemsArray));
+        echo '<br><br>';
+
+        echo '<br> itemsCounted <br>';
+        print_r(($itemsCounted));
+        echo '<br><br>';
+
+        echo '<br> ItemIdArray (array_unique) <br>';
+        print_r(array_unique($itemIdArray));
+        echo '<br><br>';
+
+        for ($i = 0; $i < count(array_unique($itemsCounted)); $i++) {
+            if (!empty(array_unique($itemsCounted)[$i])) {
+                array_push($uniqueItems, array_unique($itemsCounted)[$i]);
+            }
+        }
+
+        echo '<br> uniqueItems <br>';
+        print_r($uniqueItems);
+        echo '<br><br>';
+
+        for ($i = 0; $i < count($uniqueItems); $i++) {
+            $sql = "SELECT category FROM products__category WHERE pid = " . explode(':', $uniqueItems[$i])[0];
+            $res = $con->query($sql);
+            while ($dt = $res->fetch_assoc()) {
+                array_push($itemNames, ($dt['category'] . ':' . explode(':', $uniqueItems[$i])[1]));
+            }
+        }
+
+        echo '<br> itemNames <br>';
+        print_r($itemNames);
+        echo '<br><br>';
+
+        for ($i = 0; $i < count($itemNames); $i++) {
+            array_push($itemUniqueName, explode(':', $itemNames[$i])[0]);
+        }
+
+        $uniqueQuantity = 0;
+        for ($i = 0; $i < count($itemUniqueName); $i++) { $uniqueQuantity = 0;
+            for ($j = 0; $j < count($itemNames); $j++) {
+                if ($itemUniqueName[$i] == explode(':', $itemNames[$j])[0]) {
+                    $uniqueQuantity += explode(':', $itemNames[$j])[1];
+                }
+            }
+            array_push($itemUnique, ($itemUniqueName[$i] . ':' . $uniqueQuantity));
+        }
+
+    */
+
+    // print_r(array_unique($itemUnique));
+
+    /*
+        if ($selectItems = $con->prepare('SELECT items FROM orders WHERE uid = ?')) {
+            $selectItems->bind_param('i', $_SESSION['id']); $selectItems->execute(); $selectItems->store_result();
+            while ($selectItems->fetch()) {
+                $selectItems->bind_result($items); $selectItems->fetch();
+                $ritems = rtrim($items, ';');
+                // echo $items . '<br>';
+                for ($i = 0; $i < count(explode(';', $ritems)); $i++) {
+                    $eritems = explode(';', $ritems);
+                    // print_r($eritems);
+                    // echo $eritems[$i] . '<br>';
+                    for ($j = 0; $j < count($eritems); $j++) {
+                        $seritems = explode(':', $eritems[$j])[0];
+                        // echo $seritems . ';';
+                        if ($selectCategory = $con->prepare('SELECT DISTINCT category FROM products__category WHERE pid = ?')) {
+                            $selectCategory->bind_param('i', $seritems); $selectCategory->execute(); $selectCategory->store_result();
+                            while ($selectCategory->fetch()) {
+                                $selectCategory->bind_result($category); $selectCategory->fetch();
+                                // echo $category . ';';
+                            }
+                        } else {
+                            echo 'alert("asd")';
+                        }    
+                    }
+                }
+            }
+        }
+    */
+
+?>
+
+<script>
+    var orderData = new FormData(); orderData.append("uid", <?= $_SESSION['id']; ?>)
+    $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/getOrderDetails.php", data: orderData, dataType: 'json', contentType: false, processData: false,
+        beforeSend : function () {
+            document.getElementById('orders-container').innerHTML = `
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                <span>Rendelések megjelenítése</span>
+            </div>
+            `;
+        }, success : function (s) { document.getElementById('orders-container').innerHTML = ``;
+            if (s.status == 'success') { let dels = 0
+                for (let i = 0; i < s.data.length; i++) {
+                    document.getElementById('orders-container').innerHTML += `
+                    <div class="flex flex-col flex-align-c w-fa gap-05 border-soft-light border-muted padding-05">
+                        <div class="flex flex-row w-fa gap-05">
+                            <div class="bsc__img flex flex-col flex-align-c flex-justify-con-c gap-05">
+                                <div id="order-preview-con-${s.data[i].oid}">
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                                        <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-05">
+                                <div class="flex flex-col">
+                                    <a class="text-primary small pointer link bold" href="/orders/v/${s.data[i].oid}" target="_blank">(#${s.data[i].oid}) <span id="order-items-name-${s.data[i].oid}"></span></a>
+                                    <span class="text-muted small-med">${s.data[i].odate}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05 padding-025">
+                            <span class="text-primary bold" id="order-subtotal-${s.data[i].oid}"></span>
+                            <div id="order-status-${s.data[i].oid}"></div>
+                        </div>
+                    </div>
+                    `;
+                    document.getElementById('order-subtotal-'+s.data[i].oid).textContent = formatter.format(s.data[i].subTotal);
+                    switch (s.data[i].status) {
+                        case '0':
+                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
+                                <span class="label label-warning border-soft-light padding-025 smaller-light">Összekészítés</span>
+                            `;
+                        break;
+                        case '1':
+                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
+                                <span class="label label-primary border-soft-light padding-025 smaller-light">Kiszállítás</span>
+                            `;
+                        break;
+                        case '2': dels++;
+                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
+                                <span class="label label-success border-soft-light padding-025 smaller-light">Kiszállítva</span>
+                            `;
+                        break;
+                        case '4':
+                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
+                                <span class="label label-danger border-soft-light padding-025 smaller-light">Sikertelen</span>
+                            `;
+                        break;
+                        default:
+                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
+                                <span class="label label-warning border-soft-light padding-025 smaller-light">Összekészítés</span>
+                            `;
+                        break;
+                    }
+                    document.getElementById('order-items-name-' + s.data[i].oid).textContent = (s.data[i].item[0].name.length > 80 ? s.data[i].item[0].name.substring(1, 80) + '...' : s.data[i].item[0].name);
+                    switch (s.data[i].item.length) {
+                        case 1:
+                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap gap-025 w-fa" style="width: 7rem;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 4rem; object-fit: contain;">
+                            </div>
+                            `;
+                        break;
+                        case 2:
+                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap-no gap-025 w-fa" style="width: 7rem;" id="order-preview-inner-con-${s.data[i].oid}">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 4rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="height: 4rem; object-fit: contain; margin-left: -10px; margin-top: 5px;">
+                            </div>
+                            `;
+                        break;
+                        case 3:
+                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap-no gap-025 w-fa" style="width: 7rem;" id="order-preview-inner-con-${s.data[i].oid}">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="width: 2rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="width: 2rem; object-fit: contain; margin-left: -10px; margin-top: 5px;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[2].thumbnail}" alt="${s.data[i].item[2].name}" style="width: 2rem; object-fit: contain; margin-left: -10px; margin-top: 15px;">
+                            </div>
+                            `;
+                        break;
+                        case 4:
+                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap gap-025 w-fa" style="width: 7rem;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[2].thumbnail}" alt="${s.data[i].item[2].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[3].thumbnail}" alt="${s.data[i].item[3].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                            </div>
+                            `;
+                        break;
+                        default:
+                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap gap-025 w-fa" style="width: 7rem;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[2].thumbnail}" alt="${s.data[i].item[2].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
+                                <span class="flex flex-col flex-align-c flex-justify-con-c small border-soft large text-muted background-bg bold pointer" title="${(s.data[i].item.length) - 3} További termék" style="height: 2.5rem; width: 2rem;">+${(s.data[i].item.length) - 3}</span>
+                            </div>
+                            `;
+                        break;
+                    }
+                } document.getElementById('delivered-sum').textContent = dels;
+            } else {
+                document.getElementById('orders-container').innerHTML = `
+                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    <span>Hiba történt a rendelések betöltése közben.</span>
+                </div>
+                `;
+            }
+        }, error : function (e) {
+            document.getElementById('orders-container').innerHTML = `
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                <span>Hiba történt a rendelések betöltése közben.</span>
+            </div>
+            `;
+        }
+    });
+</script>
