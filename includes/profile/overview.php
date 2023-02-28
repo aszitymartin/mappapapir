@@ -70,14 +70,87 @@ function get_time_ago( $time ) {
             </div>
         </div>
     </div>
+    <?php
+
+        $sql = "SELECT items FROM orders WHERE uid = " . $_SESSION['id']; $res = $con->query($sql);
+        if ($res->num_rows > 0) {
+            
+            $itemsArray = array();
+            $uniqueItems = array();
+            $itemsCounted = array();
+            $itemNames = array();
+            $itemUniqueName = array();
+            $itemUnique = array();
+            $itemsUniqued = array();
+            $itemsQuantity = 0;
+            $uniqueQuantity = 0;
+
+            while ($dt = $res->fetch_assoc()) {
+                $ritems = rtrim($dt['items'], ';');
+                $eritems = explode(';', $ritems);
+                for ($i = 0; $i < count($eritems); $i++) {
+                    $eeritems = explode(':', $eritems[$i]);
+                    if (!empty($eeritems)) {
+                        array_push($itemsArray, ($eeritems[0] . ':' . $eeritems[1]));
+                    }
+                }
+            }
+
+            for ($i = 0; $i < count($itemsArray); $i++) { $itemsQuantity = 0;
+                if (!in_array(explode(':', $itemsArray[$i])[0], $uniqueItems)) {
+                    array_push($uniqueItems, explode(':', $itemsArray[$i])[0]);
+                }
+            }
+        
+            for ($i = 0; $i < count($uniqueItems); $i++) { $itemsQuantity = 0;
+                for ($j = 0; $j < count($itemsArray); $j++) {
+                    if ($uniqueItems[$i] === explode(':', $itemsArray[$j])[0]) {
+                        $itemsQuantity += explode(':', $itemsArray[$j])[1];
+                    }
+                }
+                array_push($itemsCounted, ($uniqueItems[$i] . ':' . $itemsQuantity));
+            }
+            
+            for ($i = 0; $i < count($itemsCounted); $i++) {
+                $sql = "SELECT category FROM products__category WHERE pid = " . explode(':', $itemsCounted[$i])[0];
+                $res = $con->query($sql);
+                while ($dt = $res->fetch_assoc()) {
+                    array_push($itemNames, ($dt['category'] . ':' . explode(':', $itemsCounted[$i])[1]));
+                }
+            }
+        
+            for ($i = 0; $i < count($itemNames); $i++) {
+                array_push($itemUniqueName, explode(':', $itemNames[$i])[0]);
+            }
+        
+            
+            for ($i = 0; $i < count($itemUniqueName); $i++) { $uniqueQuantity = 0;
+                for ($j = 0; $j < count($itemNames); $j++) {
+                    if ($itemUniqueName[$i] == explode(':', $itemNames[$j])[0]) {
+                        $uniqueQuantity += explode(':', $itemNames[$j])[1];
+                    }
+                }
+                array_push($itemUnique, ($itemUniqueName[$i] . ':' . $uniqueQuantity));
+            }
+        
+            for ($i = 0; $i < count(($itemUnique)); $i++) {
+                if (!in_array($itemUnique[$i], $itemsUniqued)) {
+                    array_push($itemsUniqued, $itemUnique[$i]);
+                }
+            }
+
+        }
+
+    ?>
     <div class="flex flex-row flex-justify-con-c flex-wrap-m gap-1 prio__con w-fa">
         <div class="flex flex-col item-bg border-soft w-60d-fam padding-05 gap-2">
             <div class="flex flex-col w-fa gap-05">
                 <span class="larger text-primary bold">Rendelt Kategóriák</span>
-                <span class="text-muted small-med">38db kategóriából rendelt</span>
+                <span class="text-muted small-med"><span id="ordered-category-count">NaN</span> db kategóriából rendelt</span>
             </div>
             <div class="flex flex-col gap-05 margin-auto">
                 <div class="flex flex-row gap-05">
+                    <?php  if (count($itemsUniqued) > 0) : ?>
                     <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap-no w-fa" id="dailysales__chart__con">
                         <canvas id="dailysales__chart" class="w-fa" height="76" style="display: block; box-sizing: border-box; height: 76px; width: 286px; max-height: 20rem;" width="286"></canvas>
                         <script id="dlysls__script">
@@ -85,43 +158,9 @@ function get_time_ago( $time ) {
                             var footer = (tooltipItems) => { let sum = 0; tooltipItems.forEach(function(tooltipItem) { sum += tooltipItem.parsed.y; }); return tooltipItems[0].label + ' : ' + tooltipItems[0].formattedValue };
                             var rcChart = new Chart(recentchart, { type: 'pie',
                                 data: {
-                                    labels : [
-                                        'harom', 'ketto', 'egy'
-
-                                        // <?php
-
-                                        //     // ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
-
-                                        //     if ($selectItems = $con->prepare('SELECT items FROM orders WHERE uid = ?')) {
-                                        //         $selectItems->bind_param('i', $_SESSION['id']); $selectItems->execute(); $selectItems->store_result();
-                                        //         while ($selectItems->fetch()) {
-                                        //             $selectItems->bind_result($items); $selectItems->fetch();
-                                        //             $ritems = rtrim($items, ';');
-                                        //             for ($i = 0; $i < count(explode(';', $ritems)); $i++) {
-                                        //                 $eritems = explode(';', $ritems);
-                                        //                 print_r($eritems);
-                                        //                 for ($j = 0; $j < count($eritems); $j++) {
-                                        //                     $seritems = explode(':', $eritems[$j])[0];
-                                        //                     // echo $seritems . ';';
-                                        //                     if ($selectCategory = $con->prepare('SELECT DISTINCT category FROM products__category WHERE pid = ?')) {
-                                        //                         $selectCategory->bind_param('i', $seritems); $selectCategory->execute(); $selectCategory->store_result();
-                                        //                         while ($selectCategory->fetch()) {
-                                        //                             $selectCategory->bind_result($category); $selectCategory->fetch();
-                                        //                             // echo $category . ';';
-                                        //                         }
-                                        //                     } else {
-                                        //                         echo 'alert("asd")';
-                                        //                     }    
-                                        //                 }
-                                        //             }
-                                        //         }
-                                        //     }
-
-                                        // ?>
-
-                                    ],
+                                    labels : [ <?php for ($i = 0; $i < count($itemsUniqued); $i++) { echo '"' . explode(':', $itemsUniqued[$i])[0] . '",'; } ?> ],
                                     datasets: [{
-                                        data: ['3', '2', ' 1'],
+                                        data: [ <?php for ($i = 0; $i < count($itemsUniqued); $i++) { echo '"' . explode(':', $itemsUniqued[$i])[1] . '",'; } ?> ],
                                         backgroundColor: 'rgb(54, 153, 255)',
                                         hoverOffset: 2, borderRadius: 7, maxBarThickness: 10
                                     }]
@@ -135,14 +174,16 @@ function get_time_ago( $time ) {
                                         bodyColor: 'transparent', displayColors: false
                                     } 
                                 }, scales: { x: { display: false, }, y: { display: false, } } }
-                            });
-                            // console.log(rcChart['data']);
-                            // rcChart['data'].labels.push('negy');
-                            // rcChart['data'].datasets[0].data.push('4');
-
-
+                            }); document.getElementById('ordered-category-count').textContent = <?= count($itemsUniqued); ?>
                         </script>
                     </div>
+                    <?php endif;
+                        if (count($itemsUniqued) < 1) : ?>
+                        <div class="flex flex-col flex-align-c flex-justify-con-c w-fa text-muted user-select-none">
+                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M18 10V20C18 20.6 18.4 21 19 21C19.6 21 20 20.6 20 20V10H18Z" fill="currentColor"/><path opacity="0.3" d="M11 10V17H6V10H4V20C4 20.6 4.4 21 5 21H12C12.6 21 13 20.6 13 20V10H11Z" fill="currentColor"/><path opacity="0.3" d="M10 10C10 11.1 9.1 12 8 12C6.9 12 6 11.1 6 10H10Z" fill="currentColor"/><path opacity="0.3" d="M18 10C18 11.1 17.1 12 16 12C14.9 12 14 11.1 14 10H18Z" fill="currentColor"/><path opacity="0.3" d="M14 4H10V10H14V4Z" fill="currentColor"/><path opacity="0.3" d="M17 4H20L22 10H18L17 4Z" fill="currentColor"/><path opacity="0.3" d="M7 4H4L2 10H6L7 4Z" fill="currentColor"/><path d="M6 10C6 11.1 5.1 12 4 12C2.9 12 2 11.1 2 10H6ZM10 10C10 11.1 10.9 12 12 12C13.1 12 14 11.1 14 10H10ZM18 10C18 11.1 18.9 12 20 12C21.1 12 22 11.1 22 10H18ZM19 2H5C4.4 2 4 2.4 4 3V4H20V3C20 2.4 19.6 2 19 2ZM12 17C12 16.4 11.6 16 11 16H6C5.4 16 5 16.4 5 17C5 17.6 5.4 18 6 18H11C11.6 18 12 17.6 12 17Z" fill="currentColor"/></svg>
+                            <span class="bold">Nincsen megjeleníthető rendelés.</span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -162,141 +203,6 @@ function get_time_ago( $time ) {
 <?php
 
     // ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
-
-    $sql = "SELECT items FROM orders WHERE uid = " . $_SESSION['id']; $res = $con->query($sql);
-    if ($res->num_rows > 0) {
-        
-        $itemsArray = array();
-        $uniqueItems = array();
-
-        while ($dt = $res->fetch_assoc()) {
-            $ritems = rtrim($dt['items'], ';');
-            $eritems = explode(';', $ritems);
-            for ($i = 0; $i < count($eritems); $i++) {
-                $eeritems = explode(':', $eritems[$i]);
-                array_push($itemsArray, ($eeritems[0] . ':' . $eeritems[1]));
-                array_push($uniqueItems, $eeritems[0]);
-            }
-        }
-    }
-
-    echo '<br> itemsArray <br>';
-    print_r(($itemsArray));
-    echo '<br><br>';
-
-    echo '<br> uniqueItems <br>';
-    print_r(array_unique($uniqueItems));
-    echo '<br><br>';
-
-
-
-    /*
-
-        $counts = array_count_values($itemsArray);
-        $itemIdArray = array();
-        for ($i = 0; $i < count($itemsArray); $i++) {
-            array_push($itemIdArray, explode(':', $itemsArray[$i])[0]);
-        }
-
-        $itemsCounted = array();
-        $uniqueItems = array();
-        $itemNames = array();
-        $itemUniqueName = array();
-        $itemUnique = array();
-        $itemsQuantity = 0;
-        for ($i = 0; $i < count(array_unique($itemIdArray)); $i++) { $itemsQuantity = 0;
-            for ($j = 0; $j < count($itemsArray); $j++) {
-                if ($itemIdArray[$i] == explode(':', $itemsArray[$j])[0]) {
-                    $itemsQuantity += explode(':', $itemsArray[$j])[1];
-                }
-            }
-            array_push($itemsCounted, ($itemIdArray[$i] . ':' . $itemsQuantity));
-        }
-
-        // print_r(array_unique($itemsCounted));
-        
-        // array_unique($itemsCounted);
-
-        echo '<br> itemsArray <br>';
-        print_r(($itemsArray));
-        echo '<br><br>';
-
-        echo '<br> itemsCounted <br>';
-        print_r(($itemsCounted));
-        echo '<br><br>';
-
-        echo '<br> ItemIdArray (array_unique) <br>';
-        print_r(array_unique($itemIdArray));
-        echo '<br><br>';
-
-        for ($i = 0; $i < count(array_unique($itemsCounted)); $i++) {
-            if (!empty(array_unique($itemsCounted)[$i])) {
-                array_push($uniqueItems, array_unique($itemsCounted)[$i]);
-            }
-        }
-
-        echo '<br> uniqueItems <br>';
-        print_r($uniqueItems);
-        echo '<br><br>';
-
-        for ($i = 0; $i < count($uniqueItems); $i++) {
-            $sql = "SELECT category FROM products__category WHERE pid = " . explode(':', $uniqueItems[$i])[0];
-            $res = $con->query($sql);
-            while ($dt = $res->fetch_assoc()) {
-                array_push($itemNames, ($dt['category'] . ':' . explode(':', $uniqueItems[$i])[1]));
-            }
-        }
-
-        echo '<br> itemNames <br>';
-        print_r($itemNames);
-        echo '<br><br>';
-
-        for ($i = 0; $i < count($itemNames); $i++) {
-            array_push($itemUniqueName, explode(':', $itemNames[$i])[0]);
-        }
-
-        $uniqueQuantity = 0;
-        for ($i = 0; $i < count($itemUniqueName); $i++) { $uniqueQuantity = 0;
-            for ($j = 0; $j < count($itemNames); $j++) {
-                if ($itemUniqueName[$i] == explode(':', $itemNames[$j])[0]) {
-                    $uniqueQuantity += explode(':', $itemNames[$j])[1];
-                }
-            }
-            array_push($itemUnique, ($itemUniqueName[$i] . ':' . $uniqueQuantity));
-        }
-
-    */
-
-    // print_r(array_unique($itemUnique));
-
-    /*
-        if ($selectItems = $con->prepare('SELECT items FROM orders WHERE uid = ?')) {
-            $selectItems->bind_param('i', $_SESSION['id']); $selectItems->execute(); $selectItems->store_result();
-            while ($selectItems->fetch()) {
-                $selectItems->bind_result($items); $selectItems->fetch();
-                $ritems = rtrim($items, ';');
-                // echo $items . '<br>';
-                for ($i = 0; $i < count(explode(';', $ritems)); $i++) {
-                    $eritems = explode(';', $ritems);
-                    // print_r($eritems);
-                    // echo $eritems[$i] . '<br>';
-                    for ($j = 0; $j < count($eritems); $j++) {
-                        $seritems = explode(':', $eritems[$j])[0];
-                        // echo $seritems . ';';
-                        if ($selectCategory = $con->prepare('SELECT DISTINCT category FROM products__category WHERE pid = ?')) {
-                            $selectCategory->bind_param('i', $seritems); $selectCategory->execute(); $selectCategory->store_result();
-                            while ($selectCategory->fetch()) {
-                                $selectCategory->bind_result($category); $selectCategory->fetch();
-                                // echo $category . ';';
-                            }
-                        } else {
-                            echo 'alert("asd")';
-                        }    
-                    }
-                }
-            }
-        }
-    */
 
 ?>
 
