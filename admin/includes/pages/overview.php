@@ -22,9 +22,13 @@ function get_time_ago( $time ) {
                 <span class="small-med text-primary bold">Legújabbak</span>
                 <div class="flex flex-row gap-05">
                     <div class="flex flex-row flex-wrap-no" id="curron__con">
-                        <?php $nus__sql = "SELECT customers.id, fullname, customers__header.initials, customers__header.color FROM customers INNER JOIN customers__header ON customers__header.uid = customers.id ORDER BY date DESC LIMIT 4"; $nus__res = $con-> query($nus__sql);
-                        if ($nus__res-> num_rows > 0) { 
-                            while($data = $nus__res-> fetch_assoc()) { echo '<span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small" title="'.$data['fullname'].'" style="background-color: #'.$data['color'].'">'.$data['initials'].'</span>'; }
+                        <?php $nus__sql = "SELECT customers.id, fullname, customers__header.initials, customers__header.color FROM customers INNER JOIN customers__header ON customers__header.uid = customers.id ORDER BY date DESC"; $nus__res = $con-> query($nus__sql);
+                        if ($nus__res-> num_rows > 0) { $nus_items = 0;
+                            while($data = $nus__res->fetch_assoc()) {  $nus_items++;
+                                if ($nus_items <= 4) {
+                                    echo '<span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small" title="'.$data['fullname'].'" style="background-color: #'.$data['color'].'">'.$data['initials'].'</span>';
+                                }
+                            }
                             if ($nus__res-> num_rows > 4) { echo '<span class="flex flex-row flex-align-c flex-justify-con-c text-muted background-bg box-shadow curron__head circle padding-05 small">+'; echo $nus__res-> num_rows - 4; echo '</span>'; }
                         }
                         ?>
@@ -47,12 +51,12 @@ function get_time_ago( $time ) {
                             var rcChart = new Chart(recentchart, { type: 'bar',
                                 data: {
                                     labels: [
-                                        <?php $dly__sql = "SELECT DATE(date) AS date FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 7"; $dly__res = $con-> query($dly__sql);
+                                        <?php $dly__sql = "SELECT DATE(date) AS date FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 31"; $dly__res = $con-> query($dly__sql);
                                         if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'".$data['date']."',"; } } ?>
                                     ],
                                     datasets: [{
                                         data: [
-                                            <?php $dly__sql = "SELECT COUNT(id) AS qty FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 7"; $dly__res = $con-> query($dly__sql);
+                                            <?php $dly__sql = "SELECT COUNT(id) AS qty FROM `orders` WHERE 1 GROUP BY DATE(date) ORDER BY DATE(date) ASC LIMIT 31"; $dly__res = $con-> query($dly__sql);
                                             if ($dly__res-> num_rows > 0) { while ($data = $dly__res-> fetch_assoc()) { echo "'".$data['qty']."',"; $lastsevenqty += $data['qty']; } } ?>
                                         ], backgroundColor: 'rgb(0, 158, 247)', hoverOffset: 2, borderRadius: 50, maxBarThickness: 10
                                     }]
@@ -129,52 +133,6 @@ function get_time_ago( $time ) {
         </div>
     </div>
     
-</div>
-<div class="flex flex-row flex-align-c gap-1">
-    <div class="flex flex-row flex-justify-con-c flex-wrap-m gap-05 prio__con w-fa padding-05-0">
-        <div class="flex flex-col item-bg border-soft w-50d-fam padding-05 gap-2 box-shadow">
-            <div class="flex flex-col w-fa gap-05">
-                <span class="larger text-primary bold">
-                <?php $nus__sql = "SELECT id FROM customers WHERE 1"; $nus__res = $con-> query($nus__sql); echo $nus__res-> num_rows; ?>
-                </span>
-                <span class="text-muted small-med">Összes bevétel</span>
-            </div>
-            <div class="flex flex-col gap-05">
-                <span class="small-med text-primary bold">Legújabbak</span>
-                <div class="flex flex-row gap-05">
-                    <div class="flex flex-row flex-wrap-no" id="curron__con">
-                        <?php $nus__sql = "SELECT customers.id, fullname, customers__header.initials, customers__header.color FROM customers INNER JOIN customers__header ON customers__header.uid = customers.id ORDER BY date DESC LIMIT 4"; $nus__res = $con-> query($nus__sql);
-                        if ($nus__res-> num_rows > 0) { 
-                            while($data = $nus__res-> fetch_assoc()) { echo '<span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small" title="'.$data['fullname'].'" style="background-color: #'.$data['color'].'">'.$data['initials'].'</span>'; }
-                            if ($nus__res-> num_rows > 4) { echo '<span class="flex flex-row flex-align-c flex-justify-con-c text-muted background-bg box-shadow curron__head circle padding-05 small">+'; echo $nus__res-> num_rows - 4; echo '</span>'; }
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col item-bg border-soft w-50d-fam padding-05 gap-2 box-shadow">
-            <div class="flex flex-col w-fa gap-05">
-                <div class="flex flex-col w-fa text-primary">
-                    <span class="larger bold">Legutóbbi rendelések</span>
-                    <span class="small-med">1 : 00</span>
-                </div>
-            </div>
-            <div class="flex flex-col gap-05 margin-top-a">
-                <div class="flex flex-row flex-align-c flex-justify-con-sb">
-                    <span class="small-med text-primary bold">Előző havi: <span class="bold" id="orders__goal"><?php $nus__sql = "SELECT * FROM orders WHERE DATE_FORMAT(CURDATE(), '%m')-1 = MONTH(date);"; $nus__res = $con-> query($nus__sql); echo $nus__res-> num_rows; $lm__orders = $nus__res-> num_rows; ?></span></span>
-                    <span class="small text-muted"> <?php $ordperc = $lm__orders > 0 ? round((100 * $cm__orders) / $lm__orders) : 0; echo $ordperc.'%'; ?></span>
-                </div>
-                <div class="flex flex-row gap-05">
-                    <div class="flex flex-row border-soft background-bg w-fa">
-                        <div class="flex flex-row padding-025 border-soft 
-                        <?php if ($ordperc > 50) { echo "loader-success"; } if ($ordperc > 25 && $ordperc <= 50) { echo "loader-warning"; } if ($ordperc < 25) { echo "loader-danger"; } ?>
-                        " style="width: <?php echo $ordperc; ?>%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 <div class="flex flex-col gap-025">
 <div class="flex flex-row flex-align-c flex-justify-con-sb">

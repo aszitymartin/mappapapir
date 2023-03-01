@@ -4,9 +4,70 @@ class ManageOrder {
 
     public $returnObject;
 
+    private function connect () {
+        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
+        if ( mysqli_connect_errno() ) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $con
+            ];
+            return $this->returnObject;
+        }
+    }
+
+    function getInvoiceDetails ($object) {
+
+        $requiredItems = array ('uid', 'oid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        
+
+    }
+
     function changeStatus ($status, $oid, $ip) {
 
-        include($_SERVER['DOCUMENT_ROOT'].'/includes/inc.connect.php');
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
 
         if ($updateOrderStatus = $con->prepare('UPDATE orders SET status = ? WHERE id = ?')) {
             $updateOrderStatus->bind_param('si', $status, $oid); $updateOrderStatus->execute(); $updateOrderStatus->close();
@@ -32,9 +93,39 @@ class ManageOrder {
 
     // }
     
-    // function changeInvoiceDetails () {
-        
-    // }
+    function changeInvoiceDetails () {
+     
+        $requiredItems = array ('uid', 'oid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        } else {
+            for ($i = 0; $i < count($objectKeys); $i++) {
+                if (strlen($object[$requiredItems[$i]]) < 1) {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Nincs elegendő adat a folytatáshoz."
+                    ];
+                    return $this->returnObject;
+                }
+            }
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+    }
 
     // function changeShippingDetails () {
 
