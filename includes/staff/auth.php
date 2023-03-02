@@ -31,8 +31,8 @@
                         <div class="flex flex-col w-fa margin-top-a">
                             <div class="staff-indicator" id="staff-indicator"></div>
                             <div class="theme-button-con flex flex-col" style="background-color: transparent;">
-                                <div class="theme-item flex flex-row" style="padding: 1rem;" id="staff-auth-btton">
-                                    <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
+                                <div class="theme-item pointer flex flex-row" style="padding: 1rem;" id="staff-auth-btton">
+                                    <div class="flex flex-align-c flex-justify-con-sb w-100">
                                         <span class="text-primary" style="font-size: 1.2rem">Folytatás</span>
                                         <label class="flex" id="staffLockIcon">
                                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2rem" height="2rem" viewBox="0 0 24 24" version="1.1">

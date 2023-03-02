@@ -59,7 +59,7 @@
         <script content-type="application/javascript">
             var profileActionsContainer = document.createElement('div');var transWrapper = document.createElement('div'); let subt = 0;
             transWrapper.classList.add('transWrapper');profileActionsContainer.id = 'profileHeaderContainer';let cC = 1;
-            function openHeaderProfileActionLogged () {cC++;
+            function openHeaderProfileActionLogged () {cC++; closeSearch(); cl__basket();
                 if (cC % 2 == 0) {document.getElementById('header_con').classList.add('relative');document.body.append(transWrapper);
                     document.getElementById('header_con').append(profileActionsContainer);showProfileActionPanel();
                 } else {profileActionsContainer.remove();transWrapper.remove();cC = 1; document.getElementsByTagName('html')[0].classList.remove('stop-scroll', 'stop-scroll-mobile'); }
@@ -142,88 +142,14 @@
                     $('#staff-auth').on('keyup', (event) => {if (event.keyCode === 13) {event.preventDefault();document.getElementById("staff-auth-button-desktop").click();}});
                     $('#staff-auth').on('focus', function () {if (document.body.contains(document.getElementById('staff-indicator-inner'))) {$('#staff-indicator-inner').remove();}});
                 }
-                /*
-                $('#staff-auth-button-desktop').click(function () {
-                    if (document.getElementById('staff-auth').value) {const getStaffTries = localStorage.getItem('staffTries');
-                        if (!getStaffTries) {localStorage.setItem('staffTries', JSON.stringify(staffTries));}
-                    $.ajax({
-                        type: "POST",url: "/includes/staff/au.php",
-                        data: {
-                            password: document.getElementById('staff-auth').value,
-                            id: 
-                                <?php 
-
-                                    if (isset($_SESSION['loggedin'])) {
-                                        echo $_SESSION['id'];
-                                    }
-                                    else {echo "0";}
-                                ?>
-                        },
-                        cache: false,
-                        success: function(data) {
-                            if (data === 'true') {
-                                document.getElementById('staffLockIcon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2rem" height="2rem" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.3" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg>`;
-                                document.getElementById('staff-auth-button-desktop').classList.add('pointer-event-none');
-                                setTimeout(function () {location.href="/includes/staff/";document.getElementById('staff-auth-button-desktop').classList.remove('pointer-event-none');}, 350);
-                            } else {
-                                const triesParams = JSON.parse(localStorage.getItem('staffTries'));
-                                const newTries = {triesNum: JSON.parse(localStorage.getItem('staffTries')).triesNum - 1,triesExpiry: JSON.parse(localStorage.getItem('staffTries')).triesExpiry};
-                                localStorage.setItem('staffTries', JSON.stringify(newTries));const getNewTries = localStorage.getItem('staffTries');const newParams = JSON.parse(getNewTries);
-                                if (newParams.triesNum < 1) {const now = new Date();const staffLock = {lockType : "1",lockExpiry : now.setSeconds(900)};
-                                    localStorage.setItem('staffLock', JSON.stringify(staffLock));const getStaffLock = localStorage.getItem('staffLock');const lockParams = JSON.parse(getStaffLock);
-                                    var c = new Date(lockParams.lockExpiry).getTime();var t = setInterval(function() {var n = new Date().getTime();
-                                        var d = c - n;var da = Math.floor(d / (1000 * 60 * 60 * 24));var h = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                        var m = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));var s = Math.floor((d % (1000 * 60)) / 1000);
-                                        document.getElementById("counterLocked").innerHTML = da + ":" + h + ":"+ m + ":" + s;
-                                        if (d < 0) {
-                                            clearInterval(t);localStorage.removeItem('staffLock');localStorage.setItem('staffTries', 3);localStorage.removeItem('staffTries');
-                                            document.getElementById("counterLocked").parentNode.parentNode.classList.remove('wait');document.getElementById("counterLocked").parentNode.parentNode.classList.add('pointer');
-                                            document.getElementById("counterLocked").parentNode.innerHTML = `<span class="text-primary" style="font-size: 1.2rem" id="counterLocked" onclick="window.location.reload(true)">Oldal újratöltése</span><label class="flex" id="staffLockIcon"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2rem" height="2rem" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M10.9630156,7.5 L11.0475062,7.5 C11.3043819,7.5 11.5194647,7.69464724 11.5450248,7.95024814 L12,12.5 L15.2480695,14.3560397 C15.403857,14.4450611 15.5,14.6107328 15.5,14.7901613 L15.5,15 C15.5,15.2109164 15.3290185,15.3818979 15.1181021,15.3818979 C15.0841582,15.3818979 15.0503659,15.3773725 15.0176181,15.3684413 L10.3986612,14.1087258 C10.1672824,14.0456225 10.0132986,13.8271186 10.0316926,13.5879956 L10.4644883,7.96165175 C10.4845267,7.70115317 10.7017474,7.5 10.9630156,7.5 Z" class="svg"/><path d="M7.38979581,2.8349582 C8.65216735,2.29743306 10.0413491,2 11.5,2 C17.2989899,2 22,6.70101013 22,12.5 C22,18.2989899 17.2989899,23 11.5,23 C5.70101013,23 1,18.2989899 1,12.5 C1,11.5151324 1.13559454,10.5619345 1.38913364,9.65805651 L3.31481075,10.1982117 C3.10672013,10.940064 3,11.7119264 3,12.5 C3,17.1944204 6.80557963,21 11.5,21 C16.1944204,21 20,17.1944204 20,12.5 C20,7.80557963 16.1944204,4 11.5,4 C10.54876,4 9.62236069,4.15592757 8.74872191,4.45446326 L9.93948308,5.87355717 C10.0088058,5.95617272 10.0495583,6.05898805 10.05566,6.16666224 C10.0712834,6.4423623 9.86044965,6.67852665 9.5847496,6.69415008 L4.71777931,6.96995273 C4.66931162,6.97269931 4.62070229,6.96837279 4.57348157,6.95710938 C4.30487471,6.89303938 4.13906482,6.62335149 4.20313482,6.35474463 L5.33163823,1.62361064 C5.35654118,1.51920756 5.41437908,1.4255891 5.49660017,1.35659741 C5.7081375,1.17909652 6.0235153,1.2066885 6.2010162,1.41822583 L7.38979581,2.8349582 Z" class="svg" opacity="0.3"/></g></svg></label>`;
-                                        }
-                                    }, 1000);
-
-                                    profileActionsContainer.innerHTML = `
-                                        <div class='profileActionCon flex flex-col absolute'>
-                                            <div class='flex flex-row flex-align-c profileActionItemHead flex-justify-con-l'>
-                                                <span class='actionConIcon flex'>
-                                                    <svg class='pointer' onclick='showProfileActionPanel();' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle class="svg" opacity="0.3" cx="12" cy="12" r="10"/><path d="M6.96323356,15.1775211 C6.62849853,15.5122561 6.08578582,15.5122561 5.75105079,15.1775211 C5.41631576,14.842786 5.41631576,14.3000733 5.75105079,13.9653383 L10.8939067,8.82248234 C11.2184029,8.49798619 11.7409054,8.4866328 12.0791905,8.79672747 L17.2220465,13.5110121 C17.5710056,13.8308912 17.5945795,14.3730917 17.2747004,14.7220508 C16.9548212,15.0710098 16.4126207,15.0945838 16.0636617,14.7747046 L11.5257773,10.6149773 L6.96323356,15.1775211 Z" class="svg" fill-rule="nonzero" transform="translate(11.500001, 12.000001) scale(-1, 1) rotate(-270.000000) translate(-11.500001, -12.000001) "/></g>
-                                                    </svg>
-                                                </span>
-                                                <span class='profileActionTitle flex'>Hitelesítés</span>
-                                            </div>
-                                            <div class="text-align-c padding-1">
-                                                <span class="text-secondary text-small">A magas szintű mód eléréséhez meg kell adnia a jelszót. Csak háromszor próbálkozhat, mielőtt a rendszer kitiltja.</span>
-                                            </div>
-                                            <div class="flex flex-col padding-1">
-                                                <div class="staff-indicator" id="staff-indicator"></div>
-                                                <div class="theme-button-con flex flex-col" style="background-color: transparent;">
-                                                    <div class="theme-item flex flex-row wait" style="padding: .5rem 1rem;">
-                                                        <div class="theme-button flex flex-align-c flex-justify-con-sb w-100">
-                                                            <span class="text-primary" style="font-size: 1.2rem" id="counterLocked">--:--:--:--</span>
-                                                            <label class="flex" id="staffLockIcon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2rem" height="2rem" viewBox="0 0 24 24" version="1.1">
-                                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M12,22 C7.02943725,22 3,17.9705627 3,13 C3,8.02943725 7.02943725,4 12,4 C16.9705627,4 21,8.02943725 21,13 C21,17.9705627 16.9705627,22 12,22 Z" class="svg" opacity="0.3"/><path d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z" class="svg"/></g>
-                                                                </svg>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                } else {document.getElementById('staff-indicator').innerHTML = `<span class="warning-card flex flex-row flex-align-c" style="margin-bottom: 1rem;"><span class="warning-icon flex"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1rem" height="1rem" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle class="svg" opacity="0.3" cx="12" cy="12" r="10"></circle><rect class="svg" x="11" y="7" width="2" height="8" rx="1"></rect><rect class="svg" x="11" y="16" width="2" height="2" rx="1"></rect></g></svg></span><span class="warning-text flex flex-align-c flex-justify-con-sb w-100">Hibás adatok! <span>(${triesParams.triesNum - 1})</span></span></span>`;}
-                            }
-                        },error: function () {console.log('error');}
-                    });
-                } else {document.getElementById('staff-auth').focus();}
-                });
-                */
                 if (panel == 'settings') {$('#profileHeaderContainer').load('/includes/header-menu/settings.php');}
             }
 
             var hib__container = document.createElement('div'); hib__container.classList = "profileActionCon flex flex-col absolute"; hib__container.id = "hib__container"; let hib__c = 1;
-            function sh__basket () {hib__c++;
+            function sh__basket () {hib__c++; closeSearch();
+                if (document.getElementById('header_con').contains(profileActionsContainer)) {
+                    profileActionsContainer.remove();
+                }
                 if (hib__c % 2 == 0) {document.getElementById('header_con').classList.add('relative');document.body.append(transWrapper); document.getElementById('header_con').append(hib__container);b__load(); }
                 else { cl__basket(); }
             }

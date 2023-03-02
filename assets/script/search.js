@@ -2,6 +2,9 @@ document.getElementById('header-search').addEventListener('click', openSearch);
 if (isMobile) { document.getElementById('main_search').addEventListener('click', openSearch); }
 let hsCc = 1; var hdrwp = document.createElement('div'); hdrwp.classList.add('wrapper_dark');
 function openSearch () { hsCc++;
+    if (document.getElementById('header_con').contains(profileActionsContainer)) {
+        profileActionsContainer.remove();
+    } cl__basket();
     if (hsCc % 2 == 0) { document.body.prepend(hdrwp);
         document.getElementById('hs--con').innerHTML = `
         <div class="flex flex-col flex-justify-con-c margin-auto gap-2 padding-05">
