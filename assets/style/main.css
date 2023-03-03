@@ -92,7 +92,7 @@ a { color: unset; text-decoration: none; }
 .gap-025 { gap: .25rem; }
 
 /* Display */
-.flex { display: flex !important; }
+.flex { display: flex; }
 .display-none { display: none; }
 .inline-block { display: inline-block; }
 

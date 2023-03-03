@@ -1,6 +1,12 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); ?>
 <script src="/assets/script/quill/dist/quill.js"></script>
-<div class="flex flex-row-d-col-m gap-1">
+<div id="review-loader-con">
+    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa" id="product-loader">
+        <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+        <span>Értékelések betöltése</span>
+    </div>
+</div>
+<div class="hidden flex-row-d-col-m gap-1" id="review-con">
     <div class="flex flex-col w-fa border-soft item-bg box-shadow padding-1 gap-2">
         <div class="flex flex-col gap-05">
             <div class="flex flex-col gap-1">
@@ -13,7 +19,28 @@
 </div>
 <script>var bal__to__form = document.getElementsByClassName('money__form'); for (let i = 0; i < bal__to__form.length; i++) { bal__to__form[i].textContent = formatter.format(bal__to__form[i].getAttribute('default-data')); }</script>
 <script>var urldata = new FormData(); urldata.append("pid", urlpid);
-$.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/info.php", data: urldata, dataType: 'json', contentType: false, processData: false, success: function(data) {document.getElementById('product-title').textContent = data.variations.brand + ' ' + data.variations.model + ' ' + data.general.name + ', ' + data.variations.color; __loadreviews(data.variations.model); } });
+
+if(document.readyState === 'ready' || document.readyState === 'complete') {
+    loadReviews();
+} else {
+  document.onreadystatechange = function () {
+    if (document.readyState == "complete") {
+        loadReviews();
+    }
+  }
+}
+
+function loadReviews () {
+    $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/info.php", data: urldata, dataType: 'json', contentType: false, processData: false,
+        success: function(data) {
+            document.getElementById('product-title').textContent = data.variations.brand + ' ' + data.variations.model + ' ' + data.general.name + ', ' + data.variations.color;
+            __loadreviews(data.variations.model);
+            document.getElementById('review-loader-con').remove();
+            document.getElementById('review-con').classList.replace('hidden', 'flex');
+        }
+    });
+}
+
 function __loadreviews (model) { urldata.append("model", model);
     $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/webshop/rev.php", data: urldata, dataType: 'json', contentType: false, processData: false,
         beforeSend: function () {
