@@ -99,7 +99,7 @@ function __loadreviews (model) { urldata.append("model", model);
                         document.getElementById('review-init-'+data[i].review.id).textContent = 'PF';document.getElementById('review-init-'+data[i].review.id).style.background = '#9c9d9f';
                     } else { document.getElementById('review-fullname-'+data[i].review.id).textContent = data[i].user.fullname;document.getElementById('review-init-'+data[i].review.id).title = data[i].user.fullname;document.getElementById('review-init-'+data[i].review.id).textContent = data[i].initials.initials;document.getElementById('review-init-'+data[i].review.id).style.background = '#'+data[i].initials.color; }
                     if (data[i].review.flagged) { document.getElementById('review-action-'+data[i].review.id).textContent = 'Nem hasznos'; } else { document.getElementById('review-action-'+data[i].review.id).textContent = 'Hasznos'; }
-                    if (data[i].review.reported) { document.getElementById('review-secact-'+data[i].review.id).textContent = 'Jelentve'; document.getElementById('review-secact-'+data[i].review.id).removeAttribute('onclick'); } else { document.getElementById('review-secact-'+data[i].review.id).textContent = 'Visszaélés jelentése'; }
+                    if (data[i].review.reported) { document.getElementById('review-secact-'+data[i].review.id).textContent = 'Jelentve'; document.getElementById('review-secact-'+data[i].review.id).classList.remove('pointer'); document.getElementById('review-secact-'+data[i].review.id).removeAttribute('onclick'); } else { document.getElementById('review-secact-'+data[i].review.id).textContent = 'Visszaélés jelentése'; }
                 } document.getElementById('review-helpful-ind-'+data[i].review.id).textContent = Number(data[i].review.helpful) + ' ember találta ezt hasznosnak';
                 if (data[i].user.author == true) { aunum++; }
             }
@@ -352,6 +352,8 @@ function __loadreviews (model) { urldata.append("model", model);
                 .then((data) => {
                     if (data.status == 'success') {
                         document.getElementById('review-secact-'+rid).textContent = 'Jelentve';
+                        document.getElementById('review-secact-'+rid).removeAttribute('onclick');
+                        document.getElementById('review-secact-'+rid).classList.remove('pointer');
                     } else {
                         notificationSystem(0, 2, 0, 'Üzenet', 'Sikertelen jelentés.');
                     }

@@ -43,10 +43,10 @@
                         $tsql = "SELECT thumbnail FROM `products` INNER JOIN products__category ON products__category.pid = products.id WHERE category LIKE '$categ' ORDER BY RAND() LIMIT 1";
                         $tres = $con->query($tsql); $th = $tres->fetch_assoc(); $thumb = $th['thumbnail'];
                         echo '
-                        <span class="flex flex-col flex-align-c flex-justify-con-sb gap-1 padding-1 border-soft pointer background-bg-hover mn-ctg-sh">
+                        <a href="/search/'.$categ.'" class="flex flex-col flex-align-c flex-justify-con-sb gap-1 padding-1 border-soft pointer background-bg-hover mn-ctg-sh">
                             <div class="product-miniature drop-shadow pointer" style="background-image: url(&quot;/assets/images/uploads/'.$thumb.'&quot;); width: 2rem; height: 2rem;"></div>
                             <span>'.$categ.'</span>
-                        </span>
+                        </a>
                         ';
                     }
                 ?>
@@ -199,7 +199,7 @@
             </div>
         </section>
         <?php
-            $pd_ct_sql = "SELECT COUNT(pid) AS 'amount', category, AVG(products.added) AS date FROM products__category INNER JOIN products ON products.id = products__category.pid GROUP BY category ORDER BY amount DESC LIMIT 6";
+            $pd_ct_sql = "SELECT COUNT(pid) AS 'amount', category, AVG(products.added) AS date FROM products__category INNER JOIN products ON products.id = products__category.pid GROUP BY category ORDER BY amount DESC";
             $pd_ct_res = $con-> query($pd_ct_sql);
             if ($pd_ct_res-> num_rows > 0) {
                 while ($pdct = $pd_ct_res-> fetch_assoc()) { $category = $pdct['category']; $newname = strtr(strtolower(preg_replace('/\s+/', '', $pdct['category'])), $unwanted_array);

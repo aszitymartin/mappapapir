@@ -12,8 +12,8 @@ foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 
                 <span class="text-secondary smaller-light">Szerkessze fiókjához tartozó jelszavát.</span>
             </div>
             <div class="flex flex-row gap-1">
-                <span class="button button-primary small-med" id="prsv__password">Mentés</span>
-                <span class="button button-secondary small-med" id="prcc__password">Mégsem</span>
+                <span class="primary-bg primary-bg-hover border-soft-light padding-05-1 small-med pointer user-select-none flex flex-col flex-align-c flex-justify-con-c" id="prsv__password">Mentés</span>
+                <span class="text-primary pointer user-select-none small-med flex flex-col flex-align-c flex-justify-con-c" id="prcc__password">Mégsem</span>
             </div>
         </div><hr style="border: 1px solid var(--background);" class="w-fa">
         <?php
