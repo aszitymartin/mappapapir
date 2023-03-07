@@ -241,6 +241,7 @@
                                         <span class="text-primary small" style="line-height: 2rem;">Általános Szerződési Feltételek</span>
                                     </div>
                                     <span class="text-muted small-med">Ezúton megerősítem, hogy az általam megadott információk helyesek, és elfogadom az <a class="text-primary pointer user-select-none link" href="/hc/aszf" target="_blank">általános szerődési feltételeket</a>.</span>
+                                    <div class="flex flex-row flex-align-fe flex-justify-con-fe" id="ch-ac-ec"></div>
                                 </div>
                             </div>
                         </div>
@@ -277,7 +278,19 @@
     var x = document.getElementsByClassName("ch-tab"); x[n].style.display = "flex";
     if (n == 0) { document.getElementById("ch-prev").style.display = "none"; }
     else { document.getElementById("ch-prev").style.display = "flex"; }
-    if (n == (x.length - 1)) { document.getElementById("ch-next").innerHTML = `<span>Megrendelés</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>`; }
+    if (n == (x.length - 1)) { 
+        document.getElementById("ch-next").removeAttribute('onclick');
+        document.getElementById("ch-next").classList.remove('splash', 'primary-bg', 'primary-bg-hover', 'pointer'); document.getElementById("ch-next").classList.add('not-allowed', 'background-bg', 'text-muted'); document.getElementById("ch-next").innerHTML = `<span>Megrendelés</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>`;
+        $('#ch-ac-tc').click((e) => {
+            if (e.target.checked) {
+                document.getElementById("ch-next").setAttribute('onclick', '__chAction(1)');
+                document.getElementById("ch-next").classList.add('splash', 'primary-bg', 'primary-bg-hover', 'pointer'); document.getElementById("ch-next").classList.remove('not-allowed', 'background-bg', 'text-muted');
+            } else {
+                document.getElementById("ch-next").removeAttribute('onclick');
+                document.getElementById("ch-next").classList.remove('splash', 'primary-bg', 'primary-bg-hover', 'pointer'); document.getElementById("ch-next").classList.add('not-allowed', 'background-bg', 'text-muted');
+            }
+        })
+    }
     else { document.getElementById("ch-next").innerHTML = `<span>Következő</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>`; }
     __chfixStepIndicator(n)
     }
@@ -357,7 +370,6 @@
                 </div>
             `;
             if (emptyRequiredFields.length == 0) {
-                console.log('order ok');
                 postCheckOutDatas(orderData, itemData, voucherData, inventoryData);
             } else {
                 document.getElementById('ch-tb-cn').innerHTML = `
@@ -597,7 +609,6 @@
                                 </div>
                             </div>
                         `;
-                        console.log(data); //document.getElementById('ch-tb-cn').innerHTML += ;
                     }
                 });
             }, error: function () {
@@ -650,9 +661,9 @@
                 }
             }
         });
+
         if (optionsValidated) {
             var postData = new FormData(); postData.append("user", JSON.stringify(orderData)); postData.append("items", JSON.stringify(itemData)); postData.append("voucher", JSON.stringify(voucherData)); postData.append("inventory", JSON.stringify(inventoryData)); postData.append("log", JSON.stringify(logData));
-            console.log(inventoryData);
             $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/placeOrder.php", data: postData, dataType: 'json', contentType: false, processData: false,
                 beforeSend: function () {
                     document.getElementById('ch-tb-cn').innerHTML = `
@@ -663,8 +674,6 @@
                     `;
                 },
                 success : function (e) {
-                    console.log('succ');
-                    console.log(e);
                     if (e.alt == 'inventoryChecked') {
                         document.getElementById('ch-tb-cn').innerHTML = `
                             <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 text-muted user-select-none w-fa">
@@ -721,21 +730,16 @@
                             });
                         }
                         function setSubTotalIndicator (s) {
-                            console.log(s);
                             document.getElementById('subt-rc').textContent = formatter.format((s > 30000) ? s : s+2000);
                             document.getElementById('shfe-rc').innerHTML = s > 30000 ? `<span class="text-secondary linethrough">2 000 Ft</span>` : `<span class="text-secondary">2 000 Ft</span>`;
                         }
                     } else if (e.alt == 'orderError') {
-                        console.log('orderError');
                     } else if (e.alt == 'success') {
                         orderStatus(e.alt, e.data);
                     } else if (e.category == 'inventory' && e.alt == 'warehouse') {
                         // orderStatus('success', e.data);
-                        console.log('inventory error');
                     }
                 }, error : function (e) {
-                    console.log('err');
-                    console.log(e);
                     if (e.alt == 'success') {
                         orderStatus(e.alt, e.data);
                     }
