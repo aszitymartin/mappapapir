@@ -11,6 +11,8 @@ $route->add("/admin/moderate/{id}/","admin/users/index.php");
 $route->add("/orders/v/{id}","admin/orders/view/index.php");
 $route->add("/orders/m/{oid}","admin/orders/manage/index.php");
 
+$route->add("/feedback","feedback/index.php");
+
 $route->add("/help/{term}","/index.php");
 $route->notFound("errors/404.php");
 ?>

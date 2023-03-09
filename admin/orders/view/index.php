@@ -14,10 +14,10 @@ if ($privilege < 1) {
 ?>
 <main class="flex flex-col gap-1">
     <nav class="flex flex-row flex-align-c flex-justify-con-sb gap-1 w-fa">
-        <span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=orders">Megrendelések</a> / #<?= $params['id'] ?></span>
         <?php
             if ($privilege > 0) {
                 echo '
+                <span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=orders">Megrendelések</a> / '. $params['id'] .'</span>
                 <div class="flex flex-row flex-align-c flex-justify-con-fe gap-1">
                     <a class="flex flex-row flex-align-c gap-1 primary-bg primary-bg-hover border-soft-light padding-05 smaller-light pointer" href="/orders/m/'. $getOrderId .'">Rendelés kezelése</a>
                 </div>
