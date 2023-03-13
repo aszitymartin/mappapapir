@@ -45,14 +45,13 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.target_id, feedbacks.title, feedbacks.description, feedbacks.image, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id WHERE 1';
+        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.title, feedbacks.description, feedbacks.image, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id WHERE 1';
         $stmt = $con->query($sql);
         if ($stmt->num_rows > 0) { $feedbacksArray = array();
             while ($fd = $stmt->fetch_assoc()) {
                 $feedbacksObject = new stdClass();
                 $feedbacksObject->id = $fd['id'];
                 $feedbacksObject->uid = $fd['uid'];
-                $feedbacksObject->target_id = $fd['target_id'];
                 $feedbacksObject->title = $fd['title'];
                 $feedbacksObject->description = $fd['description'];
                 $feedbacksObject->image = $fd['image'];
@@ -107,14 +106,13 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.target_id, feedbacks.title, feedbacks.description, feedbacks.image, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id WHERE feedbacks.uid = ' . $object['uid'];
+        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.title, feedbacks.description, feedbacks.image, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id WHERE feedbacks.uid = ' . $object['uid'];
         $stmt = $con->query($sql);
         if ($stmt->num_rows > 0) { $feedbacksArray = array();
             while ($fd = $stmt->fetch_assoc()) {
                 $feedbacksObject = new stdClass();
                 $feedbacksObject->id = $fd['id'];
                 $feedbacksObject->uid = $fd['uid'];
-                $feedbacksObject->target_id = $fd['target_id'];
                 $feedbacksObject->title = $fd['title'];
                 $feedbacksObject->description = $fd['description'];
                 $feedbacksObject->image = $fd['image'];
@@ -136,6 +134,40 @@ Class Feedback {
                 "message" => "Nincsen megjeleníthető adat."
             ]; return $this->returnObject;
         }
+
+    }
+
+    function sendFeedback ($object) {
+
+        $requiredItems = array ('action', 'title', 'attachment', 'description', 'type');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($object['uid'] == 0) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Érvénytelen felhasználó."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        // LOGOLAS !!
 
     }
 

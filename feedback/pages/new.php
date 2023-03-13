@@ -14,7 +14,7 @@ function get_time_ago( $time ) {
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
         <div class="flex flex-col gap-05">
             <span class="text-secondary small">Visszajelzés címe</span>
-            <input type="text" class="adm__input item-bg border-soft w-fa text-secondary outline-none small prd-ch-fr-er" id="feedback-title" name="feedback-title" placeholder="Visszajeltés címe" required="">
+            <input type="text" class="adm__input item-bg border-soft w-fa text-secondary outline-none small prd-ch-fr-er" id="feedback-title" name="feedback-title" placeholder="Visszajelzés címe" required="">
             <span class="text-muted small-med">Foglalja össze pár kulcsszóban a visszajelzés témáját</span>
         </div>
         <form>
