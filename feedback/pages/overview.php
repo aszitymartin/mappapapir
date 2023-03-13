@@ -46,34 +46,6 @@ function get_time_ago( $time ) {
                     </div>
                 </div>
                 <table class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table" style="border-collapse: collapse;" id="feedbacks-container">
-                    <tr class="sessh__body">
-                        <td class="padding-05">
-                            <div class="flex flex-row flex-align-c flex-justify-con-c padding-05" style="margin-right: .5rem;">
-                                <label class="cst-chb-lbl">
-                                    <input type="checkbox" class="absolute chifb" id="sel-fi-1">
-                                    <span class="cst-checkbox"></span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="padding-05">
-                            <div class="flex flex-row flex-align-c gap-05 text-secondary">
-                                <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light bold" style="background-color: #1abc9c; color: #fff;">AM</div>
-                                <span>Aszity Martin</span>
-                            </div>
-                        </td>
-                        <td class="padding-05">
-                            <div class="flex flex-col flex-align-fs flex-justify-con-fs gap-025">
-                                <span>asdkasjdalsdjaskldjaskl jaskdaskldasdjkasjdlaskj asdjasd ja sdasj d</span>
-                                <div class="flex flex-row flex-align-fs flex-justify-con-l gap-1">
-                                    <span class="background-bg padding-025 border-soft-light smaller-light">Feedback Type</span>
-                                    <span class="primary-bg padding-025 border-soft-light smaller-light">Closed</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="padding-05">
-                            <span>March 7</span>
-                        </td>
-                    </tr>
                 </table>
             </div>
         </div>
@@ -84,7 +56,8 @@ function get_time_ago( $time ) {
     $(document).ready(() => {
         var feedbackData = new FormData(); 
         const feedbackObject = {
-            action : 'list'
+            action : 'listByUser',
+            uid : <?= isset($_SESSION['id']) ? $_SESSION['id'] : 0; ?>
         };
         feedbackData.append('feedback', JSON.stringify(feedbackObject));
         const ajaxObject = { 
@@ -95,143 +68,75 @@ function get_time_ago( $time ) {
         
         let response = getFromAjaxRequest(ajaxObject)
         .then((data) => {
-            console.log(data);
+            for (let i = 0; i < data.data.length; i++) {
+                var options = { year: 'numeric', month: 'short', day: 'numeric' }; var today  = new Date(data.data[i].created);
+                document.getElementById('feedbacks-container').innerHTML += `
+                    <tr class="sessh__body">
+                        <td class="padding-05">
+                            <div class="flex flex-row flex-align-c flex-justify-con-c padding-05" style="margin-right: .5rem;">
+                                <label class="cst-chb-lbl">
+                                    <input type="checkbox" class="absolute chifb" id="sel-fi-${data.data[i].id}">
+                                    <span class="cst-checkbox"></span>
+                                </label>
+                            </div>
+                        </td>
+                        <td class="padding-05">
+                            <div class="flex flex-row flex-align-c gap-05 text-secondary">
+                                <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light bold" style="background-color: #${data.data[i].color}; color: #fff;">${data.data[i].initials}</div>
+                                <span>${data.data[i].name}</span>
+                            </div>
+                        </td>
+                        <td class="padding-05">
+                            <div class="flex flex-col flex-align-fs flex-justify-con-fs gap-025">
+                                <a class="link pointer user-select-none" href="/feedback/v/${data.data[i].id}">${data.data[i].title}</a>
+                                <div class="flex flex-row flex-align-fs flex-justify-con-l gap-1">
+                                    <span class="background-bg padding-025 border-soft-light smaller-light user-select-none">
+                                        ${
+                                            data.data[i].type == 0 ? 'Webáruház'
+                                            : (
+                                                data.data[i].type == 1 ? 'Termékek'
+                                                : (
+                                                    data.data[i].type == 2 ? 'Rendelés'
+                                                    : (
+                                                        data.data[i].type == 3 ? 'Szállítás'
+                                                        : (
+                                                            data.data[i].type == 4 ? 'Felhasználó'
+                                                            : (
+                                                                data.data[i].type == 5 ? 'Egyéb'
+                                                                : (
+                                                                    data.data[i].type == 6 ? 'Weboldal'
+                                                                    : 'Ismeretlen'
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )   
+                                            )
+                                        }
+                                    </span>
+                                    ${
+                                        data.data[i].status == 0 ? `<span class="warning-bg padding-025 border-soft-light smaller-light user-select-none">Kezeletlen</span>`
+                                        : (
+                                            data.data[i].status == 1 ? `<span class="primary-bg padding-025 border-soft-light smaller-light user-select-none">Folyamatban</span>`
+                                            : `<span class="success-bg padding-025 border-soft-light smaller-light user-select-none">Lezárva</span>`
+                                        )
+                                    }
+                                    <span class="background-bg padding-025 border-soft-light smaller-light user-select-none">
+                                    ${data.data[i].image.split(';').length}db Kép
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="padding-05">
+                            <span>${today.toLocaleDateString("hu-HU", options)}</span>
+                        </td>
+                    </tr>
+                `;
+            }
         })
         .catch((reason) => {
             console.log(reason);
         });
 
     });
-
-
-    /*
-    var orderData = new FormData(); orderData.append("uid", <?= $_SESSION['id']; ?>)
-    $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/webshop/includes/checkout/getOrderDetails.php", data: orderData, dataType: 'json', contentType: false, processData: false,
-        beforeSend : function () {
-            document.getElementById('feedbacks-container').innerHTML = `
-            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
-                <span>Rendelések megjelenítése</span>
-            </div>
-            `;
-        }, success : function (s) { document.getElementById('feedbacks-container').innerHTML = ``;
-            if (s.status == 'success') { let dels = 0
-                for (let i = 0; i < s.data.length; i++) {
-                    document.getElementById('feedbacks-container').innerHTML += `
-                    <div class="flex flex-col flex-align-c w-fa gap-05 border-soft-light border-muted padding-05">
-                        <div class="flex flex-row w-fa gap-05">
-                            <div class="bsc__img flex flex-col flex-align-c flex-justify-con-c gap-05">
-                                <div id="order-preview-con-${s.data[i].oid}">
-                                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                                        <span><svg class='wizard_input_loading' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" class="svg" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-05">
-                                <div class="flex flex-col">
-                                    <a class="text-primary small pointer link bold" href="/orders/v/${s.data[i].oid}" target="_blank">(#${s.data[i].oid}) <span id="order-items-name-${s.data[i].oid}"></span></a>
-                                    <span class="text-muted small-med">${s.data[i].odate}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa gap-05 padding-025">
-                            <span class="text-primary bold" id="order-subtotal-${s.data[i].oid}"></span>
-                            <div id="order-status-${s.data[i].oid}"></div>
-                        </div>
-                    </div>
-                    `;
-                    document.getElementById('order-subtotal-'+s.data[i].oid).textContent = formatter.format(s.data[i].subTotal);
-                    switch (s.data[i].status) {
-                        case '0':
-                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
-                                <span class="label label-warning border-soft-light padding-025 smaller-light">Összekészítés</span>
-                            `;
-                        break;
-                        case '1':
-                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
-                                <span class="label label-primary border-soft-light padding-025 smaller-light">Kiszállítás</span>
-                            `;
-                        break;
-                        case '2': dels++;
-                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
-                                <span class="label label-success border-soft-light padding-025 smaller-light">Kiszállítva</span>
-                            `;
-                        break;
-                        case '4':
-                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
-                                <span class="label label-danger border-soft-light padding-025 smaller-light">Sikertelen</span>
-                            `;
-                        break;
-                        default:
-                            document.getElementById('order-status-'+s.data[i].oid).innerHTML = `
-                                <span class="label label-warning border-soft-light padding-025 smaller-light">Összekészítés</span>
-                            `;
-                        break;
-                    }
-                    document.getElementById('order-items-name-' + s.data[i].oid).textContent = (s.data[i].item[0].name.length > 80 ? s.data[i].item[0].name.substring(1, 80) + '...' : s.data[i].item[0].name);
-                    switch (s.data[i].item.length) {
-                        case 1:
-                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
-                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap gap-025 w-fa" style="width: 7rem;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 4rem; object-fit: contain;">
-                            </div>
-                            `;
-                        break;
-                        case 2:
-                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
-                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap-no gap-025 w-fa" style="width: 7rem;" id="order-preview-inner-con-${s.data[i].oid}">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 4rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="height: 4rem; object-fit: contain; margin-left: -10px; margin-top: 5px;">
-                            </div>
-                            `;
-                        break;
-                        case 3:
-                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
-                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap-no gap-025 w-fa" style="width: 7rem;" id="order-preview-inner-con-${s.data[i].oid}">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="width: 2rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="width: 2rem; object-fit: contain; margin-left: -10px; margin-top: 5px;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[2].thumbnail}" alt="${s.data[i].item[2].name}" style="width: 2rem; object-fit: contain; margin-left: -10px; margin-top: 15px;">
-                            </div>
-                            `;
-                        break;
-                        case 4:
-                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
-                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap gap-025 w-fa" style="width: 7rem;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[2].thumbnail}" alt="${s.data[i].item[2].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[3].thumbnail}" alt="${s.data[i].item[3].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                            </div>
-                            `;
-                        break;
-                        default:
-                            document.getElementById('order-preview-con-'+s.data[i].oid).innerHTML = `
-                            <div class="flex flex-row flex-align-c flex-justify-con-c text-align-c flex-wrap gap-025 w-fa" style="width: 7rem;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[0].thumbnail}" alt="${s.data[i].item[0].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[1].thumbnail}" alt="${s.data[i].item[1].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                                <img class="bs__img drop-shadow" src="/assets/images/uploads/${s.data[i].item[2].thumbnail}" alt="${s.data[i].item[2].name}" style="height: 2.5rem; width: 2.5rem; object-fit: contain;">
-                                <span class="flex flex-col flex-align-c flex-justify-con-c small border-soft large text-muted background-bg bold pointer" title="${(s.data[i].item.length) - 3} További termék" style="height: 2.5rem; width: 2rem;">+${(s.data[i].item.length) - 3}</span>
-                            </div>
-                            `;
-                        break;
-                    }
-                } document.getElementById('delivered-sum').textContent = dels;
-            } else {
-                document.getElementById('orders-container').innerHTML = `
-                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                    <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
-                    <span>Hiba történt a rendelések betöltése közben.</span>
-                </div>
-                `;
-            }
-        }, error : function (e) {
-            document.getElementById('orders-container').innerHTML = `
-            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
-                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
-                <span>Hiba történt a rendelések betöltése közben.</span>
-            </div>
-            `;
-        }
-    });
-    */
 </script>

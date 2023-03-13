@@ -8,5 +8,5 @@ function showPanel(evt, tabName) {
     $("#"+tabName).load('/feedback/pages/'+tabName.split("-")[1]+'.php');
     document.getElementById(tabName).style.display = "flex";
 }
-const url__params = new URLSearchParams(window.location.search); const url__query__name = url__params.get("tab"); var accept__param = ["overview", "new", "sent", "archived"];
+const url__params = new URLSearchParams(window.location.search); const url__query__name = url__params.get("tab"); var accept__param = ["overview", "new", "archived"];
 if (url__query__name) { if (accept__param.includes(url__query__name)) { document.getElementById("tabs-"+url__query__name).click(); } else { document.getElementById("tabs-overview").click();} } else { document.getElementById("tabs-overview").click(); }

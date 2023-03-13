@@ -23,7 +23,7 @@
                         </div>
                         <span class="text-secondary small-med text-align-c" id="tab__email"><?php echo $email; ?></span>
                     </div>
-                    <span class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold" onclick="showPanel(event, 'tab-write')">
+                    <span class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold" onclick="showPanel(event, 'tab-new')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"></path><path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"></path></svg>
                         <span class="flex flex-col flex-align-c flex-justify-con-c">Visszajelzés írása</span>
                     </span>
@@ -45,12 +45,6 @@
                             </div>
                         </a></li>
                         <li><a>
-                            <div class="flex flex-row flex-align-c padding-05 border-soft gap-1 pointer prfc__item" onclick="showPanel(event, 'tab-sent')" id="tabs-sent" tab-data="sent">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M2 4V16C2 16.6 2.4 17 3 17H13L16.6 20.6C17.1 21.1 18 20.8 18 20V17H21C21.6 17 22 16.6 22 16V4C22 3.4 21.6 3 21 3H3C2.4 3 2 3.4 2 4Z" class="svg-blank"/><path d="M18 9H6C5.4 9 5 8.6 5 8C5 7.4 5.4 7 6 7H18C18.6 7 19 7.4 19 8C19 8.6 18.6 9 18 9ZM16 12C16 11.4 15.6 11 15 11H6C5.4 11 5 11.4 5 12C5 12.6 5.4 13 6 13H15C15.6 13 16 12.6 16 12Z" class="svg-blank"/></svg>
-                                <span class="small">Elküldött</span>
-                            </div>
-                        </a></li>
-                        <li><a>
                             <div class="flex flex-row flex-align-c padding-05 border-soft gap-1 pointer prfc__item relative" onclick="showPanel(event, 'tab-archived')" id="tabs-archived" tab-data="archived">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" class="svg-blank"/><path d="M9.2 3H3C2.4 3 2 3.4 2 4V19C2 19.6 2.4 20 3 20H21C21.6 20 22 19.6 22 19V7C22 6.4 21.6 6 21 6H12L10.4 3.60001C10.2 3.20001 9.7 3 9.2 3Z" class="svg-blank"/></svg>
                                 <span class="small">Archivált</span>
@@ -65,7 +59,6 @@
     <div class="spancolumn">
         <div id="tab-overview" class="tab__content flex-col card gap-1" style="background: transparent; padding: 0;"></div>
         <div id="tab-new" class="tab__content flex-col card gap-1" style="background: transparent; padding: 0;"></div>
-        <div id="tab-sent" class="tab__content flex-col card gap-1" style="background: transparent; padding: 0;"></div>
         <div id="tab-archived" class="tab__content flex-col card gap-1" style="background: transparent; padding: 0;"></div>
     </div>
 </div>
