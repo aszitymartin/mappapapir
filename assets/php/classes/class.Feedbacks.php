@@ -139,7 +139,13 @@ Class Feedback {
 
     function sendFeedback ($object) {
 
-        $requiredItems = array ('action', 'title', 'attachment', 'description', 'type');
+        $this->returnObject = [
+            "status" => "error",
+            "data" => $object
+        ];
+        return $this->returnObject;
+
+        $requiredItems = array ('action', 'uid', 'title', 'attachment', 'description', 'type');
         $objectKeys = array_keys((array)$object);
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
@@ -167,6 +173,17 @@ Class Feedback {
             return $this->returnObject;
         }
 
+        if ($sql = $con->prepare('INSERT INTO feedbacks (uid, title, description, image, type, status) VALUES (?, ?, ?, ?, ?, 0)')) {
+            $sql->bind_param('isssii', $object['uid'], $object['title'], $object['description'], $object['image'], $object['type']);
+            $sql->execute(); $sql->close();
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
         // LOGOLAS !!
 
     }
@@ -179,7 +196,6 @@ Class Feedback {
 
 $feedbackAction = new Feedback();
 $returnObject = new stdClass();
-
 $postObject = json_decode($_POST['feedback'], true);
 
 if (isset($postObject['action'])) {
@@ -190,6 +206,10 @@ if (isset($postObject['action'])) {
         break;
         case 'listByUser':
             $feedbackAction->listFeedbacksByUser($postObject);
+            die(json_encode($feedbackAction->getResults()));
+        break;
+        case 'send':
+            $feedbackAction->sendFeedback($postObject);
             die(json_encode($feedbackAction->getResults()));
         break;
         default:
