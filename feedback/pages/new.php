@@ -108,16 +108,36 @@
             title : document.getElementById('feedback-title').value,
             description : document.getElementById('prod-meta-editor').getElementsByClassName('ql-editor')[0].innerHTML,
             type : document.getElementById('feedback-type').value,
-            attachment : []
+            attachment : [],
         };
 
         console.log(miniArr);
 
         var attachment_items = document.getElementsByClassName('miniature-input');
+        var fd = new FormData();
 
         for (let i = 0; i < attachment_items.length; i++) {
-            feedbackObject.attachment.push(attachment_items[i].files[0]);
+
+            fd.append('atch-' + (i), attachment_items[i].files[0]);
+
+            feedbackObject.attachment.push(
+                {
+                    type : attachment_items[i].files[0].type,
+                    file : attachment_items[i].files[0],
+                    prop : {
+                        name : attachment_items[i].files[0].name,
+                        size : attachment_items[i].files[0].size,
+                        type : attachment_items[i].files[0].type,
+                        lastModified : attachment_items[i].files[0].lastModified,
+                        webkitRelativePath : attachment_items[i].files[0].webkitRelativePath
+                    }
+                }
+            );
         }
+
+        feedbackObject.files = fd;
+        console.log(feedbackObject);
+        console.log(feedbackObject.files.get('atch-0'));
 
         feedbackData.append('feedback', JSON.stringify(feedbackObject));
         const ajaxObject = {

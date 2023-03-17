@@ -139,7 +139,9 @@ Class Feedback {
 
     function sendFeedback ($object) {
 
-        // ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+        ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
+        // die(print_r($object['attachment'][0]['prop']));
 
         $this->returnObject = [
             "status" => "error",

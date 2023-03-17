@@ -8,8 +8,9 @@ class sendAjaxRequest {
             url: object['url'],
             data: object['data'],
             dataType: 'json',
-            contentType: false,
+            cache: false,
             processData: false,
+            contentType: false,
             beforeSend : function () {
                 if (object['loaderContainer']['isset'] == true) {
                     document.getElementById(object['loaderContainer']['id']).innerHTML = `

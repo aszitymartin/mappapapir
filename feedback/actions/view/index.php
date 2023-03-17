@@ -2,8 +2,8 @@
     $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
     if (isset($params['id'])) {
 
-        $feedbackStmt = $con->prepare('SELECT uid, status FROM feedbacks WHERE id = ?'); $feedbackStmt->bind_param('i', $params['id']);$feedbackStmt->execute();
-        $feedbackStmt->bind_result($fuid, $fstatus); $feedbackStmt->fetch();$feedbackStmt->close();
+        $feedbackStmt = $con->prepare('SELECT uid, status, title FROM feedbacks WHERE id = ?'); $feedbackStmt->bind_param('i', $params['id']);$feedbackStmt->execute();
+        $feedbackStmt->bind_result($fuid, $fstatus, $ftitle); $feedbackStmt->fetch();$feedbackStmt->close();
         if (!$fuid) { echo "<script>window.location.href='/404';</script>"; }
         else {
             if ($privilege < 1) {
@@ -11,15 +11,8 @@
             }
         }
     } else { echo "<script>window.location.href='/';</script>"; die(); }
-    function get_time_ago( $time ) {
-        $time_difference = time() - $time;
-        if( $time_difference < 1 ) { return '< 1mp'; }
-        $condition = array( 12 * 30 * 24 * 60 * 60 =>  'éve',30 * 24 * 60 * 60 => 'hónapja',24 * 60 * 60 => 'napja',60 * 60 =>  'órája',60 =>  'perce',1 =>  'másodperce');
-        foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
-    }
 ?>
-<script src="/assets/script/quill/dist/quill.js"></script>
-<script src="/assets/script/tagify/dist/tagify.js"></script>
+<script src="/assets/script/quill/dist/quill.js"></script><script src="/assets/script/tagify/dist/tagify.js"></script>
 <main>
     <?php            
         $query = explode('&', $_SERVER['QUERY_STRING']); $queryVal; $queryFound = false;
@@ -27,12 +20,12 @@
         if ($queryFound == true) {
             switch ($queryVal) {
                 case 'a':
-                    if ($privilege > 0) { echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=feedbacks">Visszajelzések</a> / A "Hozzáadás a kedvencekhez" funkció nem működik a websop-ban</span></div>'; }
-                    else { echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/feedback/">Visszajelzések</a> / A "Hozzáadás a kedvencekhez" funkció nem működik a websop-ban</span></div>'; }
+                    if ($privilege > 0) { echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/admin/">Admin</a> / <a class="link link-color pointer" href="/admin/?tab=feedbacks">Visszajelzések</a> / '. $ftitle .'</span></div>'; }
+                    else { echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/feedback/">Visszajelzések</a> / '. $ftitle .'</span></div>'; }
                 break;
-                default : echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/feedback/">Visszajelzések</a> / A "Hozzáadás a kedvencekhez" funkció nem működik a websop-ban</span></div>'; break;
+                default : echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/feedback/">Visszajelzések</a> / '. $ftitle .'</span></div>'; break;
             }
-        } else { echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/feedback/">Visszajelzések</a> / A "Hozzáadás a kedvencekhez" funkció nem működik a websop-ban</span></div>'; }
+        } else { echo '<div class="flex flex-row flex-align-c padding-1 padding-l-0 padding-b-0" id="breadcrumbs-con"><span class="text-muted small-med"><a class="link link-color pointer" href="/feedback/">Visszajelzések</a> / '. $ftitle .'</span></div>'; }
     ?>
     <div class="prod-con" id="tabs">
         <div class="leftcolumn">
@@ -91,7 +84,7 @@
         <div class="spancolumn">
             <div class="flex flex-col card w-fa border-soft box-shadow padding-1">
                 <div class="flex flex-row w-fa">
-                    <span class="text-primary bold">A "Hozzáadás a kedvencekhez" funkció nem működik a websop-ban</span>
+                    <span class="text-primary bold"><?= $ftitle; ?></span>
                 </div><hr style="border: 1px solid var(--background);" class="w-100">
                 <div class="flex flex-col gap-1 w-fa padding-1 feedback-message-con" id="feedback-message-con">
                     <div class="flex flex-row flex-justify-con-fe w-fa small">
