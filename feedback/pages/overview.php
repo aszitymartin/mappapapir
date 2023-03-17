@@ -122,7 +122,7 @@ function get_time_ago( $time ) {
                                         )
                                     }
                                     <span class="background-bg padding-025 border-soft-light smaller-light user-select-none">
-                                    ${data.data[i].image.split(';').length}db Kép
+                                    ${data.data[i].image ? data.data[i].image.split(';').length : 0}db Kép
                                     </span>
                                 </div>
                             </div>

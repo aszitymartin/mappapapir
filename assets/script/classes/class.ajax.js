@@ -3,6 +3,7 @@ class sendAjaxRequest {
     async sendRequest (object) {
         const returnObjectConst = {};
         await $.ajax({
+            enctype: "multipart/form-data",
             type: "POST",
             url: object['url'],
             data: object['data'],
@@ -54,7 +55,7 @@ class sendAjaxRequest {
 
         const datas = JSON.parse(object.data.get(dataName)); var emptyKeys = [];
         for (let i = 0; i < Object.keys(datas).length; i++) {
-            if (Object.keys(datas)[i] != 'uid' && Object.keys(datas)[i] != 'action' && Object.keys(datas)[i] != 'attachment') {
+            if (Object.keys(datas)[i] != 'uid' && Object.keys(datas)[i] != 'action' && Object.keys(datas)[i] != 'attachment' && Object.keys(datas)[i] != 'ip') {
                 if (Object.keys(datas)[i] == 'description') {
                     if (datas[Object.keys(datas)[i]].length < 12) {
                         emptyKeys.push(Object.keys(datas)[i]);

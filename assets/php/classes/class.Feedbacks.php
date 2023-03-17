@@ -139,13 +139,15 @@ Class Feedback {
 
     function sendFeedback ($object) {
 
+        // ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
         $this->returnObject = [
             "status" => "error",
             "data" => $object
         ];
         return $this->returnObject;
 
-        $requiredItems = array ('action', 'uid', 'title', 'attachment', 'description', 'type');
+        $requiredItems = array ('action', 'uid', 'title', 'description', 'type', 'attachment');
         $objectKeys = array_keys((array)$object);
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
@@ -174,7 +176,7 @@ Class Feedback {
         }
 
         if ($sql = $con->prepare('INSERT INTO feedbacks (uid, title, description, image, type, status) VALUES (?, ?, ?, ?, ?, 0)')) {
-            $sql->bind_param('isssii', $object['uid'], $object['title'], $object['description'], $object['image'], $object['type']);
+            $sql->bind_param('isssi', $object['uid'], $object['title'], $object['description'], $object['image'], $object['type']);
             $sql->execute(); $sql->close();
         } else {
             $this->returnObject = [

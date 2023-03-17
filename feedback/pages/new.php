@@ -11,8 +11,9 @@
         <div class="flex flex-row-d-col-m gap-1">
             <div class="flex flex-col w-fa gap-1">
                 <div class="flex flex-col gap-025">
-                    <div class="flex flex-row flex-align-c flex-justify-con-sb gap-05">
+                    <div class="flex flex-row flex-align-c gap-1">
                         <span class="text-secondary small">Kép csatolása</span>
+                        <div class="label label-danger border-soft-light user-select-none">Demo</div>
                     </div>
                 </div>
                 <div class="flex flex-row gap-1 w-fa">
@@ -107,19 +108,18 @@
             title : document.getElementById('feedback-title').value,
             description : document.getElementById('prod-meta-editor').getElementsByClassName('ql-editor')[0].innerHTML,
             type : document.getElementById('feedback-type').value,
-            attachment : {}
+            attachment : []
         };
 
-        for (let i = 0; i < miniArr.length; i++) {
-            feedbackObject.attachment['atch-' + (i+1)] = {
-                name : 'abd14df20220417140157.png',
-                full_path : 'abd14df20220417140157.png',
-                type : 'image/png',
-                tmp_name : '/tmp/phpyXSFOi',
-                error : '0',
-                size : '55929',
-            }
-        } feedbackData.append('feedback', JSON.stringify(feedbackObject));
+        console.log(miniArr);
+
+        var attachment_items = document.getElementsByClassName('miniature-input');
+
+        for (let i = 0; i < attachment_items.length; i++) {
+            feedbackObject.attachment.push(attachment_items[i].files[0]);
+        }
+
+        feedbackData.append('feedback', JSON.stringify(feedbackObject));
         const ajaxObject = {
             url : '/assets/php/classes/class.Feedbacks.php',
             data : feedbackData,
@@ -146,6 +146,9 @@
         .then((data) => {
             if (data.length > 0) { for (let i = 0; i < data.length; i++) { document.getElementById('feedback-error-' + data[i]).innerHTML = `<span class="small-med text-danger">Ez a mező kitöltése kötelező!</span>`; } }
             else {
+
+                console.log(ajaxObject.data.get('feedback'));
+
                 let response = getFromAjaxRequest(ajaxObject)
                 .then((data) => {
                     console.log(data);
