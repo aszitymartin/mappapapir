@@ -1,30 +1,32 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); include($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php'); $uid = $_SESSION['id']; $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close(); ?>
 <script src="/assets/script/quill/dist/quill.js"></script><script src="/assets/script/tagify/dist/tagify.js"></script>
-<div class="flex flex-row flex-align-c flex-justify-con-sb">
-    <div class="flex flex-col w-fa gap-2 border-soft item-bg box-shadow padding-1">
-        <div class="flex flex-col gap-05">
-            <span class="text-secondary small">Visszajelzés címe</span>
-            <input type="text" class="adm__input item-bg border-soft w-fa text-secondary outline-none small prd-ch-fr-er" id="feedback-title" name="feedback-title" placeholder="Visszajelzés címe" required="">
-            <span class="text-muted small-med">Foglalja össze pár kulcsszóban a visszajelzés témáját</span>
-            <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-title"></div>
-        </div>
-        <div class="flex flex-row-d-col-m gap-1">
-            <div class="flex flex-col w-fa gap-1">
-                <div class="flex flex-col gap-025">
-                    <div class="flex flex-row flex-align-c gap-1">
-                        <span class="text-secondary small">Kép csatolása</span>
-                        <div class="label label-danger border-soft-light user-select-none">Demo</div>
+<div class="flex flex-row flex-align-c w-fa">
+    <form class="w-fa" action="" method="post" enctype="multipart/form-data">
+        <div class="flex flex-col w-fa gap-2 border-soft item-bg box-shadow padding-1">
+            <div class="flex flex-col gap-05">
+                <span class="text-secondary small">Visszajelzés címe</span>
+                <input type="text" class="adm__input item-bg border-soft w-fa text-secondary outline-none small prd-ch-fr-er" id="feedback-title" name="feedback-title" placeholder="Visszajelzés címe" required="">
+                <span class="text-muted small-med">Foglalja össze pár kulcsszóban a visszajelzés témáját</span>
+                <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-title"></div>
+            </div>
+            <div class="flex flex-row-d-col-m gap-1">
+                <div class="flex flex-col w-fa gap-1">
+                    <div class="flex flex-col gap-025">
+                        <div class="flex flex-row flex-align-c gap-1">
+                            <span class="text-secondary small">Kép csatolása</span>
+                            <div class="label label-danger border-soft-light user-select-none">Demo</div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex flex-row gap-1 w-fa">
-                    <div class="flex flex-row gap-1" id="miniatures-con"></div>
-                    <div id="min-upl-con">
-                        <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed" onclick="__inituploader()">
-                            <div class="flex flex-row-d-col-m flex-align-c gap-1">
-                                <div class="flex flex-row flex-align-c gap-1">
-                                    <div class="flex flex-col flex-align-c flex-justify-con-c">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor"/><path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor"/></svg>
-                                        <span class="text-muted small-med w-fa text-align-c">Hozzáadás</span>
+                    <div class="flex flex-row gap-1 w-fa">
+                        <div class="flex flex-row gap-1" id="miniatures-con"></div>
+                        <div id="min-upl-con">
+                            <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed" onclick="__inituploader()">
+                                <div class="flex flex-row-d-col-m flex-align-c gap-1">
+                                    <div class="flex flex-row flex-align-c gap-1">
+                                        <div class="flex flex-col flex-align-c flex-justify-con-c">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor"/><path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor"/></svg>
+                                            <span class="text-muted small-med w-fa text-align-c">Hozzáadás</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -32,65 +34,65 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="flex flex-col gap-05">
-            <span class="text-secondary small">Visszejelzés leírása</span>
-            <div class="flex flex-col">
-                <div id="prod-meta-editor" class="border-soft prd-ch-fr-er-ce" style="height: 18rem;"></div>
+            <div class="flex flex-col gap-05">
+                <span class="text-secondary small">Visszejelzés leírása</span>
+                <div class="flex flex-col">
+                    <div id="prod-meta-editor" class="border-soft prd-ch-fr-er-ce" style="height: 18rem;"></div>
+                </div>
+                <script>var quill = new Quill('#prod-meta-editor', { modules: { toolbar: false }, placeholder: 'Ide írja a leírását...', theme: 'snow' });</script>
+                <span class="text-muted small-med">Ebben a mezőben részletesen fejtse ki véleményét, észrevételeit.</span>
+                <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-description"></div>
             </div>
-            <script>var quill = new Quill('#prod-meta-editor', { modules: { toolbar: false }, placeholder: 'Ide írja a leírását...', theme: 'snow' });</script>
-            <span class="text-muted small-med">Ebben a mezőben részletesen fejtse ki véleményét, észrevételeit.</span>
-            <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-description"></div>
+            <div class="flex flex-col gap-05">
+                <span class="text-secondary small">Visszajelzés típusa</span>
+                <input name='feedback-type' id='feedback-type' class='adm__input w-fa border-soft cst-drp-fts prd-ch-fr-er' placeholder='Visszajelzés típusa'>
+                <script>
+                    var prd_mtk_inp = document.querySelector('input[name="feedback-type"]'),
+                    tagify = new Tagify(prd_mtk_inp, { 
+                        userInput: false,
+                        whitelist: [
+                            {
+                                "value"    : "Webáruház",
+                                "readonly" : true
+                            },
+                            {
+                                "value"    : "Termékek",
+                                "readonly" : true
+                            },
+                            {
+                                "value"    : "Rendelés",
+                                "readonly" : true
+                            },
+                            {
+                                "value"    : "Szállítás",
+                                "readonly" : true
+                            },
+                            {
+                                "value"    : "Felhasználó",
+                                "readonly" : true
+                            },
+                            {
+                                "value"    : "Weboldal",
+                                "readonly" : true
+                            },
+                            {
+                                "value"    : "Egyéb",
+                                "readonly" : true
+                            },
+                        ], maxTags: 1, dropdown: { maxItems: 7, classname: "tags-look", enabled: 0, closeOnSelect: false }, originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
+                    });
+                </script>
+                <span class="text-muted small-med">Válassza ki a visszajelzés típusát.</span>
+                <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-type"></div>
+            </div>
+            <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa">
+                <span id="send-review" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
+                    <span class="flex flex-col flex-align-c flex-justify-con-c">Elküldés</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
+                </span>
+            </div>
         </div>
-        <div class="flex flex-col gap-05">
-            <span class="text-secondary small">Visszajelzés típusa</span>
-            <input name='feedback-type' id='feedback-type' class='adm__input w-fa border-soft cst-drp-fts prd-ch-fr-er' placeholder='Visszajelzés típusa'>
-            <script>
-                var prd_mtk_inp = document.querySelector('input[name="feedback-type"]'),
-                tagify = new Tagify(prd_mtk_inp, { 
-                    userInput: false,
-                    whitelist: [
-                        {
-                            "value"    : "Webáruház",
-                            "readonly" : true
-                        },
-                        {
-                            "value"    : "Termékek",
-                            "readonly" : true
-                        },
-                        {
-                            "value"    : "Rendelés",
-                            "readonly" : true
-                        },
-                        {
-                            "value"    : "Szállítás",
-                            "readonly" : true
-                        },
-                        {
-                            "value"    : "Felhasználó",
-                            "readonly" : true
-                        },
-                        {
-                            "value"    : "Weboldal",
-                            "readonly" : true
-                        },
-                        {
-                            "value"    : "Egyéb",
-                            "readonly" : true
-                        },
-                    ], maxTags: 1, dropdown: { maxItems: 7, classname: "tags-look", enabled: 0, closeOnSelect: false }, originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
-                });
-            </script>
-            <span class="text-muted small-med">Válassza ki a visszajelzés típusát.</span>
-            <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-type"></div>
-        </div>
-        <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa">
-            <span id="send-review" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
-                <span class="flex flex-col flex-align-c flex-justify-con-c">Elküldés</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
-            </span>
-        </div>
-    </div>
+    </form>
 </div>
 <script>
     var minActive = 0; var miniArr = [];
@@ -111,75 +113,76 @@
             attachment : [],
         };
 
-        console.log(miniArr);
-
-        var attachment_items = document.getElementsByClassName('miniature-input');
-        var fd = new FormData();
-
-        for (let i = 0; i < attachment_items.length; i++) {
-
-            fd.append('atch-' + (i), attachment_items[i].files[0]);
-
+        for (let i = 0; i < miniArr.length; i++) {
             feedbackObject.attachment.push(
                 {
-                    type : attachment_items[i].files[0].type,
-                    file : attachment_items[i].files[0],
+                    type : miniArr[i].type,
+                    file : miniArr[i],
                     prop : {
-                        name : attachment_items[i].files[0].name,
-                        size : attachment_items[i].files[0].size,
-                        type : attachment_items[i].files[0].type,
-                        lastModified : attachment_items[i].files[0].lastModified,
-                        webkitRelativePath : attachment_items[i].files[0].webkitRelativePath
+                        name : miniArr[i].name,
+                        size : miniArr[i].size,
+                        type : miniArr[i].type,
+                        lastModified : miniArr[i].lastModified,
+                        webkitRelativePath : miniArr[i].webkitRelativePath
                     }
                 }
             );
         }
 
-        feedbackObject.files = fd;
-        console.log(feedbackObject);
-        console.log(feedbackObject.files.get('atch-0'));
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
 
-        feedbackData.append('feedback', JSON.stringify(feedbackObject));
-        const ajaxObject = {
-            url : '/assets/php/classes/class.Feedbacks.php',
-            data : feedbackData,
-            loaderContainer : {
-                isset : true,
-                id : 'send-review',
-                type : 'button',
-                iconSize : {
-                    iconWidth : '19.2',
-                    iconHeight : '19.2'
-                },
-                iconColor : {
-                    isset : true,
-                    color : 'currentColor'
-                },
-                loaderText : {
-                    custom : true,
-                    customText : 'Elküldés'
-                }
-            }
-        };
+                feedbackObject.ip = api.ip;
+                feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Feedbacks.php',
+                    data : feedbackData,
+                    loaderContainer : {
+                        isset : true,
+                        id : 'send-review',
+                        type : 'button',
+                        iconSize : {
+                            iconWidth : '19.2',
+                            iconHeight : '19.2'
+                        },
+                        iconColor : {
+                            isset : true,
+                            color : 'currentColor'
+                        },
+                        loaderText : {
+                            custom : true,
+                            customText : 'Elküldés'
+                        }
+                    }
+                };
 
-        let response = getFromAjaxValidate(ajaxObject, 'feedback')
-        .then((data) => {
-            if (data.length > 0) { for (let i = 0; i < data.length; i++) { document.getElementById('feedback-error-' + data[i]).innerHTML = `<span class="small-med text-danger">Ez a mező kitöltése kötelező!</span>`; } }
-            else {
-
-                console.log(ajaxObject.data.get('feedback'));
-
-                let response = getFromAjaxRequest(ajaxObject)
+                let response = getFromAjaxValidate(ajaxObject, 'feedback')
                 .then((data) => {
-                    console.log(data);
-                })
-                .catch((reason) => {
-                    console.log(reason);
-                });
-            }
-        })
-        .catch((reason) => {
-            console.log(reason);
+                    if (data.length > 0) { for (let i = 0; i < data.length; i++) { document.getElementById('feedback-error-' + data[i]).innerHTML = `<span class="small-med text-danger">Ez a mező kitöltése kötelező!</span>`; } }
+                    else {
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => {
+                            if (data.status == 'success') {
+                                var attachment_data = new FormData();
+                                for (let i = 0; i < miniArr.length; i++) { attachment_data.append('atch'+(i+1), miniArr[i]); }
+                                attachment_data.append('fid', data.data.fid); attachment_data.append('uid', <?= $_SESSION['id']; ?>);
+                                attachment_data.append('message', feedbackObject.description);
+                                $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/classes/class.Feedbacks.php", data: attachment_data, dataType: 'json', contentType: false, processData: false,
+                                    success : function (s) {
+                                        console.log(s);
+                                        if (s.status == 'success') {
+                                            $('#send-review').off('click');
+                                            notificationSystem(0, 0, 0, 'Üzenet', 'Visszajelzés sikeresen elküldve.');
+                                            showPanel(0, 'tab-overview');
+                                        }
+                                    }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); }
+                                });
+                            }
+                        }) .catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
+                    }
+                }) .catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
+
+            }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
         });
 
     });
