@@ -112,6 +112,60 @@ lassabban tölteni az oldal. Az utóbb említett lehetőséggel éltem, amikor �
 döntöttem, hogy az oldal működéséhez elengedhetetlen eszközöket szeretném
 használni.</p>
 
+# Telepítés és üzembe helyezés
+
+<p>Mint minden alkalmazást telepíteni kell, így a Microsoft Visual Studio Code-
+ot is telepíteni kell, amihez a telepítőt a hivatalos oldalán lehet beszerezni.
+Windows operációs rendszerre le kell tölteni a Xampp alkalmazást, hogy
+működjön a PHP és a MySQL szerver is, ezeket a Xampp oldaláról lehet letölteni,
+így egy kezelőfelületet kapunk, ahol el tudjuk indítani a webszerverünket, és az
+adatbázis adminpanelét. Linuxos rendszereket az apache2 szolgáltatást
+használom, mert a szolgáltatás automatikusan elindul a rendszerrel együtt, nincs
+grafikus kezelőfelülete, de szerintem az nem is kell, ugyanis terminálból is el lehet
+mindent érni.</p>
+<h2>Telepítés utáni tesztelések</h2>
+<p>Amint minden telepítés sikeresen megtörtént, teszteljük le, hogy minden
+rendben van-e.<p>
+<h3>Windows operációs rendszereken</h3>
+<ul>
+    <li>Navigáljunk el abba a mappába, ahova a Xamppot telepítettük
+    (alapból a C:/xampp), majd lépjünk bele a htdocs mappába.</li>
+    <li>Ezt a mappát nyissuk meg a vscode alkalmazásunkban, töröljuk a
+    htdocs mappa minden előre létrehozott mappáit, fájljait és hozzunk
+    létre egy index.php fájlt.</li>
+    <li>A létrehozott index.php fájlba írjuk bele a következőket:
+    &lt;?php phpinfo(); ?&gt;</li>
+    <li>Mentsük el a fájlt, és írjuk be a böngésző címsorába, hogy: localhost</li>
+    <li>Ha minden megfelelően működik, akkor böngészőnkben meg kell<li>
+    jelennie egy oldalnak, ahol a telepített PHP részletes adatait
+    láthatjuk.</li>
+    <li>Most navigáljunk el a localhost/phpmyadmin oldalra a
+    böngészőnkben.</li>
+    <li>Ha minden megfelelően lett telepítve, akkor a phpmyadmin
+    kezelőfelülete fog minket fogadni.</li>
+</ul>
+<h3>Linux operációs rendszereken</h3>
+<p>A következőkben használhatjuk a terminálunkat is, vagy a grafikus módon is meg lehet oldani a tesztelést.</p>
+<ul>
+    <li> Navigáljunk el a /var/www/html/ mappába</li>
+    <li> Töröljünk minden felesleges fájlt és mappát.</li>
+    <li> Nyissuk meg a vscode alkalmazást, és ott is navigáljunk el ugyanebbe
+    a mappába.</li>
+    <li> Hozzunk létre egy index.php fájlt és írjuk bele a következőket: <pre><strong>&lt;?php phpinfo(); ?&gt;</strong></pre></li>
+    <li> Mentsük el a fájlt, és írjuk be a böngésző címsorába, hogy: <strong>localhost</strong></li>
+    <li> Ha minden megfelelően működik, akkor böngészőnkben meg kell
+    jelennie egy oldalnak, ahol a telepített PHP részletes adatait
+    láthatjuk.</li>
+    <li> Most navigáljunk el a <strong>localhost/phpmyadmin</strong> oldalra a
+    böngészőnkben.</li>
+    <li> Ha minden megfelelően lett telepítve, akkor a phpmyadmin
+    kezelőfelülete fog minket fogadni.</li>
+</ul>
+
+<p><em>Amennyiben nem enged létrehozni fájlokat a /var/www/html mappába, nyissuk
+meg a terminálunkat és írjuk bele a következőket:</em></p>
+<pre><strong>sudo chmod 777 /var/www/html/</strong></pre>
+
 * [Next.js](https://nextjs.org/)
 * [React.js](https://reactjs.org/)
 * [Vue.js](https://vuejs.org/)
