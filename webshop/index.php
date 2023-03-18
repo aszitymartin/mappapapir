@@ -317,6 +317,10 @@ $sql = "SELECT products.id, products.name, products.description, products.thumbn
                             iconWidth : '19.2',
                             iconHeight : '19.2'
                         },
+                        iconColor : {
+                            isset : false,
+                            color : ''
+                        },
                         loaderText : {
                             custom : true,
                             customText : 'Kosárba'

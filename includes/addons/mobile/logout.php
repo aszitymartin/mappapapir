@@ -84,6 +84,10 @@ var loginHistoryItem = document.getElementsByClassName('login-history-item');
                         iconWidth : '128',
                         iconHeight : '128'
                     },
+                    iconColor : {
+                        isset : false,
+                        color : ''
+                    },
                     loaderText : {
                         custom : true,
                         customText : 'Kijelentkezés folyamatban.'

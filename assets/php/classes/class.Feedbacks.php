@@ -1,5 +1,7 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
+// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
 Class Feedback {
 
     public $returnObject;
@@ -162,10 +164,10 @@ Class Feedback {
         }
 
         if ($sql = $con->prepare('INSERT INTO feedbacks (uid, title, type, status) VALUES (?, ?, ?, 0)')) {
-            $sql->bind_param('isi', $object['uid'], $object['title'], $object['type']);
+            $sql->bind_param('isi', $object['uid'], htmlspecialchars($object['title'], ENT_QUOTES), $object['type']);
             $sql->execute(); $lastId = $con->insert_id; $sql->close();
 
-            $log_categ = "Visszajelzés küldése"; $log_desc = "#".$uid." felhasználó  új visszajelzést küldött.";
+            $log_categ = "Visszajelzés küldése"; $log_desc = "#".$_SESSION['id']." felhasználó  új visszajelzést küldött.";
             if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
                 $log->bind_param('isss', $object['uid'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
                 $returnData = new stdClass(); $returnData->fid = $lastId; $returnData->uid = $object['uid'];
@@ -226,8 +228,162 @@ Class Feedback {
         if ($sql = $con->prepare('INSERT INTO feedbacks_reply (fid, uid, message, attachment) VALUES (?, ?, ?, ?)')) {
             $formatted_attachments = []; for ($i = 0; $i < count($attachment); $i++) { if (check(basename($attachment['atch' . ($i + 1)]['type']))) { array_push($formatted_attachments, upload($attachment['atch' . ($i + 1)])); } }
             $attachments = implode(';', $formatted_attachments);
-            $sql->bind_param('iiss', $object['fid'], $object['uid'], $object['message'], $attachments);
+            $sql->bind_param('iiss', $object['fid'], $object['uid'], htmlspecialchars($object['message'], ENT_QUOTES), $attachments);
             $sql->execute(); $sql->close(); $this->returnObject = [ "status" => "success" ]; return $this->returnObject;
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function showMessage ($object) {
+
+        $requiredItems = array ('action', 'fid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($sql = $con->prepare('SELECT feedbacks_reply.id AS frid, feedbacks.uid AS fcuid, feedbacks_reply.uid AS fuid, message AS fmessage, attachment AS fattachment, sent AS fsent FROM feedbacks_reply INNER JOIN feedbacks ON feedbacks.id = feedbacks_reply.fid WHERE fid = ? ORDER BY feedbacks_reply.sent ASC')) {
+            $sql->bind_param('i', $object['fid']); $sql->execute(); $sql->store_result(); $sql->bind_result($frid, $fcuid, $fuid, $fmessage, $fattachment, $fsent);
+            $feedbacks_array = array();
+            while ($sql->fetch()) {
+                $replyObject = new stdClass();
+                $replyObject->frid = $frid; $replyObject->ftype = $fuid == $_SESSION['id'] ? 1 : 0;
+                $replyObject->fuid = $fuid; $replyObject->fmessage = $fmessage;
+                $replyObject->fattachment = $fattachment; $replyObject->fsent = $fsent;
+                array_push($feedbacks_array, $replyObject);
+            } $sql->free_result(); $sql->close();
+
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $feedbacks_array
+            ];
+            return $this->returnObject;
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function deleteFeedback ($object) {
+
+        $requiredItems = array ('action', 'fid', 'ip');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($getFeedback = $con->prepare('SELECT feedbacks.uid FROM feedbacks WHERE feedbacks.id = ?')) {
+            $getFeedback->bind_param('i', $object['fid']); $getFeedback->execute(); $getFeedback->store_result();
+            $getFeedback->bind_result($fid); $getFeedback->fetch(); $getFeedback->close();
+
+            $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?');
+            $stmt->bind_param('i', $_SESSION['id']);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
+
+            if ($fid == $_SESSION['id']) { $this->initDelete($object); }
+            else { if ($privilege > 0) { $this->initDelete($object); } }
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function initDelete ($object) {
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($getFeedback = $con->prepare('SELECT attachment FROM feedbacks_reply WHERE fid = ?')) {
+            $getFeedback->bind_param('i', $object['fid']); $getFeedback->execute(); $getFeedback->store_result();
+            $getFeedback->bind_result($ftch); $attachments = array();
+            while ($getFeedback->fetch()) {
+
+                if (strlen($ftch) > 0) {
+
+                    $exploded = explode(';', $ftch);
+                    for ($i = 0; $i < count($exploded); $i++) {
+                        array_push($attachments, $exploded[$i]);
+                    }
+
+                }
+
+            } $getFeedback->free_result(); $getFeedback->close();
+        }
+
+        if (count($attachments) > 0) {
+            for ($i = 0; $i < count($attachments); $i++) {
+                if (file_exists($_SERVER['DOCUMENT_ROOT'].'/assets/images/feedbacks/' . $attachments[$i])) {
+                    unlink($_SERVER['DOCUMENT_ROOT'].'/assets/images/feedbacks/' . $attachments[$i]);
+                }
+            }
+        }
+
+        if ($deleteFeedback = $con->prepare('DELETE FROM feedbacks WHERE id = ?')) {
+            $deleteFeedback->bind_param('i', $object['fid']); $deleteFeedback->execute(); $deleteFeedback->close();
+
+            
+            $log_categ = "Visszajelzés törlése"; $log_desc = "#".$_SESSION['id']." felhasználó  törölte a következő visszajelzését: #". $object['fid'];
+            if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
+                $log->bind_param('isss', $_SESSION['id'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
+                $this->returnObject = [ "status" => "success" ];
+                return $this->returnObject;
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a naplózás közben."
+                ]; return $this->returnObject;
+            }
         } else {
             $this->returnObject = [
                 "status" => "error",
@@ -263,13 +419,21 @@ if (isset($postObject['action'])) {
             $feedbackAction->sendFeedback($postObject);
             die(json_encode($feedbackAction->getResults()));
         break;
+        case 'showMessage':
+            $feedbackAction->showMessage($postObject);
+            die(json_encode($feedbackAction->getResults()));
+        break;
+        case 'delete':
+            $feedbackAction->deleteFeedback($postObject);
+            die(json_encode($feedbackAction->getResults()));
+        break;
         default:
             $returnObject->status = "error"; $returnObject->message = "Érvénytelen kérés.";
             die(json_encode($returnObject));
         break;
     }
 } else {
-    if (count($attachmentObject) > 0) {
+    if (count($attachmentObject) > 0 || isset($_POST['message']) === true) {
         $insertObject = $_POST;
         $feedbackAction->insertImagesToFeedback($insertObject, $attachmentObject);
         die(json_encode($feedbackAction->getResults()));

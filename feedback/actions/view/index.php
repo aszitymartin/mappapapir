@@ -31,7 +31,7 @@
         <div class="leftcolumn">
             <div class="flex flex-row flex-align-c flex-justify-con-sb gap-1 w-fa padding-t-1">
                 <div class="flex flex-row flex-align-c gap-1 text-primary">
-                    <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-reload">
+                    <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-reload" onclick="loadMessages(<?= $params['id']; ?>);">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 20.7259C14.6 21.2259 14.2 21.826 13.7 21.926C13.2 22.026 12.6 22.0259 12.1 22.0259C9.5 22.0259 6.9 21.0259 5 19.1259C1.4 15.5259 1.09998 9.72592 4.29998 5.82592L5.70001 7.22595C3.30001 10.3259 3.59999 14.8259 6.39999 17.7259C8.19999 19.5259 10.8 20.426 13.4 19.926C13.9 19.826 14.4 20.2259 14.5 20.7259ZM18.4 16.8259L19.8 18.2259C22.9 14.3259 22.7 8.52593 19 4.92593C16.7 2.62593 13.5 1.62594 10.3 2.12594C9.79998 2.22594 9.4 2.72595 9.5 3.22595C9.6 3.72595 10.1 4.12594 10.6 4.02594C13.1 3.62594 15.7 4.42595 17.6 6.22595C20.5 9.22595 20.7 13.7259 18.4 16.8259Z" fill="currentColor"></path><path opacity="0.3" d="M2 3.62592H7C7.6 3.62592 8 4.02592 8 4.62592V9.62589L2 3.62592ZM16 14.4259V19.4259C16 20.0259 16.4 20.4259 17 20.4259H22L16 14.4259Z" fill="currentColor"></path></svg>
                         <span class="tooltip absolute" id="tooltip-reload"><span key="tooltip-reload">Frissítés</span></span>
                     </div>
@@ -39,10 +39,12 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor"></path><path d="M9.2 3H3C2.4 3 2 3.4 2 4V19C2 19.6 2.4 20 3 20H21C21.6 20 22 19.6 22 19V7C22 6.4 21.6 6 21 6H12L10.4 3.60001C10.2 3.20001 9.7 3 9.2 3Z" fill="currentColor"></path></svg>
                         <span class="tooltip absolute" id="tooltip-archive"><span key="tooltip-archive">Archiválás</span></span>
                     </div>
-                    <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-delete">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z" fill="currentColor"></path><path opacity="0.5" d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z" fill="currentColor"></path><path opacity="0.5" d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z" fill="currentColor"></path></svg>
-                        <span class="tooltip absolute" id="tooltip-delete"><span key="tooltip-delete">Törlés</span></span>
-                    </div>
+                    <?php if ($fstatus != 2) : ?>
+                        <div id="delete-feedback" class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-delete">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z" fill="currentColor"></path><path opacity="0.5" d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z" fill="currentColor"></path><path opacity="0.5" d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z" fill="currentColor"></path></svg>
+                            <span class="tooltip absolute" id="tooltip-delete"><span key="tooltip-delete">Törlés</span></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <?php if ($_SESSION['id'] == $fuid) : ?>
                     <a href="/feedback/?tab=new" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
@@ -86,59 +88,305 @@
                 <div class="flex flex-row w-fa">
                     <span class="text-primary bold"><?= $ftitle; ?></span>
                 </div><hr style="border: 1px solid var(--background);" class="w-100">
-                <div class="flex flex-col gap-1 w-fa padding-1 feedback-message-con" id="feedback-message-con">
-                    <div class="flex flex-row flex-justify-con-fe w-fa small">
-                        <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fc padding-1 border-soft feedback-chat-item-user has-tooltip relative" aria-describedby="tooltip-feedback-item-1">
-                            <span>Küldjön visszajelzést fejlesztőinknek, hogy kijavíthassák az Ön által talált hibákat.</span>
-                            <span class="tooltip absolute" id="tooltip-feedback-item-1"><span key="tooltip-feedback-item-1" key="tooltip-feedback-item-1">2022-04-16 18:44:29</span></span>
-                        </div>
-                    </div>
-                    <div class="flex flex-row flex-justify-con-fe w-fa small">
-                        <img class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" src="/assets/images/feedbacks/abd14df20220417140157.png" />
-                    </div>
-                    <div class="flex flex-row flex-justify-con-fs w-fa small">
-                        <div class="flex flex-row flex-align-fs flex-justify-con-fs w-fc padding-1 border-soft feedback-chat-item-support has-tooltip relative" aria-describedby="tooltip-feedback-item-1">
-                            <span>Küldjön visszajelzést fejlesztőinknek, hogy kijavíthassák az Ön által talált hibákat.</span>
-                            <span class="tooltip absolute" id="tooltip-feedback-item-1"><span key="tooltip-feedback-item-1" key="tooltip-feedback-item-1">2022-04-16 18:44:29</span></span>
-                        </div>
-                    </div>
-                </div>
-                <?php if ($fstatus != 2 && $privilege > 0 && $fuid != $_SESSION['id']): ?>
+                <div class="flex flex-col gap-1 w-fa padding-1 feedback-message-con overflow-x-hidden" id="feedback-message-con"></div>
+                <?php if ($fstatus != 2) : ?>
                     <div class="flex flex-col gap-05 padding-t-1">
                         <div class="flex flex-col">
-                            <div id="feedback-response-editor" class="border-soft prd-ch-fr-er-ce" style="height: 4rem;"></div>
+                            <div id="feedback-reply-editor" class="border-soft prd-ch-fr-er-ce" style="height: 4rem;"></div>
                         </div>
                         <script>
-                            var quill = new Quill('#feedback-response-editor', {
-                                modules: { toolbar: false }, placeholder: 'Válasz írása...', theme: 'snow'
+                            var quill = new Quill('#feedback-reply-editor', {
+                                modules: { toolbar: false }, placeholder: 'Szöveg írása...', theme: 'snow'
                             });
                         </script>
                         <div class="flex flex-row flex-align-c flex-justify-con-sb w-fa">
                             <div class="flex flex-row flex-align-c w-fa gap-1 padding-0-1">
-                                <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light text-secondary text-primary-hover pointer user-select-none has-tooltip relative" aria-describedby="tooltip-add-image">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M22 5V19C22 19.6 21.6 20 21 20H19.5L11.9 12.4C11.5 12 10.9 12 10.5 12.4L3 20C2.5 20 2 19.5 2 19V5C2 4.4 2.4 4 3 4H21C21.6 4 22 4.4 22 5ZM7.5 7C6.7 7 6 7.7 6 8.5C6 9.3 6.7 10 7.5 10C8.3 10 9 9.3 9 8.5C9 7.7 8.3 7 7.5 7Z" fill="currentColor"/><path d="M19.1 10C18.7 9.60001 18.1 9.60001 17.7 10L10.7 17H2V19C2 19.6 2.4 20 3 20H21C21.6 20 22 19.6 22 19V12.9L19.1 10Z" fill="currentColor"/></svg>
-                                    <span class="tooltip absolute" id="tooltip-add-image"><span key="tooltip-add-image">Kép csatolása</span></span>
-                                </div>
-                                <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light text-secondary text-primary-hover pointer user-select-none has-tooltip relative" aria-describedby="tooltip-add-files">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M18.4 5.59998C18.7766 5.9772 18.9881 6.48846 18.9881 7.02148C18.9881 7.55451 18.7766 8.06577 18.4 8.44299L14.843 12C14.466 12.377 13.9547 12.5887 13.4215 12.5887C12.8883 12.5887 12.377 12.377 12 12C11.623 11.623 11.4112 11.1117 11.4112 10.5785C11.4112 10.0453 11.623 9.53399 12 9.15698L15.553 5.604C15.9302 5.22741 16.4415 5.01587 16.9745 5.01587C17.5075 5.01587 18.0188 5.22741 18.396 5.604L18.4 5.59998ZM20.528 3.47205C20.0614 3.00535 19.5074 2.63503 18.8977 2.38245C18.288 2.12987 17.6344 1.99988 16.9745 1.99988C16.3145 1.99988 15.661 2.12987 15.0513 2.38245C14.4416 2.63503 13.8876 3.00535 13.421 3.47205L9.86801 7.02502C9.40136 7.49168 9.03118 8.04568 8.77863 8.6554C8.52608 9.26511 8.39609 9.91855 8.39609 10.5785C8.39609 11.2384 8.52608 11.8919 8.77863 12.5016C9.03118 13.1113 9.40136 13.6653 9.86801 14.132C10.3347 14.5986 10.8886 14.9688 11.4984 15.2213C12.1081 15.4739 12.7616 15.6039 13.4215 15.6039C14.0815 15.6039 14.7349 15.4739 15.3446 15.2213C15.9543 14.9688 16.5084 14.5986 16.975 14.132L20.528 10.579C20.9947 10.1124 21.3649 9.55844 21.6175 8.94873C21.8701 8.33902 22.0001 7.68547 22.0001 7.02551C22.0001 6.36555 21.8701 5.71201 21.6175 5.10229C21.3649 4.49258 20.9947 3.93867 20.528 3.47205Z" fill="currentColor"/><path d="M14.132 9.86804C13.6421 9.37931 13.0561 8.99749 12.411 8.74695L12 9.15698C11.6234 9.53421 11.4119 10.0455 11.4119 10.5785C11.4119 11.1115 11.6234 11.6228 12 12C12.3766 12.3772 12.5881 12.8885 12.5881 13.4215C12.5881 13.9545 12.3766 14.4658 12 14.843L8.44699 18.396C8.06999 18.773 7.55868 18.9849 7.02551 18.9849C6.49235 18.9849 5.98101 18.773 5.604 18.396C5.227 18.019 5.0152 17.5077 5.0152 16.9745C5.0152 16.4413 5.227 15.93 5.604 15.553L8.74701 12.411C8.28705 11.233 8.28705 9.92498 8.74701 8.74695C8.10159 8.99737 7.5152 9.37919 7.02499 9.86804L3.47198 13.421C2.52954 14.3635 2.00009 15.6417 2.00009 16.9745C2.00009 18.3073 2.52957 19.5855 3.47202 20.528C4.41446 21.4704 5.69269 21.9999 7.02551 21.9999C8.35833 21.9999 9.63656 21.4704 10.579 20.528L14.132 16.975C14.5987 16.5084 14.9689 15.9544 15.2215 15.3447C15.4741 14.735 15.6041 14.0815 15.6041 13.4215C15.6041 12.7615 15.4741 12.108 15.2215 11.4983C14.9689 10.8886 14.5987 10.3347 14.132 9.86804Z" fill="currentColor"/></svg>
-                                    <span class="tooltip absolute" id="tooltip-add-files"><span key="tooltip-add-files">Fájlok csatolása</span></span>
+                                <div class="flex flex-row flex-align-c gap-1 w-fa">
+                                    <div class="flex flex-row gap-1" id="miniatures-con"></div>
+                                    <div id="min-upl-con">
+                                        <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c text-primary user-select-none w-fc pointer has-tooltip relative" aria-describedby="tooltip-add-image" onclick="__inituploader()">
+                                            <div class="flex flex-row-d-col-m flex-align-c gap-1">
+                                                <div class="flex flex-row flex-align-c gap-1">
+                                                    <div class="flex flex-col flex-align-c flex-justify-con-c">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M22 5V19C22 19.6 21.6 20 21 20H19.5L11.9 12.4C11.5 12 10.9 12 10.5 12.4L3 20C2.5 20 2 19.5 2 19V5C2 4.4 2.4 4 3 4H21C21.6 4 22 4.4 22 5ZM7.5 7C6.7 7 6 7.7 6 8.5C6 9.3 6.7 10 7.5 10C8.3 10 9 9.3 9 8.5C9 7.7 8.3 7 7.5 7Z" fill="currentColor"/><path d="M19.1 10C18.7 9.60001 18.1 9.60001 17.7 10L10.7 17H2V19C2 19.6 2.4 20 3 20H21C21.6 20 22 19.6 22 19V12.9L19.1 10Z" fill="currentColor"/></svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="tooltip absolute" id="tooltip-add-image"><span key="tooltip-add-image">Kép csatolása</span></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <span class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
+                            <span id="send-feedback-reply" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
                                 <span class="flex flex-col flex-align-c flex-justify-con-c">Elküldés</span>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"></path></svg>
                             </span>
                         </div>
                     </div>
-                <?php else: ?>
-                    <div class="flex flex-row flex-align-c flex-justify-con-c w-fa small-med text-muted user-select-none">
-                        <span>Ez a funkció még nem érhető el felhasználók számára</span>
+                <?php endif; if ($fstatus == 2) : ?>
+                    <div class="flex flex-row flex-align-c flex-justify-con-c w-fa small-med text-muted user-select-none padding-t-1">
+                        <span>Lezárt visszajelzéshez már nem tud több üzenetet küldeni.</span>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </main>
+<script>
+    function loadMessages (fid) {
+
+        var feedbackData = new FormData(); 
+        const feedbackObject = {
+            action : 'showMessage',
+            fid    : fid
+        };
+        feedbackData.append('feedback', JSON.stringify(feedbackObject));
+        const ajaxObject = {
+            url : '/assets/php/classes/class.Feedbacks.php',
+            data : feedbackData,
+            loaderContainer : {
+                isset : true,
+                id : 'feedback-message-con',
+                type : 'panel',
+                iconSize : {
+                    iconWidth : '128',
+                    iconHeight : '128'
+                },
+                iconColor : {
+                    isset : false,
+                    color : 'currentColor'
+                },
+                loaderText : {
+                    custom : true,
+                    customText : 'Üzenetek megjelenítése folyamatban...'
+                }
+            }
+        };
+
+        let response = getFromAjaxRequest(ajaxObject)
+        .then((data) => {
+            if (data.status == 'success') {
+                document.getElementById('feedback-message-con').innerHTML = ``;
+                for (let i = 0; i < data.data.length; i++) {
+                    if (data.data[i].ftype == 1) {
+                        if (data.data[i].fmessage.length > 0) {
+                            document.getElementById('feedback-message-con').innerHTML += `
+                            <div class="flex flex-row flex-justify-con-fe w-fa small">
+                                <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fc padding-1 border-soft feedback-chat-item-user has-tooltip relative" aria-describedby="tooltip-feedback-item-${data.data[i].frid}">
+                                    <span>${data.data[i].fmessage}</span>
+                                    <span class="tooltip absolute" id="tooltip-feedback-item-${data.data[i].frid}"><span key="tooltip-feedback-item-${data.data[i].frid}" key="tooltip-feedback-item-${data.data[i].frid}">${data.data[i].fsent}</span></span>
+                                </div>
+                            </div>
+                            `;
+                        }
+                        if (data.data[i].fattachment.length > 0) {
+                            if (data.data[i].fattachment.length > 1) {
+                                document.getElementById('feedback-message-con').innerHTML += `
+                                    <div class="flex flex-row flex-align-c flex-justify-con-fe flex-wrap w-fa gap-1" id="feedback-chat-imagegroup-${data.data[i].frid}"></div>
+                                `;
+                                for (let j = 0; j < data.data[i].fattachment.split(';').length; j++) {
+                                    document.getElementById('feedback-chat-imagegroup-' + data.data[i].frid).innerHTML += `
+                                        <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment.split(';')[j]}" onError="chatBrokenImage(this)" />
+                                    `;
+                                }
+                            } else {
+                                document.getElementById('feedback-message-con').innerHTML += `
+                                <div class="flex flex-row flex-justify-con-fe w-fa small">
+                                    <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                </div>
+                                `;
+                            }
+                        }
+                    } else {
+                        document.getElementById('feedback-message-con').innerHTML += `
+                        <div class="flex flex-row flex-justify-con-fs w-fa small">
+                            <div class="flex flex-row flex-align-fs flex-justify-con-fs w-fc padding-1 border-soft feedback-chat-item-support has-tooltip relative" aria-describedby="tooltip-feedback-item-${data.data[i].frid}">
+                                <span>${data.data[i].fmessage}</span>
+                                <span class="tooltip absolute" id="tooltip-feedback-item-${data.data[i].frid}"><span key="tooltip-feedback-item-${data.data[i].frid}" key="tooltip-feedback-item-${data.data[i].frid}">${data.data[i].fsent}</span></span>
+                            </div>
+                        </div>
+                        `;
+                        if (data.data[i].fattachment.length > 0) {
+                            if (data.data[i].fattachment.length > 1) {
+                                document.getElementById('feedback-message-con').innerHTML += `
+                                    <div class="flex flex-row flex-align-c flex-justify-con-fs flex-wrap w-fa gap-1" id="feedback-chat-imagegroup-${data.data[i].frid}"></div>
+                                `;
+                                for (let j = 0; j < data.data[i].fattachment.split(';').length; j++) {
+                                    document.getElementById('feedback-chat-imagegroup-' + data.data[i].frid).innerHTML += `
+                                        <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment.split(';')[j]}" onError="chatBrokenImage(this)" />
+                                    `;
+                                }
+                            } else {
+                                document.getElementById('feedback-message-con').innerHTML += `
+                                <div class="flex flex-row flex-justify-con-fs w-fa small">
+                                    <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                </div>
+                                `;
+                            }
+                        }
+                    }
+                }
+                document.getElementById('feedback-message-con').scrollTop = document.getElementById('feedback-message-con').scrollHeight - document.getElementById('feedback-message-con').clientHeight;
+            }
+        }) .catch((reason) => { console.log(reason); });
+
+    } $(document).ready(() => { loadMessages(<?= $params['id']; ?>); });
+    function chatBrokenImage (e) {
+        if (e.parentElement) {
+            e.parentElement.innerHTML = `
+                <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa gap-05 text-danger small-med">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    <span>Kép betöltése sikertelen.</span>
+                </div>
+            `;
+        }
+    }
+</script>
+<?php if ($fstatus != 2) : ?>
+<script>
+    var minActive = 0; var miniArr = [];
+    $('#send-feedback-reply').click(() => {
+
+        var reply_body = document.getElementById('feedback-reply-editor').getElementsByClassName('ql-editor')[0].textContent;
+
+        if (reply_body.length > 0 || miniArr.length > 0) {
+            
+            $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                success : function (api) {
+
+                    var attachment_data = new FormData();
+                    for (let i = 0; i < miniArr.length; i++) { attachment_data.append('atch'+(i+1), miniArr[i]); }
+                    attachment_data.append('fid', <?= $params['id']; ?>); attachment_data.append('uid', <?= $_SESSION['id']; ?>);
+                    attachment_data.append('message', reply_body.length > 0 ? reply_body : '');
+                    $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/classes/class.Feedbacks.php", data: attachment_data, dataType: 'json', contentType: false, processData: false,
+                        success : function (s) {
+                            if (s.status == 'success') {
+                                quill.deleteText(0, quill.getLength());
+                                var mini_action = document.getElementsByClassName('mini-action');
+                                for (let i = 0; i < mini_action.length; i++) { mini_action[i].click(); }
+                                miniArr = [];
+                                loadMessages(<?= $params['id']; ?>);
+                            }
+                        }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); }
+                    });
+
+                }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
+            });
+
+        }
+
+    }); $('#delete-feedback').click(() => {
+
+        var feedbackData = new FormData(); 
+        const feedbackObject = {
+            action : 'delete',
+            fid    : <?= $params['id']; ?>
+        };
+
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
+
+                feedbackObject.ip = api.ip;
+                feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Feedbacks.php',
+                    data : feedbackData,
+                    loaderContainer : {
+                        isset : true,
+                        id : 'feedback-message-con',
+                        type : 'panel',
+                        iconSize : {
+                            iconWidth : '128',
+                            iconHeight : '128'
+                        },
+                        iconColor : {
+                            isset : false,
+                            color : 'currentColor'
+                        },
+                        loaderText : {
+                            custom : true,
+                            customText : 'Üzenetek törlése folyamatban...'
+                        }
+                    }
+                };
+
+                let response = getFromAjaxRequest(ajaxObject)
+                .then((data) => { console.log(data);
+                    if (data.status == 'success') {
+                        $('#delete-feedback').off('click');
+                        notificationSystem(0, 0, 0, 'Üzenet', 'Visszajelzés sikeresen törölve.');
+                        window.location.href = "/feedback";
+                    } else {
+                        loadMessages(<?= $params['id']; ?>);
+                        notificationSystem(0, 0, 0, 'Üzenet', 'A visszajelzést nem sikerült törölni.');
+                    }
+                }) .catch((reason) => { console.log(reason); });
+            }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
+        });
+
+    });
+
+    function __inituploader () { var minIndex = document.getElementsByClassName('miniature-upload').length;  minActive++; minIndex++; 
+        if (minIndex <= 5) {
+            document.getElementById('miniatures-con').innerHTML += `
+            <div id="miniature-upload-${minActive}" class="miniature-upload flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed-small relative">
+                <input type="file" id="miniature-input-${minActive}" class="hidden miniature-input">
+                <div class="miniature-upload-inner flex flex-row-d-col-m flex-align-c gap-1" onclick="__minupload(${minActive})">
+                    <div class="flex flex-row flex-align-c gap-1">
+                        <div class="flex flex-col flex-align-c flex-justify-con-c">
+                            <span id="min-icon-${minActive}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M19 22H5C4.4 22 4 21.6 4 21V3C4 2.4 4.4 2 5 2H14L20 8V21C20 21.6 19.6 22 19 22ZM14.5 12L12.7 9.3C12.3 8.9 11.7 8.9 11.3 9.3L10 12H11.5V17C11.5 17.6 11.4 18 12 18C12.6 18 12.5 17.6 12.5 17V12H14.5Z" fill="currentColor"/><path d="M13 11.5V17.9355C13 18.2742 12.6 19 12 19C11.4 19 11 18.2742 11 17.9355V11.5H13Z" fill="currentColor"/><path d="M8.2575 11.4411C7.82942 11.8015 8.08434 12.5 8.64398 12.5H15.356C15.9157 12.5 16.1706 11.8015 15.7425 11.4411L12.4375 8.65789C12.1875 8.44737 11.8125 8.44737 11.5625 8.65789L8.2575 11.4411Z" fill="currentColor"/><path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="currentColor"/></svg></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="miniature-prop-con-${minActive}" class=" absolute"></div>
+                <div style="top: -10%; right: -10%;" class="mini-action flex flex-align-c flex-justify-con-c padding-025 absolute item-bg circle text-muted link-color box-shadow-dark pointer" aria-label="Eltávolítás" title="Eltávolítás" role="button" data-active="${minActive}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.7 19.4L5.3 18C4.9 17.6 4.9 17 5.3 16.6L16.6 5.3C17 4.9 17.6 4.9 18 5.3L19.4 6.7C19.8 7.1 19.8 7.7 19.4 8.1L8.1 19.4C7.8 19.8 7.1 19.8 6.7 19.4Z" fill="currentColor"></path><path d="M19.5 18L18.1 19.4C17.7 19.8 17.1 19.8 16.7 19.4L5.40001 8.1C5.00001 7.7 5.00001 7.1 5.40001 6.7L6.80001 5.3C7.20001 4.9 7.80001 4.9 8.20001 5.3L19.5 16.6C19.9 16.9 19.9 17.6 19.5 18Z" fill="currentColor"></path></svg>
+                </div>
+            </div>
+            `; var remBtn = document.getElementsByClassName('mini-action');
+            for (let i = 0; i < remBtn.length; i++) { remBtn[i].setAttribute('onclick', '__removeminiature('+minIndex+', '+remBtn[i].getAttribute('data-active')+')'); }
+        } if (minIndex == 5 || minIndex > 5) { document.getElementById('miniature-uploader').remove(); document.getElementById('miniatures-con').innerHTML += ``; }
+    } function __minupload (e) {
+        document.getElementById('miniature-input-'+e).addEventListener('click', () => {
+            document.getElementById('min-icon-'+e).innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M19 22H5C4.4 22 4 21.6 4 21V3C4 2.4 4.4 2 5 2H14L20 8V21C20 21.6 19.6 22 19 22Z" fill="currentColor"/><g clip-path="url(#clip0_787_1289)"><path d="M9.56133 15.7161C9.72781 15.5251 9.5922 15.227 9.33885 15.227H8.58033C8.57539 15.1519 8.57262 15.0763 8.57262 15C8.57262 13.1101 10.1101 11.5726 12 11.5726C12.7576 11.5726 13.4585 11.8198 14.0265 12.2377C14.2106 12.3731 14.4732 12.3609 14.6216 12.1872L15.1671 11.5491C15.3072 11.3852 15.2931 11.1382 15.1235 11.005C14.2353 10.3077 13.1468 9.92944 12 9.92944C10.6456 9.92944 9.37229 10.4569 8.41458 11.4146C7.4569 12.3723 6.92945 13.6456 6.92945 15C6.92945 15.0759 6.93135 15.1516 6.93465 15.2269H6.29574C6.0424 15.2269 5.90677 15.5251 6.07326 15.7161L7.51455 17.3693L7.81729 17.7166L8.90421 16.4698L9.56133 15.7161Z" fill="currentColor"/><path d="M17.9268 14.7516L16.8518 13.5185L16.1828 12.7511L15.2276 13.8468L14.4388 14.7516C14.2723 14.9426 14.4079 15.2407 14.6612 15.2407H15.4189C15.2949 17.0187 13.809 18.4274 12.0001 18.4274C11.347 18.4274 10.736 18.2437 10.216 17.9253C10.0338 17.8138 9.79309 17.8362 9.6543 17.9985L9.10058 18.6463C8.95391 18.8179 8.97742 19.0782 9.16428 19.2048C9.99513 19.7678 10.9743 20.0706 12.0001 20.0706C13.3545 20.0706 14.6278 19.5432 15.5855 18.5855C16.4863 17.6847 17.0063 16.5047 17.0649 15.2407H17.7043C17.9577 15.2407 18.0933 14.9426 17.9268 14.7516Z" fill="currentColor"/></g><path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="currentColor"/><defs><clipPath id="clip0_787_1289"><rect width="12" height="12" fill="white" transform="translate(6 9)"/></clipPath></defs></svg>`;
+            document.getElementById('miniature-input-'+e).addEventListener('change', () => { var minInput = document.getElementById('miniature-input-'+e);
+                if (minInput.value.length > 0) { let validExtensions = ["image/jpeg", "image/jpg", "image/png"];
+                    if (validExtensions.includes(minInput.files[0].type)) { var allMinInp = document.getElementsByClassName('miniature-input'); var duplicate = false;
+                        if (miniArr.length > 0) { for (let i = 0; i < miniArr.length; i++) { if (miniArr[i].name == minInput.files[0].name && miniArr[i].type == minInput.files[0].type && miniArr[i].size == minInput.files[0].size) { duplicate = true; } }
+                            if (duplicate == true) { document.getElementById('min-icon-'+e).innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M5 22H19C19.6 22 20 21.6 20 21V8L14 2H5C4.4 2 4 2.4 4 3V21C4 21.6 4.4 22 5 22Z" fill="currentColor"/><path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="currentColor"/><rect x="7.55518" y="16.7585" width="10.144" height="2" rx="1" transform="rotate(-45 7.55518 16.7585)" fill="currentColor"/><rect x="9.0174" y="9.60327" width="10.0952" height="2" rx="1" transform="rotate(45 9.0174 9.60327)" fill="currentColor"/></svg>`; }
+                            else { miniArr.push(minInput.files[0]); __loadpreview(e); }
+                        } else { miniArr.push(minInput.files[0]); __loadpreview(e); }
+                    } else { document.getElementById('min-icon-'+e).innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M5 22H19C19.6 22 20 21.6 20 21V8L14 2H5C4.4 2 4 2.4 4 3V21C4 21.6 4.4 22 5 22Z" fill="currentColor"/><path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="currentColor"/><rect x="7.55518" y="16.7585" width="10.144" height="2" rx="1" transform="rotate(-45 7.55518 16.7585)" fill="currentColor"/><rect x="9.0174" y="9.60327" width="10.0952" height="2" rx="1" transform="rotate(45 9.0174 9.60327)" fill="currentColor"/></svg>`; }
+                }
+            });
+        }); document.getElementById('miniature-input-'+e).click();
+    } function __loadpreview (e) { let fileReader = new FileReader(); var minInput = document.getElementById('miniature-input-'+e);
+        fileReader.onload = () => { let fileURL = fileReader.result; document.getElementById('miniature-upload-'+e).getElementsByClassName('miniature-upload-inner')[0].innerHTML = ``;
+            document.getElementById('miniature-upload-'+e).style.background = 'url('+fileURL+')';
+             document.getElementById('miniature-upload-'+e).addEventListener('mouseleave', () => { document.getElementById('miniature-prop-con-'+e).classList = 'absolute'; document.getElementById('miniature-prop-con-'+e).innerHTML =``; });
+        }; fileReader.readAsDataURL(minInput.files[0]);
+    } function __removeminiature (index, e) { miniArr.splice(e-1, 1); index--; var remBtn = document.getElementsByClassName('mini-action');
+        for (let i = 0; i < remBtn.length; i++) {
+            remBtn[i].setAttribute('onclick', '__removeminiature('+index+', '+remBtn[i].getAttribute('data-active')+')');
+        }
+        document.getElementById('miniature-upload-'+e).remove();
+        if (index < 5) { // Hozzaadas gomb megjelenitese
+            document.getElementById('min-upl-con').innerHTML = `
+            <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c text-primary user-select-none w-fc pointer" onclick="__inituploader()">
+                <div class="flex flex-row-d-col-m flex-align-c gap-1">
+                    <div class="flex flex-row flex-align-c gap-1">
+                        <div class="flex flex-col flex-align-c flex-justify-con-c text-primary">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M22 5V19C22 19.6 21.6 20 21 20H19.5L11.9 12.4C11.5 12 10.9 12 10.5 12.4L3 20C2.5 20 2 19.5 2 19V5C2 4.4 2.4 4 3 4H21C21.6 4 22 4.4 22 5ZM7.5 7C6.7 7 6 7.7 6 8.5C6 9.3 6.7 10 7.5 10C8.3 10 9 9.3 9 8.5C9 7.7 8.3 7 7.5 7Z" fill="currentColor"/><path d="M19.1 10C18.7 9.60001 18.1 9.60001 17.7 10L10.7 17H2V19C2 19.6 2.4 20 3 20H21C21.6 20 22 19.6 22 19V12.9L19.1 10Z" fill="currentColor"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+    }
+
+</script>
+<?php endif; ?>
 <?php if ($_SESSION['id'] != $fuid && $privilege > 0) : ?>
 <script>
     $('#manage-feedback').click(() => {
@@ -152,15 +400,15 @@
             </div>
         </div>
         <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1 padding-t-1 text-primary bold small-med">
-            <label for="open" class="flex flex-row flex-align-c gap-1 secondary-bg border-soft w-fc padding-1 pointer">
+            <label for="open" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
                 <input type="radio" class="discount_input discount-radio box-shadow" id="open" name="feedback" value="1" required>
                 <span class="flex">Kezeletlen</span>
             </label>
-            <label for="progress" class="flex flex-row flex-align-c gap-1 secondary-bg border-soft w-fc padding-1 pointer">
+            <label for="progress" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
                 <input type="radio" class="discount_input discount-radio box-shadow" id="progress" name="feedback" value="1" required>
                 <span class="flex">Folyamatban</span>
             </label>
-            <label for="closed" class="flex flex-row flex-align-c gap-1 secondary-bg border-soft w-fc padding-1 pointer">
+            <label for="closed" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
                 <input type="radio" class="discount_input discount-radio box-shadow" id="closed" name="feedback" value="1" required>
                 <span class="flex">Lezárva</span>
             </label>

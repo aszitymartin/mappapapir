@@ -14,7 +14,6 @@
                     <div class="flex flex-col gap-025">
                         <div class="flex flex-row flex-align-c gap-1">
                             <span class="text-secondary small">Kép csatolása</span>
-                            <div class="label label-danger border-soft-light user-select-none">Demo</div>
                         </div>
                     </div>
                     <div class="flex flex-row gap-1 w-fa">
@@ -86,7 +85,7 @@
                 <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-type"></div>
             </div>
             <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa">
-                <span id="send-review" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
+                <span id="send-feedback" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
                     <span class="flex flex-col flex-align-c flex-justify-con-c">Elküldés</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
                 </span>
@@ -96,19 +95,17 @@
 </div>
 <script>
     var minActive = 0; var miniArr = [];
-    $('#send-review').click(() => {
+    $('#send-feedback').click(() => {
         
         var error_con = document.getElementsByClassName('feedback-error-con');
-        for (let i = 0; i < error_con.length; i++) {
-            error_con[i].innerHTML = ``;
-        }
+        for (let i = 0; i < error_con.length; i++) { error_con[i].innerHTML = ``; }
 
         var feedbackData = new FormData(); 
         const feedbackObject = {
             action : 'send',
             uid : <?= isset($_SESSION['id']) ? $_SESSION['id'] : '0'; ?>,
             title : document.getElementById('feedback-title').value,
-            description : document.getElementById('prod-meta-editor').getElementsByClassName('ql-editor')[0].innerHTML,
+            description : document.getElementById('prod-meta-editor').getElementsByClassName('ql-editor')[0].textContent,
             type : document.getElementById('feedback-type').value,
             attachment : [],
         };
@@ -139,7 +136,7 @@
                     data : feedbackData,
                     loaderContainer : {
                         isset : true,
-                        id : 'send-review',
+                        id : 'send-feedback',
                         type : 'button',
                         iconSize : {
                             iconWidth : '19.2',
@@ -169,18 +166,17 @@
                                 attachment_data.append('message', feedbackObject.description);
                                 $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/classes/class.Feedbacks.php", data: attachment_data, dataType: 'json', contentType: false, processData: false,
                                     success : function (s) {
-                                        console.log(s);
                                         if (s.status == 'success') {
-                                            $('#send-review').off('click');
+                                            $('#send-feedback').off('click');
                                             notificationSystem(0, 0, 0, 'Üzenet', 'Visszajelzés sikeresen elküldve.');
                                             showPanel(0, 'tab-overview');
                                         }
                                     }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); }
                                 });
                             }
-                        }) .catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
+                        }).catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
                     }
-                }) .catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
+                }).catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
 
             }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
         });

@@ -175,6 +175,10 @@ function initWizardHome () {
                 iconWidth : '128',
                 iconHeight : '128'
             },
+            iconColor : {
+                isset : false,
+                color : ''
+            },
             loaderText : {
                 custom : false,
                 customText : ''
@@ -375,6 +379,10 @@ function loginFromHistory (uid) {
                 iconWidth : '128',
                 iconHeight : '128'
             },
+            iconColor : {
+                isset : false,
+                color : ''
+            },
             loaderText : {
                 custom : false,
                 customText : ''
@@ -493,6 +501,10 @@ function loginFromHistory (uid) {
                         iconWidth : '128',
                         iconHeight : '128'
                     },
+                    iconColor : {
+                        isset : false,
+                        color : ''
+                    },
                     loaderText : {
                         custom : true,
                         customText : '<span>Adatok ellenőrzése folyamatban.</span>'
@@ -565,6 +577,10 @@ function loginFromHistory (uid) {
             iconSize : {
                 iconWidth : '128',
                 iconHeight : '128'
+            },
+            iconColor : {
+                isset : false,
+                color : ''
             },
             loaderText : {
                 custom : false,
@@ -726,6 +742,10 @@ function validate(name) {
                             iconWidth : '128',
                             iconHeight : '128'
                         },
+                        iconColor : {
+                            isset : false,
+                            color : ''
+                        },
                         loaderText : {
                             custom : true,
                             customText : '<span>Adatok ellenőrzése folyamatban.</span>'
@@ -872,6 +892,10 @@ function tryLogin () {
                     iconSize : {
                         iconWidth : '128',
                         iconHeight : '128'
+                    },
+                    iconColor : {
+                        isset : false,
+                        color : ''
                     },
                     loaderText : {
                         custom : true,
