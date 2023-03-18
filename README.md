@@ -112,6 +112,8 @@ lassabban tölteni az oldal. Az utóbb említett lehetőséggel éltem, amikor �
 döntöttem, hogy az oldal működéséhez elengedhetetlen eszközöket szeretném
 használni.</p>
 
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
 # Telepítés és üzembe helyezés
 
 <p>Mint minden alkalmazást telepíteni kell, így a Microsoft Visual Studio Code-
@@ -165,6 +167,8 @@ rendben van-e.<p>
 <p><em>Amennyiben nem enged létrehozni fájlokat a /var/www/html mappába, nyissuk
 meg a terminálunkat és írjuk bele a következőket:</em></p>
 <pre><strong>sudo chmod 777 /var/www/html/</strong></pre>
+
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
 * [Next.js](https://nextjs.org/)
 * [React.js](https://reactjs.org/)
