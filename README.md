@@ -14,10 +14,10 @@
     <li><a href="#backend-nyelvek-választása">BackEnd nyelvek választása</a></li>
     <li><a href="#adatbázis-kezelés">Adatbázis kezelés</a></li>
     <li><a href="#kiegészítő-könyvtárak">Kiegészítő könyvtárak</a></li>
-    <li><a href="#usage">Telepítés és üzembe helyezés</a></li>
-    <li><a href="#usage">Telepítés utáni tesztelések</a></li>
-    <li><a href="#usage">Windows operációs rendszereken</a></li>
-    <li><a href="#usage">Linux operációs rendszereken</a></li>
+    <li><a href="#telepítés-és-üzembe-helyezés">Telepítés és üzembe helyezés</a></li>
+    <li><a href="#telepítés-utáni-tesztelések">Telepítés utáni tesztelések</a></li>
+    <li><a href="#windows-operációs-rendszereken">Windows operációs rendszereken</a></li>
+    <li><a href="#linux-operációs-rendszereken">Linux operációs rendszereken</a></li>
 </ol>
 </details>
 
