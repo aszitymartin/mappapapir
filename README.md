@@ -4,23 +4,21 @@
 <details>
   <summary>Tartalomjegyzék</summary>
   <ol>
-    <li>
-      <a href="#about-the-project">Projekt leírása</a>
-    </li>
-    <li>
-      <a href="#getting-started">Bevezetés</a>
-      <ul>
-        <li><a href="#prerequisites">Kellékek</a></li>
-        <li><a href="#installation">Telepítés</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
+    <li><a href="#usage">Előszó </a></li>
+    <li><a href="#usage">Szükséges kellékek és fejlesztői környezet </a></li>
+    <li><a href="#usage">Operációs rendszer választása </a></li>
+    <li><a href="#usage">Fejlesztői környezet választása </a></li>
+    <li><a href="#usage">Verziókezelés </a></li>
+    <li><a href="#usage">Programozási nyelvek kiválasztása </a></li>
+    <li><a href="#usage">FrontEnd nyelvek választása </a></li>
+    <li><a href="#usage">BackEnd nyelvek választása </a></li>
+    <li><a href="#usage">Adatbázis kezelés </a></li>
+    <li><a href="#usage">Kiegészítő könyvtárak </a></li>
+    <li><a href="#usage">Telepítés és üzembe helyezés </a></li>
+    <li><a href="#usage">Telepítés utáni tesztelések </a></li>
+    <li><a href="#usage">Windows operációs rendszereken </a></li>
+    <li><a href="#usage">Linux operációs rendszereken </a></li>
+</ol>
 </details>
 
 ![Screenshot from 2022-05-21 18-31-53](https://user-images.githubusercontent.com/105912216/169660860-90219acd-e5c5-4b36-93c0-8a90f016a9f4.png)
