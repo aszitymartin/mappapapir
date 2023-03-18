@@ -1,19 +1,19 @@
-# Mappa Papír weboldal README leírása
+# Mappa Papír
 <a name="top"></a>
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Tartalomjegyzék</summary>
   <ol>
-    <li><a href="#foreword">Előszó</a></li>
-    <li><a href="#dependencies">Szükséges kellékek és fejlesztői környezet</a></li>
-    <li><a href="#usage">Operációs rendszer választása</a></li>
-    <li><a href="#usage">Fejlesztői környezet választása</a></li>
-    <li><a href="#usage">Verziókezelés</a></li>
-    <li><a href="#usage">Programozási nyelvek kiválasztása</a></li>
-    <li><a href="#usage">FrontEnd nyelvek választása</a></li>
-    <li><a href="#usage">BackEnd nyelvek választása</a></li>
-    <li><a href="#usage">Adatbázis kezelés</a></li>
-    <li><a href="#usage">Kiegészítő könyvtárak</a></li>
+    <li><a href="#előszó">Előszó</a></li>
+    <li><a href="#szükséges-kellékek-és-fejlesztői-környezet">Szükséges kellékek és fejlesztői környezet</a></li>
+    <li><a href="#operációs-rendszer-választása">Operációs rendszer választása</a></li>
+    <li><a href="#fejlesztői-környezet-választása">Fejlesztői környezet választása</a></li>
+    <li><a href="#verziókezelés">Verziókezelés</a></li>
+    <li><a href="#programozási-nyelvek-kiválasztása">Programozási nyelvek kiválasztása</a></li>
+    <li><a href="#frontend-nyelvek-választása">FrontEnd nyelvek választása</a></li>
+    <li><a href="#backend-nyelvek-választása">BackEnd nyelvek választása</a></li>
+    <li><a href="#adatbázis-kezelés">Adatbázis kezelés</a></li>
+    <li><a href="#kiegészítő-könyvtárak">Kiegészítő könyvtárak</a></li>
     <li><a href="#usage">Telepítés és üzembe helyezés</a></li>
     <li><a href="#usage">Telepítés utáni tesztelések</a></li>
     <li><a href="#usage">Windows operációs rendszereken</a></li>
@@ -23,8 +23,6 @@
 
 ![Screenshot from 2022-05-21 18-31-53](https://user-images.githubusercontent.com/105912216/169660860-90219acd-e5c5-4b36-93c0-8a90f016a9f4.png)
 
-<!-- Eloszo -->
-<a name="foreword"></a>
 # Előszó
 
 <p>Mindig is jobban érdeklődtem a webfejlesztés iránt, mint más
@@ -59,7 +57,6 @@ elkészül egészében a weboldal talán még meg is próbálkozok vele, hogy az
 
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
-<a name="dependencies"></a>
 # Szükséges kellékek és fejlesztői környezet
 
 <h2>Operációs rendszer választása</h2>
