@@ -167,19 +167,10 @@
         .then((data) => {
             if (data.status == 'success') {
                 document.getElementById('feedback-message-con').innerHTML = ``;
-                for (let i = 0; i < data.data.length; i++) {
-                    var diff = 0;
-                    if (i > 0) {
-                        var sentDate = new Date(data.data[i-1].fsent);
-                        var replyDate = new Date(data.data[i].fsent);
-                        diff = (replyDate - sentDate) * 1.66667E-5;
-                    }
-
+                for (let i = 0; i < data.data.length; i++) { var diff = 0;
+                    if (i > 0) { var sentDate = new Date(data.data[i-1].fsent); var replyDate = new Date(data.data[i].fsent); diff = (replyDate - sentDate) * 1.66667E-5; }
                     if (diff >= 10) {
-
-                        const month = ["Jan.","Feb.","Márc.","Ápr.","Máj.","Jún.","Júl.","Aug.","Szep.","Okt.","Nov.","Dec."];
-                        const weekday = ["Vasárnap","Hétfő","Kedd","Szerda","Csütörtök","Péntek","Szombat"];
-
+                        const month = ["Jan.","Feb.","Márc.","Ápr.","Máj.","Jún.","Júl.","Aug.","Szep.","Okt.","Nov.","Dec."]; const weekday = ["Vasárnap","Hétfő","Kedd","Szerda","Csütörtök","Péntek","Szombat"];
                         document.getElementById('feedback-message-con').innerHTML += `
                             <span class="flex flex-row flex-align-c flex-justify-con-c w-fa text-muted smaller user-select-none">
                                 ${
@@ -194,10 +185,8 @@
                                                 ? 'Tegnap, ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
                                                 : weekday[replyDate.getDay()] + ',' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
                                             )
-                                        )
-                                        : month[replyDate.getMonth()] + ' ' + replyDate.getDate() + ', ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
-                                    )
-                                    : replyDate.getFullYear() + ' ' + month[replyDate.getMonth()] + ' ' + replyDate.getDate() + ', ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                        ) : month[replyDate.getMonth()] + ' ' + replyDate.getDate() + ', ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                    ) : replyDate.getFullYear() + ' ' + month[replyDate.getMonth()] + ' ' + replyDate.getDate() + ', ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
                                 }
                             </span>
                         `;
@@ -231,14 +220,14 @@
                                 `;
                                 for (let j = 0; j < data.data[i].fattachment.split(';').length; j++) {
                                     document.getElementById('feedback-chat-imagegroup-' + data.data[i].frid).innerHTML += `
-                                        <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment.split(';')[j]}" onError="chatBrokenImage(this)" />
+                                        <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment.split(';')[j]}" onError="chatBrokenImage(this)" onclick="openImage(this)" />
                                     `;
                                 }
                             } else {
                                 document.getElementById('feedback-message-con').innerHTML += `
                                 <div class="flex flex-row flex-justify-con-fe gap-05 w-fa">
                                     <div class="flex flex-row flex-justify-con-fe w-fa small">
-                                        <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                        <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" onclick="openImage(this)" />
                                     </div>
                                     <div class="flex flex-row flex-align-fe">
                                         <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
@@ -275,7 +264,7 @@
                                 `;
                                 for (let j = 0; j < data.data[i].fattachment.split(';').length; j++) {
                                     document.getElementById('feedback-chat-imagegroup-' + data.data[i].frid).innerHTML += `
-                                        <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment.split(';')[j]}" onError="chatBrokenImage(this)" />
+                                        <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment.split(';')[j]}" onError="chatBrokenImage(this)" onclick="openImage(this)" />
                                     `;
                                 }
                             } else {
@@ -285,7 +274,7 @@
                                         <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
                                     </div>
                                     <div class="flex flex-row flex-justify-con-fs w-fa small">
-                                        <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                        <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" onclick="openImage(this)" />
                                     </div>
                                 </div>
                                 `;
@@ -308,6 +297,100 @@
                 </div>
             `;
         }
+    } function openImage (e) {
+
+        $('html').css("overflow-y", "hidden");
+        var ce__wrapper = document.createElement('div');
+        ce__wrapper.classList = "wrapper_dark fadein z-index-100";
+        document.body.append(ce__wrapper);
+
+        ce__wrapper.innerHTML = `
+            <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 w-fa h-fa relative">
+                <div class="flex flex-row flex-align-c flex-justify-con-fe absolute top-5 right-5 border-soft-light padding-1 pointer user-select-none" id="close-container" title="Bezárás">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="1" d="M6.7 19.4L5.3 18C4.9 17.6 4.9 17 5.3 16.6L16.6 5.3C17 4.9 17.6 4.9 18 5.3L19.4 6.7C19.8 7.1 19.8 7.7 19.4 8.1L8.1 19.4C7.8 19.8 7.1 19.8 6.7 19.4Z" fill="currentColor"/><path d="M19.5 18L18.1 19.4C17.7 19.8 17.1 19.8 16.7 19.4L5.40001 8.1C5.00001 7.7 5.00001 7.1 5.40001 6.7L6.80001 5.3C7.20001 4.9 7.80001 4.9 8.20001 5.3L19.5 16.6C19.9 16.9 19.9 17.6 19.5 18Z" fill="currentColor"/></svg>
+                </div>
+                <div style="overflow: auto; max-width: 100vw; max-height: 100vh;">
+                    <img class="margin-a" src="${e.src}"/>
+                </div>
+            </div>
+        `;
+
+        ce__wrapper.addEventListener('click', () => {
+            closePanel();
+        });
+
+        function closePanel () {
+
+            $('html').css("overflow-y", "auto");
+            ce__wrapper.classList.add("fadeout");
+            setTimeout(() => {ce__wrapper.remove();},235);
+
+        }
+
+        function addImage(file) {
+            var img = e
+            img.src = file;
+            img.onload = function() {
+                var rgb = getAverageColor(img);
+                var rgbStr = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")"; 
+                var hsl = rgbToHsl(rgb.r, rgb.g, rgb.b); 
+                var hslStr = "hsl(" + Math.round(hsl.h * 360) + ", " + Math.round(hsl.s * 100) + "%, " + Math.round(hsl.l * 100) + "%)"; 
+                var hexStr = "#" + ("0"+rgb.r.toString(16)).slice(-2) + ("0"+rgb.g.toString(16)).slice(-2) + ("0"+rgb.b.toString(16)).slice(-2);
+                ce__wrapper.style.backgroundColor = "#"+contrastingColor(hexStr.replace("#", ""));
+                document.getElementById('close-container').style.backgroundColor = "#"+contrastingColor(hexStr.replace("#", ""));
+                ce__wrapper.style.color = rgbStr;
+            };
+        }
+        
+        function getAverageColor(img) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var width = canvas.width = img.naturalWidth;
+            var height = canvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0);
+            var imageData = ctx.getImageData(0, 0, width, height);
+            var data = imageData.data;
+        
+            var r = 0;var g = 0;var b = 0;
+            for (var i = 0, l = data.length; i < l; i += 4) {
+                r += data[i]; g += data[i+1];
+                b += data[i+2];
+            }
+            r = Math.floor(r / (data.length / 4));
+            g = Math.floor(g / (data.length / 4));
+            b = Math.floor(b / (data.length / 4));
+            return { r: r, g: g, b: b };
+        }
+        
+        function handleImages(files) {
+            addImage(files);
+        }
+        
+        handleImages(e.src);
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255;
+            b /= 255;
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var h, s, l = (max + min) / 2;
+            if (max == min) {h = s = 0;} 
+            else {
+                var d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            } 
+            return { h: h, s: s, l: l };
+        }
+
+        function contrastingColor(color) { return (luma(color) >= 165) ? "000" : "fff"; }
+        function luma(color) { var rgb = (typeof color === "string") ? hexToRGBArray(color) : color; return (0.2126 * rgb[0]) + (0.7152 * rgb[1]) + (0.0722 * rgb[2]); }
+        function hexToRGBArray(color) { if (color.length === 3) { color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2); }
+        else if (color.length !== 6) { throw("Invalid hex color: " + color); } var rgb = []; for (var i = 0; i <= 2; i++) { rgb[i] = parseInt(color.substr(i * 2, 2), 16); } return rgb; }
+
     }
 </script>
 <?php if ($fstatus != 2) : ?>
