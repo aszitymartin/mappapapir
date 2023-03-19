@@ -410,7 +410,7 @@
                     attachment_data.append('fid', <?= $params['id']; ?>); attachment_data.append('uid', <?= $_SESSION['id']; ?>);
                     attachment_data.append('message', reply_body.length > 0 ? reply_body : '');
                     $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/classes/class.Feedbacks.php", data: attachment_data, dataType: 'json', contentType: false, processData: false,
-                        success : function (s) {
+                        success : function (s) { console.log(s);
                             if (s.status == 'success') {
                                 quill.deleteText(0, quill.getLength());
                                 var mini_action = document.getElementsByClassName('mini-action');

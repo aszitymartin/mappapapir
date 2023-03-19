@@ -15,7 +15,8 @@ class sendPanelRequest {
         var ce__box = document.createElement('div');
         ce__box.id = object['id'];
         ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow";
-        document.body.append(ce__wrapper); ce__wrapper.append(ce__box); $('html').css("overflow-y", "hidden");
+        object.parent == 'body' ? document.body.append(ce__wrapper) : document.getElementById(object.parent).append(ce__wrapper);
+        ce__wrapper.append(ce__box); $('html').css("overflow-y", "hidden");
 
         if (object['header'].isset == true) {
             var panel_header = `<div class="flex flex-row flex-align-c w-fa padding-1" id="panel-header"></div>`;

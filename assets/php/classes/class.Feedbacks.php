@@ -45,7 +45,7 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.title, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id WHERE 1 ORDER BY feedbacks.created DESC';
+        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.title, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id ORDER BY feedbacks.created DESC';
         $stmt = $con->query($sql);
         if ($stmt->num_rows > 0) { $feedbacksArray = array();
             while ($fd = $stmt->fetch_assoc()) {
@@ -225,11 +225,29 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        if ($sql = $con->prepare('INSERT INTO feedbacks_reply (fid, uid, message, attachment) VALUES (?, ?, ?, ?)')) {
-            $formatted_attachments = []; for ($i = 0; $i < count($attachment); $i++) { if (check(basename($attachment['atch' . ($i + 1)]['type']))) { array_push($formatted_attachments, upload($attachment['atch' . ($i + 1)])); } }
-            $attachments = implode(';', $formatted_attachments);
-            $sql->bind_param('iiss', $object['fid'], $object['uid'], htmlspecialchars($object['message'], ENT_QUOTES), $attachments);
-            $sql->execute(); $sql->close(); $this->returnObject = [ "status" => "success" ]; return $this->returnObject;
+        if ($selectFeedbackInfo = $con->prepare('SELECT uid, status FROM feedbacks WHERE id = ?')) {
+            $selectFeedbackInfo->bind_param('i', $object['fid']); $selectFeedbackInfo->execute(); $selectFeedbackInfo->store_result();
+            $selectFeedbackInfo->bind_result($feedbackCreator, $feedbackStatus); $selectFeedbackInfo->fetch(); $selectFeedbackInfo->close();
+
+            if ($feedbackStatus == 0 && $feedbackCreator != $_SESSION['id']) {
+                if ($updateFeedbackStatus = $con->prepare('UPDATE feedbacks SET status = 1 WHERE id = ?')) {
+                    $updateFeedbackStatus->bind_param('i', $object['fid']); $updateFeedbackStatus->execute(); $updateFeedbackStatus->close();
+                }
+            }
+
+            if ($sql = $con->prepare('INSERT INTO feedbacks_reply (fid, uid, message, attachment) VALUES (?, ?, ?, ?)')) {
+                $formatted_attachments = []; for ($i = 0; $i < count($attachment); $i++) { if (check(basename($attachment['atch' . ($i + 1)]['type']))) { array_push($formatted_attachments, upload($attachment['atch' . ($i + 1)])); } }
+                $attachments = implode(';', $formatted_attachments);
+                $sql->bind_param('iiss', $object['fid'], $object['uid'], htmlspecialchars($object['message'], ENT_QUOTES), $attachments);
+                $sql->execute(); $sql->close(); $this->returnObject = [ "status" => "success" ]; return $this->returnObject;
+    
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
+            }
 
         } else {
             $this->returnObject = [
@@ -402,6 +420,32 @@ Class Feedback {
             ];
             return $this->returnObject;
         }
+
+    }
+
+    function getFeedbackStatus ($object) {
+     
+        $requiredItems = array ('action', 'items');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        
 
     }
 
