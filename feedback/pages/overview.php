@@ -21,7 +21,7 @@ function get_time_ago( $time ) {
                                 <span class="cst-checkbox"></span>
                             </label>
                         </div>
-                        <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-reload">
+                        <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-reload" onclick="listFeedbacks()">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 20.7259C14.6 21.2259 14.2 21.826 13.7 21.926C13.2 22.026 12.6 22.0259 12.1 22.0259C9.5 22.0259 6.9 21.0259 5 19.1259C1.4 15.5259 1.09998 9.72592 4.29998 5.82592L5.70001 7.22595C3.30001 10.3259 3.59999 14.8259 6.39999 17.7259C8.19999 19.5259 10.8 20.426 13.4 19.926C13.9 19.826 14.4 20.2259 14.5 20.7259ZM18.4 16.8259L19.8 18.2259C22.9 14.3259 22.7 8.52593 19 4.92593C16.7 2.62593 13.5 1.62594 10.3 2.12594C9.79998 2.22594 9.4 2.72595 9.5 3.22595C9.6 3.72595 10.1 4.12594 10.6 4.02594C13.1 3.62594 15.7 4.42595 17.6 6.22595C20.5 9.22595 20.7 13.7259 18.4 16.8259Z" fill="currentColor"/><path opacity="0.3" d="M2 3.62592H7C7.6 3.62592 8 4.02592 8 4.62592V9.62589L2 3.62592ZM16 14.4259V19.4259C16 20.0259 16.4 20.4259 17 20.4259H22L16 14.4259Z" fill="currentColor"/></svg>
                             <span class="tooltip absolute" id="tooltip-reload"><span key="tooltip-reload" key="tooltip-reload">Frissítés</span></span>
                         </div>
@@ -53,87 +53,128 @@ function get_time_ago( $time ) {
 </div>
 <script>
 
-    $(document).ready(() => {
-        var feedbackData = new FormData(); 
-        const feedbackObject = {
-            action : 'listByUser',
-            uid : <?= isset($_SESSION['id']) ? $_SESSION['id'] : 0; ?>
-        };
-        feedbackData.append('feedback', JSON.stringify(feedbackObject));
-        const ajaxObject = { 
-            url : '/assets/php/classes/class.Feedbacks.php',
-            data : feedbackData,
-            loaderContainer : { isset : false }
-        }
-        
-        let response = getFromAjaxRequest(ajaxObject)
-        .then((data) => {
-            for (let i = 0; i < data.data.length; i++) {
-                var options = { year: 'numeric', month: 'short', day: 'numeric' }; var today  = new Date(data.data[i].created);
-                document.getElementById('feedbacks-container').innerHTML += `
-                    <tr class="sessh__body">
-                        <td class="padding-05">
-                            <div class="flex flex-row flex-align-c flex-justify-con-c padding-05" style="margin-right: .5rem;">
-                                <label class="cst-chb-lbl">
-                                    <input type="checkbox" class="absolute chifb" id="sel-fi-${data.data[i].id}">
-                                    <span class="cst-checkbox"></span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="padding-05">
-                            <div class="flex flex-row flex-align-c gap-05 text-secondary">
-                                <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light bold" style="background-color: #${data.data[i].color}; color: #fff;">${data.data[i].initials}</div>
-                                <span>${data.data[i].name}</span>
-                            </div>
-                        </td>
-                        <td class="padding-05">
-                            <div class="flex flex-col flex-align-fs flex-justify-con-fs gap-025">
-                                <a class="link pointer user-select-none" href="/feedback/v/${data.data[i].id}">${data.data[i].title}</a>
-                                <div class="flex flex-row flex-align-fs flex-justify-con-l gap-1">
-                                    <span class="background-bg padding-025 border-soft-light smaller-light user-select-none">
-                                        ${
-                                            data.data[i].type == 0 ? 'Webáruház'
-                                            : (
-                                                data.data[i].type == 1 ? 'Termékek'
-                                                : (
-                                                    data.data[i].type == 2 ? 'Rendelés'
+    function listFeedbacks () {
+
+        $(document).ready(() => {
+            var feedbackData = new FormData(); 
+            const feedbackObject = {
+                action : 'listByUser',
+                uid : <?= isset($_SESSION['id']) ? $_SESSION['id'] : 0; ?>
+            };
+            feedbackData.append('feedback', JSON.stringify(feedbackObject));
+            const ajaxObject = { 
+                url : '/assets/php/classes/class.Feedbacks.php',
+                data : feedbackData,
+                loaderContainer : {
+                    isset : true,
+                    id : 'feedbacks-container',
+                    type : 'panel',
+                    iconSize : {
+                        iconWidth : '128',
+                        iconHeight : '128'
+                    },
+                    iconColor : {
+                        isset : false,
+                        color : 'currentColor'
+                    },
+                    loaderText : {
+                        custom : true,
+                        customText : 'Visszajelzések megjelenítése folyamatban...'
+                    }
+                }
+            }
+            
+            let response = getFromAjaxRequest(ajaxObject)
+            .then((data) => { document.getElementById('feedbacks-container').innerHTML = ``;
+                if (data.status == 'success') {
+                    for (let i = 0; i < data.data.length; i++) {
+                        var options = { year: 'numeric', month: 'short', day: 'numeric' }; var today  = new Date(data.data[i].created);
+                        document.getElementById('feedbacks-container').innerHTML += `
+                            <tr class="sessh__body">
+                                <td class="padding-05">
+                                    <div class="flex flex-row flex-align-c flex-justify-con-c padding-05" style="margin-right: .5rem;">
+                                        <label class="cst-chb-lbl">
+                                            <input type="checkbox" class="absolute chifb" id="sel-fi-${data.data[i].id}">
+                                            <span class="cst-checkbox"></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="padding-05">
+                                    <div class="flex flex-row flex-align-c gap-05 text-secondary">
+                                        <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light bold user-select-none" style="background-color: #${data.data[i].color}; color: #fff;">${data.data[i].initials}</div>
+                                        <span>${data.data[i].name}</span>
+                                    </div>
+                                </td>
+                                <td class="padding-05">
+                                    <div class="flex flex-col flex-align-fs flex-justify-con-fs gap-025">
+                                        <a class="link pointer user-select-none" href="/feedback/v/${data.data[i].id}">${data.data[i].title}</a>
+                                        <div class="flex flex-row flex-align-fs flex-justify-con-l gap-1">
+                                            <span class="background-bg padding-025 border-soft-light smaller-light user-select-none">
+                                                ${
+                                                    data.data[i].type == 0 ? 'Webáruház'
                                                     : (
-                                                        data.data[i].type == 3 ? 'Szállítás'
+                                                        data.data[i].type == 1 ? 'Termékek'
                                                         : (
-                                                            data.data[i].type == 4 ? 'Felhasználó'
+                                                            data.data[i].type == 2 ? 'Rendelés'
                                                             : (
-                                                                data.data[i].type == 5 ? 'Egyéb'
+                                                                data.data[i].type == 3 ? 'Szállítás'
                                                                 : (
-                                                                    data.data[i].type == 6 ? 'Weboldal'
-                                                                    : 'Ismeretlen'
+                                                                    data.data[i].type == 4 ? 'Felhasználó'
+                                                                    : (
+                                                                        data.data[i].type == 5 ? 'Egyéb'
+                                                                        : (
+                                                                            data.data[i].type == 6 ? 'Weboldal'
+                                                                            : 'Ismeretlen'
+                                                                        )
+                                                                    )
                                                                 )
                                                             )
-                                                        )
+                                                        )   
                                                     )
-                                                )   
-                                            )
-                                        }
-                                    </span>
-                                    ${
-                                        data.data[i].status == 0 ? `<span class="warning-bg padding-025 border-soft-light smaller-light user-select-none">Kezeletlen</span>`
-                                        : (
-                                            data.data[i].status == 1 ? `<span class="primary-bg padding-025 border-soft-light smaller-light user-select-none">Folyamatban</span>`
-                                            : `<span class="success-bg padding-025 border-soft-light smaller-light user-select-none">Lezárva</span>`
-                                        )
-                                    }
-                                </div>
+                                                }
+                                            </span>
+                                            ${
+                                                data.data[i].status == 0 ? `<span class="warning-bg padding-025 border-soft-light smaller-light user-select-none">Kezeletlen</span>`
+                                                : (
+                                                    data.data[i].status == 1 ? `<span class="primary-bg padding-025 border-soft-light smaller-light user-select-none">Folyamatban</span>`
+                                                    : `<span class="success-bg padding-025 border-soft-light smaller-light user-select-none">Lezárva</span>`
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="padding-05">
+                                    <span>${today.toLocaleDateString("hu-HU", options)}</span>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                } else {
+                    if (data.status == 'empty') {
+                        document.getElementById('feedbacks-container').innerHTML = `
+                            <div class="flex flex-col flex-align-c flex-justify-con-c w-fa text-muted user-select-none gap-1 padding-1 w-fa">
+                                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z" fill="currentColor"/><rect x="6" y="12" width="7" height="2" rx="1" fill="currentColor"/><rect x="6" y="7" width="12" height="2" rx="1" fill="currentColor"/></svg>
+                                <span class="small-med w-50d-fam">Úgy tűnik, hogy még nem küldött egy visszajelzést sem. Amennyiben problémája akadt rendelése közben, vagy valami hibát talált az oldalon, kérjük <a class="text-primary-light link pointer" onclick="showPanel(event, 'tab-new')">írjon nekünk egy új visszajelzést</a>.</span>
                             </div>
-                        </td>
-                        <td class="padding-05">
-                            <span>${today.toLocaleDateString("hu-HU", options)}</span>
-                        </td>
-                    </tr>
-                `;
-            }
-        })
-        .catch((reason) => {
-            console.log(reason);
+                        `;
+                    } else {
+                        document.getElementById('feedbacks-container').innerHTML = `
+                            <div class="flex flex-col flex-align-c flex-justify-con-c w-fa text-muted user-select-none gap-1 padding-1 w-fa">
+                                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                <span class="small-med w-50d-fam">Hiba történt a megjelenítés közben.</span>
+                            </div>
+                        `;
+                    }
+                }
+            })
+            .catch((reason) => {
+                console.log(reason);
+            });
+
         });
 
-    });
+    }
+
+    listFeedbacks();
+
 </script>

@@ -168,21 +168,66 @@
             if (data.status == 'success') {
                 document.getElementById('feedback-message-con').innerHTML = ``;
                 for (let i = 0; i < data.data.length; i++) {
+                    var diff = 0;
+                    if (i > 0) {
+                        var sentDate = new Date(data.data[i-1].fsent);
+                        var replyDate = new Date(data.data[i].fsent);
+                        diff = (replyDate - sentDate) * 1.66667E-5;
+                    }
+
+                    if (diff >= 10) {
+
+                        const month = ["Jan.","Feb.","Márc.","Ápr.","Máj.","Jún.","Júl.","Aug.","Szep.","Okt.","Nov.","Dec."];
+                        const weekday = ["Vasárnap","Hétfő","Kedd","Szerda","Csütörtök","Péntek","Szombat"];
+
+                        document.getElementById('feedback-message-con').innerHTML += `
+                            <span class="flex flex-row flex-align-c flex-justify-con-c w-fa text-muted smaller user-select-none">
+                                ${
+                                    replyDate.getFullYear() == new Date().getFullYear()
+                                    ? (
+                                        replyDate.getMonth() == new Date().getMonth()
+                                        ? (
+                                            replyDate.getDate() == new Date().getDate()
+                                            ? 'Ma, ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                            : (
+                                                new Date().getDate() - replyDate.getDate() == 1
+                                                ? 'Tegnap, ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                                : weekday[replyDate.getDay()] + ',' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                            )
+                                        )
+                                        : month[replyDate.getMonth()] + ' ' + replyDate.getDate() + ', ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                    )
+                                    : replyDate.getFullYear() + ' ' + month[replyDate.getMonth()] + ' ' + replyDate.getDate() + ', ' + ((replyDate.getHours() < 10) ? '0' + replyDate.getHours() : replyDate.getHours()) + ':' + ((replyDate.getMinutes() < 10) ? '0' + replyDate.getMinutes() : replyDate.getMinutes())
+                                }
+                            </span>
+                        `;
+                    }
+
                     if (data.data[i].ftype == 1) {
                         if (data.data[i].fmessage.length > 0) {
                             document.getElementById('feedback-message-con').innerHTML += `
-                            <div class="flex flex-row flex-justify-con-fe w-fa small">
-                                <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fc padding-1 border-soft feedback-chat-item-user has-tooltip relative" aria-describedby="tooltip-feedback-item-${data.data[i].frid}">
-                                    <span>${data.data[i].fmessage}</span>
-                                    <span class="tooltip absolute" id="tooltip-feedback-item-${data.data[i].frid}"><span key="tooltip-feedback-item-${data.data[i].frid}" key="tooltip-feedback-item-${data.data[i].frid}">${data.data[i].fsent}</span></span>
+                            <div class="flex flex-row flex-justify-con-fe gap-05 w-fa">
+                                <div class="flex flex-row flex-justify-con-fe w-fa small">
+                                    <div class="flex flex-row flex-align-fe flex-justify-con-fe w-fc padding-1 border-soft feedback-chat-item-user has-tooltip relative" aria-describedby="tooltip-feedback-item-${data.data[i].frid}">
+                                        <span>${data.data[i].fmessage}</span>
+                                        <span class="tooltip absolute" id="tooltip-feedback-item-${data.data[i].frid}"><span key="tooltip-feedback-item-${data.data[i].frid}" key="tooltip-feedback-item-${data.data[i].frid}">${data.data[i].fsent}</span></span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-row flex-align-fe">
+                                    <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
                                 </div>
                             </div>
                             `;
                         }
                         if (data.data[i].fattachment.length > 0) {
-                            if (data.data[i].fattachment.length > 1) {
+                            if (data.data[i].fattachment.split(';').length > 1) {
                                 document.getElementById('feedback-message-con').innerHTML += `
-                                    <div class="flex flex-row flex-align-c flex-justify-con-fe flex-wrap w-fa gap-1" id="feedback-chat-imagegroup-${data.data[i].frid}"></div>
+                                    <div class="flex flex-row flex-justify-con-fe gap-05 w-fa">
+                                        <div class="flex flex-row flex-align-c flex-justify-con-fe flex-wrap w-fa gap-1" id="feedback-chat-imagegroup-${data.data[i].frid}"></div>
+                                        <div class="flex flex-row flex-align-fe">
+                                            <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
+                                        </div>        
+                                    </div>
                                 `;
                                 for (let j = 0; j < data.data[i].fattachment.split(';').length; j++) {
                                     document.getElementById('feedback-chat-imagegroup-' + data.data[i].frid).innerHTML += `
@@ -191,25 +236,42 @@
                                 }
                             } else {
                                 document.getElementById('feedback-message-con').innerHTML += `
-                                <div class="flex flex-row flex-justify-con-fe w-fa small">
-                                    <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                <div class="flex flex-row flex-justify-con-fe gap-05 w-fa">
+                                    <div class="flex flex-row flex-justify-con-fe w-fa small">
+                                        <img loading="lazy" class="flex feedback-chat-img feedback-chat-img-user pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                    </div>
+                                    <div class="flex flex-row flex-align-fe">
+                                        <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
+                                    </div>
                                 </div>
                                 `;
                             }
                         }
                     } else {
-                        document.getElementById('feedback-message-con').innerHTML += `
-                        <div class="flex flex-row flex-justify-con-fs w-fa small">
-                            <div class="flex flex-row flex-align-fs flex-justify-con-fs w-fc padding-1 border-soft feedback-chat-item-support has-tooltip relative" aria-describedby="tooltip-feedback-item-${data.data[i].frid}">
-                                <span>${data.data[i].fmessage}</span>
-                                <span class="tooltip absolute" id="tooltip-feedback-item-${data.data[i].frid}"><span key="tooltip-feedback-item-${data.data[i].frid}" key="tooltip-feedback-item-${data.data[i].frid}">${data.data[i].fsent}</span></span>
+                        if (data.data[i].fmessage.length > 0) {
+                            document.getElementById('feedback-message-con').innerHTML += `
+                            <div class="flex flex-row flex-justify-con-fs gap-05 w-fa">
+                                <div class="flex flex-row flex-align-fs">
+                                    <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
+                                </div>
+                                <div class="flex flex-row flex-justify-con-fs w-fa small">
+                                    <div class="flex flex-row flex-align-fs flex-justify-con-fs w-fc padding-1 border-soft feedback-chat-item-support has-tooltip relative" aria-describedby="tooltip-feedback-item-${data.data[i].frid}">
+                                        <span>${data.data[i].fmessage}</span>
+                                        <span class="tooltip absolute" id="tooltip-feedback-item-${data.data[i].frid}"><span key="tooltip-feedback-item-${data.data[i].frid}" key="tooltip-feedback-item-${data.data[i].frid}">${data.data[i].fsent}</span></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        `;
+                            `;
+                        }
                         if (data.data[i].fattachment.length > 0) {
-                            if (data.data[i].fattachment.length > 1) {
+                            if (data.data[i].fattachment.split(';').length > 1) {
                                 document.getElementById('feedback-message-con').innerHTML += `
-                                    <div class="flex flex-row flex-align-c flex-justify-con-fs flex-wrap w-fa gap-1" id="feedback-chat-imagegroup-${data.data[i].frid}"></div>
+                                    <div class="flex flex-row flex-justify-con-fs gap-05 w-fa">
+                                        <div class="flex flex-row flex-align-fs">
+                                            <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
+                                        </div>
+                                        <div class="flex flex-row flex-align-c flex-justify-con-fs flex-wrap w-fa gap-1" id="feedback-chat-imagegroup-${data.data[i].frid}"></div>
+                                    </div>
                                 `;
                                 for (let j = 0; j < data.data[i].fattachment.split(';').length; j++) {
                                     document.getElementById('feedback-chat-imagegroup-' + data.data[i].frid).innerHTML += `
@@ -218,13 +280,19 @@
                                 }
                             } else {
                                 document.getElementById('feedback-message-con').innerHTML += `
-                                <div class="flex flex-row flex-justify-con-fs w-fa small">
-                                    <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                <div class="flex flex-row flex-justify-con-fs gap-05 w-fa">
+                                    <div class="flex flex-row flex-align-fs">
+                                        <span class="flex flex-row flex-align-c flex-justify-con-c bold text-white box-shadow curron__head circle padding-05 small-med" title="${data.data[i].sender.fullname}" style="background-color: #${data.data[i].sender.color}">${data.data[i].sender.initials}</span>
+                                    </div>
+                                    <div class="flex flex-row flex-justify-con-fs w-fa small">
+                                        <img loading="lazy" class="flex feedback-chat-img pointer user-select-none border-soft drop-shadow" alt="${data.data[i].fattachment.split(';')[j]}" title="${data.data[i].fattachment.split(';')[j]}" src="/assets/images/feedbacks/${data.data[i].fattachment}" onError="chatBrokenImage(this)" />
+                                    </div>
                                 </div>
                                 `;
                             }
                         }
                     }
+
                 }
                 document.getElementById('feedback-message-con').scrollTop = document.getElementById('feedback-message-con').scrollHeight - document.getElementById('feedback-message-con').clientHeight;
             }
@@ -277,52 +345,107 @@
 
     }); $('#delete-feedback').click(() => {
 
-        var feedbackData = new FormData(); 
-        const feedbackObject = {
-            action : 'delete',
-            fid    : <?= $params['id']; ?>
-        };
+        var panelBody = `
+            <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
+                <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
+                    <div class="text-danger">
+                        <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    </div>
+                    <span class="text-primary bold small-med">Biztosan törölni szeretné ezt a visszajelzést?</span>
+                </div>
+            </div>
+        `;
 
-        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
-            success : function (api) {
+        var panelFooter = `
+            <div class="flex flex-row flex-align-c flex-justify-con-c gap-2 w-fa padding-1">
+                <span class="smaller-light text-secondary text-primary-hover pointer user-select-none" action="close">Mégsem</span>
+                <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="delete-confirm" action="close">Törlés</span>
+            </div>
+        `;
 
-                feedbackObject.ip = api.ip;
-                feedbackData.append('feedback', JSON.stringify(feedbackObject));
-                const ajaxObject = {
-                    url : '/assets/php/classes/class.Feedbacks.php',
-                    data : feedbackData,
-                    loaderContainer : {
-                        isset : true,
-                        id : 'feedback-message-con',
-                        type : 'panel',
-                        iconSize : {
-                            iconWidth : '128',
-                            iconHeight : '128'
+        const panelObject = {
+            id : 'feedback-delete-panel',
+            header : {
+                isset : true,
+                title : {
+                    isset : true,
+                    title : 'Visszajelzés Törlése'
+                },
+                close : {
+                    isset : true,
+                    id : 'cl__ebox',
+                    icon : {
+                        size : {
+                            unit : 'px',
+                            width : 24,
+                            height: 24
                         },
-                        iconColor : {
-                            isset : false,
-                            color : 'currentColor'
-                        },
-                        loaderText : {
-                            custom : true,
-                            customText : 'Üzenetek törlése folyamatban...'
-                        }
-                    }
+                        fill : 'currentColor',
+                        title : 'Bezárás'
+                    },
+                }
+            },
+            body : {
+                isset : true,
+                html : panelBody
+            },
+            footer : {
+                isset : true,
+                html : panelFooter
+            }
+        }
+
+        let response = getFromPanelRequest(panelObject)
+        .then((data) => {
+            $('#delete-confirm').click(() => {
+                var feedbackData = new FormData(); 
+                const feedbackObject = {
+                    action : 'delete',
+                    fid    : <?= $params['id']; ?>
                 };
 
-                let response = getFromAjaxRequest(ajaxObject)
-                .then((data) => { console.log(data);
-                    if (data.status == 'success') {
-                        $('#delete-feedback').off('click');
-                        notificationSystem(0, 0, 0, 'Üzenet', 'Visszajelzés sikeresen törölve.');
-                        window.location.href = "/feedback";
-                    } else {
-                        loadMessages(<?= $params['id']; ?>);
-                        notificationSystem(0, 0, 0, 'Üzenet', 'A visszajelzést nem sikerült törölni.');
-                    }
-                }) .catch((reason) => { console.log(reason); });
-            }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
-        });
+                $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                    success : function (api) {
+
+                        feedbackObject.ip = api.ip;
+                        feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                        const ajaxObject = {
+                            url : '/assets/php/classes/class.Feedbacks.php',
+                            data : feedbackData,
+                            loaderContainer : {
+                                isset : true,
+                                id : 'feedback-message-con',
+                                type : 'panel',
+                                iconSize : {
+                                    iconWidth : '128',
+                                    iconHeight : '128'
+                                },
+                                iconColor : {
+                                    isset : false,
+                                    color : 'currentColor'
+                                },
+                                loaderText : {
+                                    custom : true,
+                                    customText : 'Üzenetek törlése folyamatban...'
+                                }
+                            }
+                        };
+
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => { console.log(data);
+                            if (data.status == 'success') {
+                                $('#delete-feedback').off('click');
+                                notificationSystem(0, 0, 0, 'Üzenet', 'Visszajelzés sikeresen törölve.');
+                                window.location.href = "/feedback";
+                            } else {
+                                loadMessages(<?= $params['id']; ?>);
+                                notificationSystem(0, 0, 0, 'Üzenet', 'A visszajelzést nem sikerült törölni.');
+                            }
+                        }) .catch((reason) => { console.log(reason); });
+                    }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
+                });
+            });
+        }) .catch((reason) => { console.log(reason); });
 
     });
 

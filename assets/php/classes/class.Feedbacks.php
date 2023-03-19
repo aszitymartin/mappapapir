@@ -67,7 +67,7 @@ Class Feedback {
             ]; return $this->returnObject;
         } else {
             $this->returnObject = [
-                "status" => "error",
+                "status" => "empty",
                 "message" => "Nincsen megjeleníthető adat."
             ]; return $this->returnObject;
         }
@@ -126,7 +126,7 @@ Class Feedback {
             ]; return $this->returnObject;
         } else {
             $this->returnObject = [
-                "status" => "error",
+                "status" => "empty",
                 "message" => "Nincsen megjeleníthető adat."
             ]; return $this->returnObject;
         }
@@ -269,6 +269,17 @@ Class Feedback {
             while ($sql->fetch()) {
                 $replyObject = new stdClass();
                 $replyObject->frid = $frid; $replyObject->ftype = $fuid == $_SESSION['id'] ? 1 : 0;
+                
+                if ($getSenderInfo = $con->prepare('SELECT customers.fullname, customers__header.initials, customers__header.color FROM customers INNER JOIN customers__header ON customers__header.uid = customers.id WHERE customers.id = ?')) {
+                    $getSenderInfo->bind_param('i', $fuid); $getSenderInfo->execute(); $getSenderInfo->store_result(); $getSenderInfo->bind_result($cfullname, $cinitials, $ccolor); $getSenderInfo->fetch();
+                    $customersObject = new stdClass();
+                    $customersObject->fullname = $cfullname;
+                    $customersObject->initials = $cinitials;
+                    $customersObject->color = $ccolor;
+                    $replyObject->sender = $customersObject;
+                    $getSenderInfo->close();
+                }
+
                 $replyObject->fuid = $fuid; $replyObject->fmessage = $fmessage;
                 $replyObject->fattachment = $fattachment; $replyObject->fsent = $fsent;
                 array_push($feedbacks_array, $replyObject);
