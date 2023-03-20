@@ -15,6 +15,22 @@
 }
 
 @media only screen and (max-width: 600px) {
-    @keyframes popup { 0% { opacity: 0.5; transform: translate3d(0, 50%, 0); }25% { opacity: .75; transform: translate3d(0, 0%, 0); }50% { opacity: 1; transform: translate3d(0, -10%, 0); }75% { opacity: 1; transform: translate3d(0, 0%, 0); }100% { opacity: 1; transform: translate3d(0, 0%, 0); } }
-    @keyframes popout { 100% { opacity: 0.5; transform: translate3d(0, 50%, 0); }75% { opacity: .75; transform: translate3d(0, 0%, 0); }50% { opacity: 1; transform: translate3d(0, -10%, 0); }25% { opacity: 1; transform: translate3d(0, 0%, 0); }0% { opacity: 1; transform: translate3d(0, 0%, 0); } }
+    /* @keyframes popup { 0% { opacity: 0.5; transform: translate3d(0, 50%, 0); }25% { opacity: .75; transform: translate3d(0, 0%, 0); }50% { opacity: 1; transform: translate3d(0, -10%, 0); }75% { opacity: 1; transform: translate3d(0, 0%, 0); }100% { opacity: 1; transform: translate3d(0, 0%, 0); } } */
+    @keyframes popup {
+        from {
+            opacity: 0.5; transform: translate3d(0, 50%, 0);
+        } to {
+            opacity: 1; transform: translate3d(0, 0%, 0);
+        }
+    }
+
+    @keyframes popout {
+        from {
+            opacity: 1; transform: translate3d(0, 0%, 0);
+        } to {
+            opacity: 0.5; transform: translate3d(0, 50%, 0);
+        }
+    }
+
+    /* @keyframes popout { 100% { opacity: 0.5; transform: translate3d(0, 50%, 0); }75% { opacity: .75; transform: translate3d(0, 0%, 0); }50% { opacity: 1; transform: translate3d(0, -10%, 0); }25% { opacity: 1; transform: translate3d(0, 0%, 0); }0% { opacity: 1; transform: translate3d(0, 0%, 0); } } */
 }

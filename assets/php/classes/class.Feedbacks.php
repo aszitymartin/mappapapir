@@ -583,6 +583,52 @@ Class Feedback {
 
     }
 
+    function setStatus ($object) {
+
+        $requiredItems = array ('action', 'fid', 'status', 'ip');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($setStatus = $con->prepare('UPDATE feedbacks SET status = ? WHERE id = ?')) {
+            $setStatus->bind_param('ii', $object['status'], $object['fid']); $setStatus->execute(); $setStatus->close();
+
+            $log_categ = "Visszajelzés kezelés"; $log_desc = "#".$_SESSION['id']." felhasználó módosította következő visszajelzés státuszát: #". $object['fid'] . '. Státusz átállítva: ' . $object['status'];
+            if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
+                $log->bind_param('isss', $_SESSION['id'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
+                $this->returnObject = [ "status" => "success" ]; return $this->returnObject;
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a naplózás közben."
+                ]; return $this->returnObject;
+            }
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba lépett történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
     function getResults () {
         return $this->returnObject;
     }
@@ -622,6 +668,10 @@ if (isset($postObject['action'])) {
         break;
         case 'status':
             $feedbackAction->getFeedbackStatus($postObject);
+            die(json_encode($feedbackAction->getResults()));
+        break;
+        case 'setStatus':
+            $feedbackAction->setStatus($postObject);
             die(json_encode($feedbackAction->getResults()));
         break;
         default:

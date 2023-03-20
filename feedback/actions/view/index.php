@@ -399,8 +399,7 @@
     $('#send-feedback-reply').click(() => {
 
         var reply_body = document.getElementById('feedback-reply-editor').getElementsByClassName('ql-editor')[0].textContent;
-
-        if ( !/\S/.test(reply_body) == false && (reply_body.length > 0 || miniArr.length > 0)) {
+        if (!/\S/.test(reply_body) == false || miniArr.length > 0) {
             
             $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
                 success : function (api) {
@@ -597,42 +596,7 @@
 <?php if ($_SESSION['id'] != $fuid && $privilege > 0) : ?>
 <script>
     $('#manage-feedback').click(() => {
-        /*
-            var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1";
-            c__wrapper.classList.add("fadein"); c__wrapper.classList.remove("fadeout"); document.body.append(c__wrapper); c__box.classList.add('padding-t-0'); c__box.classList.add('popup'); c__box.classList.remove('popout'); c__wrapper.append(c__box); $('html').css("overflow-y", "hidden");
-            c__box.innerHTML = `
-            <div class="flex flex-row flex-align-c flex-justify-con-sb padding-t-1" id="cbh__con">
-                <span class="text-primary bold">Visszajelzés kezelése</span>
-                <div class="flex flex-row flex-align-c gap-05">
-                    <span class="text-primary pointer" aria-label="Bezárás" id="cl__box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor"/><rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor"/></svg></span>
-                </div>
-            </div>
-            <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1 padding-t-1 text-primary bold small-med">
-                <label for="open" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
-                    <input type="radio" class="discount_input discount-radio box-shadow" id="open" name="feedback" value="1" required>
-                    <span class="flex">Kezeletlen</span>
-                </label>
-                <label for="progress" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
-                    <input type="radio" class="discount_input discount-radio box-shadow" id="progress" name="feedback" value="1" required>
-                    <span class="flex">Folyamatban</span>
-                </label>
-                <label for="closed" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
-                    <input type="radio" class="discount_input discount-radio box-shadow" id="closed" name="feedback" value="1" required>
-                    <span class="flex">Lezárva</span>
-                </label>
-            </div>
-            <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa padding-t-1">
-                <span class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
-                    <span class="flex flex-col flex-align-c flex-justify-con-c">Mentés</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"></path></svg>
-                </span>
-            </div>
-            `;
-            var con = document.getElementById('cbh__con');var mc = new Hammer(con);mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });mc.on("pandown", function(ev) { $('#cl__box').click(); });
-            $('#cl__box').click(function () { c__box.classList.replace("popup", "popout"); c__wrapper.classList.add("fadeout"); setTimeout(() => {c__wrapper.remove(); $('html').css("overflow-y", "unset");},235); });
-        */
-
-
+        
         var panelBody = `
             <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
                 <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
@@ -642,17 +606,20 @@
                     <span class="text-secondary bold small-med">Állítsa be a visszajelzés státuszát</span>
                 </div>
                 <div class="flex flex-row flex-align-c flex-justify-con-c flex-wrap w-fa gap-1 padding-t-1 text-primary bold">
-                    <label for="open" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
-                        <input type="radio" class="discount_input discount-radio box-shadow" id="open" name="feedback" value="1" required>
+                    <label for="open" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none" id="option-open">
+                        <input type="radio" class="discount_input discount-radio box-shadow" id="open" name="feedback" value="0" required>
                         <span class="flex smaller-med">Kezeletlen</span>
+                        <?= $fstatus == 0 ? '<span class="primary-bg smaller user-select-none border-soft-light padding-025">Jelenlegi</span>' : '' ?>
                     </label>
-                    <label for="progress" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
+                    <label for="progress" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none" id="option-progress">
                         <input type="radio" class="discount_input discount-radio box-shadow" id="progress" name="feedback" value="1" required>
                         <span class="flex smaller-med">Folyamatban</span>
+                        <?= $fstatus == 1 ? '<span class="primary-bg smaller user-select-none border-soft-light padding-025">Jelenlegi</span>' : '' ?>
                     </label>
-                    <label for="closed" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none">
-                        <input type="radio" class="discount_input discount-radio box-shadow" id="closed" name="feedback" value="1" required>
+                    <label for="closed" class="flex flex-row flex-align-c gap-1 background-bg border-soft w-fc padding-1 pointer user-select-none" id="option-close">
+                        <input type="radio" class="discount_input discount-radio box-shadow" id="closed" name="feedback" value="2" required>
                         <span class="flex smaller-med">Lezárva</span>
+                        <?= $fstatus == 2 ? '<span class="primary-bg smaller user-select-none border-soft-light padding-025">Jelenlegi</span>' : '' ?>
                     </label>
                 </div>
             </div>
@@ -661,12 +628,12 @@
         var panelFooter = `
         <div class="flex flex-row flex-align-c flex-justify-con-c gap-2 w-fa padding-1">
             <span class="smaller-light text-secondary text-primary-hover pointer user-select-none" action="close">Mégsem</span>
-            <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="delete-confirm" action="close">Törlés</span>
+            <span class="flex flex-row flex-align-c flex-justify-con-c primary-bg primary-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="manage-confirm" action="close">Mentés</span>
         </div>
         `;
 
         const panelObject = {
-            id : 'feedback-select-delete-panel',
+            id : 'feedback-select-status-panel',
             parent : 'body',
             header : {
                 isset : true,
@@ -698,9 +665,71 @@
             }
         }
 
+        function getSelected (name) {
+
+            var options = document.getElementsByName(name);
+
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].checked) {
+                    var selectedValue = options[i].value;
+                }
+            }
+
+            return selectedValue ? selectedValue : false;
+
+        }
+
         let response = getFromPanelRequest(panelObject)
         .then((data) => {
-        
+            $('#manage-confirm').click(() => {
+                var selectedStatus = getSelected('feedback');
+                if (selectedStatus) {
+                    
+                    $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                        success : function (api) {
+
+                            var feedbackData = new FormData(); 
+                            const feedbackObject = {
+                                action : 'setStatus',
+                                fid  : <?= $params['id'] ?>,
+                                status : selectedStatus,
+                                ip : api.ip
+                            };
+
+                            feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                            const ajaxObject = {
+                                url : '/assets/php/classes/class.Feedbacks.php',
+                                data : feedbackData,
+                                loaderContainer : { isset : false }
+                            };
+
+                            let response = getFromAjaxRequest(ajaxObject)
+                            .then((data) => {
+                                if (data.status == 'success') {
+
+                                    const now = new Date();
+                                    const notifParams = {
+                                        notifType : '1',
+                                        notifIcon : '2',
+                                        notifTheme : '0',
+                                        notifTitle : 'Üzenet',
+                                        notifDesc : 'Sikeres módosítás',
+                                        expiry : now.setSeconds(60)
+                                    };
+                                    localStorage.setItem('NP', JSON.stringify(notifParams));
+                                    
+                                    window.location.reload();
+
+                                } else { notificationSystem(1, 0, 0, 'Üzenet', 'Sikertelen módosítás.'); }
+                            }) .catch((reason) => { console.log(reason); });
+
+                        }, error : function () { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
+                    });
+
+                } else {
+                    notificationSystem(1, 0, 0, 'Üzenet', 'Státusz választása kötelező.');
+                }
+            });
         }).catch((reason) => { console.log(reason); });
 
     });

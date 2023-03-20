@@ -92,7 +92,7 @@
     .c__settings__wrapper { width: 70% !important; margin: 0 auto !important; }
 
     .d__confirm, .de__confirm { width: 30% !important; left: 50% !important; right: 50% !important; top: 45% !important; bottom: unset !important; transform: translate3d(-50%, -50%, 0) !important; }
-    .de__confirm { width: 25% !important; }
+    .de__confirm { width: 30vw !important; }
     .d__confirm .text-primary { font-size: 135% !important; }
     .d__confirm .button { font-size: 115% !important; }
     .d__confirm .small { font-size: 105% !important; }
