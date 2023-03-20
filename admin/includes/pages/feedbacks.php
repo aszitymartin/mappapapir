@@ -518,7 +518,7 @@ function get_time_ago( $time ) {
                                         };
 
                                         let response = getFromAjaxRequest(ajaxObject)
-                                        .then((data) => { console.log(data);
+                                        .then((data) => {
                                             if (data.status == 'success') {
                                                 resetDeleteButton(); listFeedbacks();
                                                 notificationSystem(0, 0, 0, 'Üzenet', 'Sikeres törlés.');

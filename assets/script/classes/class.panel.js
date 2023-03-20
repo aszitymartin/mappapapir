@@ -12,6 +12,9 @@ class sendPanelRequest {
 
         var ce__wrapper = document.createElement('div');
         ce__wrapper.classList = "wrapper_dark fadein z-index-100";
+        ce__wrapper.addEventListener('click', (e) => {
+            if (e.target == ce__wrapper) { closePanel(); }
+        });
         var ce__box = document.createElement('div');
         ce__box.id = object['id'];
         ce__box.classList = "d__confirm de__confirm popup fixed flex flex-col border-soft item-bg box-shadow";
