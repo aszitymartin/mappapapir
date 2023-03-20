@@ -17,7 +17,7 @@ function get_time_ago( $time ) {
                     <div class="flex flex-row flex-align-c gap-1 text-primary">
                         <div class="flex flex-row flex-align-c flex-justify-con-c padding-05" style="margin-right: .5rem;">
                             <label class="cst-chb-lbl">
-                                <input type="checkbox" class="absolute chifb" id="sel-fi-all">
+                                <input type="checkbox" class="absolute chifb" id="check_all_item">
                                 <span class="cst-checkbox"></span>
                             </label>
                         </div>
@@ -29,7 +29,7 @@ function get_time_ago( $time ) {
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor"/><path d="M9.2 3H3C2.4 3 2 3.4 2 4V19C2 19.6 2.4 20 3 20H21C21.6 20 22 19.6 22 19V7C22 6.4 21.6 6 21 6H12L10.4 3.60001C10.2 3.20001 9.7 3 9.2 3Z" fill="currentColor"/></svg>
                             <span class="tooltip absolute" id="tooltip-archive"><span key="tooltip-archive" key="tooltip-archive">Archiválás</span></span>
                         </div>
-                        <div class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg background-bg-hover pointer has-tooltip relative" aria-describedby="tooltip-delete">
+                        <div id="feedback-delete" class="flex flex-col flex-align-c flex-justify-con-c padding-025 border-soft-light background-bg text-muted has-tooltip relative" aria-describedby="tooltip-delete">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z" fill="currentColor"/><path opacity="0.5" d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z" fill="currentColor"/><path opacity="0.5" d="M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z" fill="currentColor"/></svg>
                             <span class="tooltip absolute" id="tooltip-delete"><span key="tooltip-delete" key="tooltip-delete">Törlés</span></span>
                         </div>
@@ -94,7 +94,7 @@ function get_time_ago( $time ) {
                                 <td class="padding-05">
                                     <div class="flex flex-row flex-align-c flex-justify-con-c padding-05" style="margin-right: .5rem;">
                                         <label class="cst-chb-lbl">
-                                            <input type="checkbox" class="absolute chifb" id="sel-fi-${data.data[i].id}">
+                                            <input type="checkbox" class="absolute chifb" id="sel-fi-${data.data[i].id}" onclick="__selectcitem(${data.data[i].id})">
                                             <span class="cst-checkbox"></span>
                                         </label>
                                     </div>
@@ -178,8 +178,218 @@ function get_time_ago( $time ) {
 
         });
 
+    } listFeedbacks();
+
+    function __selectcitem (pid) {
+        if (document.getElementById('sel-fi-'+pid).checked) { sltd.indexOf(pid) === -1 ? sltd.push(pid) : console.log(); }
+        else { if (sltd.indexOf(pid) > -1) { sltd.splice(sltd.indexOf(pid), 1); } }
+        checkFeedbackStatus(sltd);
+    }
+    $('#check_all_item').click(() => { sltd = []; var items = document.getElementsByClassName('chifb');
+        if (document.getElementById('check_all_item').checked) {
+            for (let i = 0; i < items.length; i++) { sltd.push(Number(items[i].id.split('-')[2])); document.getElementById(items[i].id).checked = true; }
+        } else { for (let i = 0; i < items.length; i++) { document.getElementById(items[i].id).checked = false; sltd = []; } }
+        checkFeedbackStatus(sltd);
+    });
+
+    function resetDeleteButton () {
+
+        document.getElementById('feedback-delete').classList.add('text-muted');
+        document.getElementById('feedback-delete').classList.remove('pointer');
+        document.getElementById('feedback-delete').classList.remove('background-bg-hover');   
+        $('#feedback-delete').off('click');
+
     }
 
-    listFeedbacks();
+    function checkFeedbackStatus (list) {
+
+        if (list.length > 0) {
+            document.getElementById('feedback-delete').classList.remove('text-muted');
+            document.getElementById('feedback-delete').classList.add('pointer');
+            document.getElementById('feedback-delete').classList.add('background-bg-hover');
+
+            $('#feedback-delete').off('click');
+
+            $('#feedback-delete').click(() => {
+
+                var feedbackData = new FormData(); 
+                const feedbackObject = { action : 'status', items : list };
+                feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Feedbacks.php',
+                    data : feedbackData,
+                    loaderContainer : {
+                        isset : false,
+                        id : 'feedbacks-container',
+                        type : 'panel',
+                        iconSize : {
+                            iconWidth : '128',
+                            iconHeight : '128'
+                        },
+                        iconColor : {
+                            isset : false,
+                            color : 'currentColor'
+                        },
+                        loaderText : {
+                            custom : true,
+                            customText : 'Visszajelzések megjelenítése folyamatban...'
+                        }
+                    }
+                }
+                let response = getFromAjaxRequest(ajaxObject)
+                .then((data) => {
+                    if (data.status == 'success') {
+                        let closedIssues = [];
+                        for (let i = 0; i < data.data.length; i++) {
+                            if (data.data[i].status == 2) {
+                                closedIssues.push(
+                                    {
+                                        fid : data.data[i].fid,
+                                        status : data.data[i].status
+                                    }
+                                );
+                            }
+                        }
+
+                        if (closedIssues.length > 0) {
+
+                            var panelBody = `
+                                <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
+                                        <div class="text-danger">
+                                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                        </div>
+                                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
+                                            <span class="text-primary bold small-med">Biztosan törölni szeretné ezt a visszajelzést?</span>
+                                            <span class="text-align-c text-secondary smaller-med">Olyan visszajelzést is törölni, szeretne, amelyik már le lett zárva. A törlés folytatásával ezek a visszajelzések nem lesznek törölve.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                        } else {
+
+                            var panelBody = `
+                                <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
+                                        <div class="text-danger">
+                                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                        </div>
+                                        <span class="text-primary bold small-med">Biztosan törölni szeretné ezt a visszajelzést?</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        var panelFooter = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c gap-2 w-fa padding-1">
+                                <span class="smaller-light text-secondary text-primary-hover pointer user-select-none" action="close">Mégsem</span>
+                                <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="delete-confirm" action="close">Törlés</span>
+                            </div>
+                        `;
+
+                        const panelObject = {
+                            id : 'feedback-select-delete-panel',
+                            parent : 'body',
+                            header : {
+                                isset : true,
+                                title : {
+                                    isset : true,
+                                    title : 'Visszajelzés Törlése'
+                                },
+                                close : {
+                                    isset : true,
+                                    id : 'cl__ebox',
+                                    icon : {
+                                        size : {
+                                            unit : 'px',
+                                            width : 24,
+                                            height: 24
+                                        },
+                                        fill : 'currentColor',
+                                        title : 'Bezárás'
+                                    },
+                                }
+                            },
+                            body : {
+                                isset : true,
+                                html : panelBody
+                            },
+                            footer : {
+                                isset : true,
+                                html : panelFooter
+                            }
+                        }
+
+                        let response = getFromPanelRequest(panelObject)
+                        .then((data) => {
+                            $('#delete-confirm').click(() => {
+
+                                for (let i = 0; i < closedIssues.length; i++) {
+                                    if (closedIssues[i].status == 2) {
+                                        if (sltd.indexOf(closedIssues[i].fid) > -1) { sltd.splice(sltd.indexOf(closedIssues[i].fid), 1); }
+                                    }
+                                }
+
+                                var feedbackData = new FormData(); 
+                                const feedbackObject = {
+                                    action : 'delete',
+                                    items  : sltd
+                                };
+
+                                $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                                    success : function (api) {
+
+                                        feedbackObject.ip = api.ip;
+                                        feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                                        const ajaxObject = {
+                                            url : '/assets/php/classes/class.Feedbacks.php',
+                                            data : feedbackData,
+                                            loaderContainer : {
+                                                isset : false,
+                                                id : 'feedback-message-con',
+                                                type : 'panel',
+                                                iconSize : {
+                                                    iconWidth : '128',
+                                                    iconHeight : '128'
+                                                },
+                                                iconColor : {
+                                                    isset : false,
+                                                    color : 'currentColor'
+                                                },
+                                                loaderText : {
+                                                    custom : true,
+                                                    customText : 'Üzenetek törlése folyamatban...'
+                                                }
+                                            }
+                                        };
+
+                                        let response = getFromAjaxRequest(ajaxObject)
+                                        .then((data) => { console.log(data);
+                                            if (data.status == 'success') {
+                                                resetDeleteButton(); listFeedbacks();
+                                                notificationSystem(0, 0, 0, 'Üzenet', 'Sikeres törlés.');
+                                            } else {
+                                                listFeedbacks();
+                                                notificationSystem(0, 0, 0, 'Üzenet', 'A visszajelzést nem sikerült törölni.');
+                                            }
+                                        }) .catch((reason) => { console.log(reason); });
+                                    }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
+                                });
+
+                            });
+                        }).catch((reason) => { console.log(reason); });
+
+                    }
+                })
+                .catch((reason) => {
+                    console.log(reason);
+                });
+
+            });
+
+        } else { resetDeleteButton(); }
+
+    }
 
 </script>
