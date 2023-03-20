@@ -133,6 +133,65 @@ Class Feedback {
 
     }
 
+    function listFeedbacksById ($object) {
+
+        $requiredItems = array ('action', 'fid');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($object['uid'] == 0) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Érvénytelen felhasználó."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $sql = 'SELECT feedbacks.id, feedbacks.uid, feedbacks.title, feedbacks.type, feedbacks.status, feedbacks.created, customers.fullname, customers__header.initials, customers__header.color FROM feedbacks INNER JOIN customers ON customers.id = feedbacks.uid INNER JOIN customers__header ON customers__header.uid = customers.id WHERE feedbacks.id = ' . $object['fid'];
+        $stmt = $con->query($sql);
+        if ($stmt->num_rows > 0) { $feedbacksArray = array();
+            while ($fd = $stmt->fetch_assoc()) {
+                $feedbacksObject = new stdClass();
+                $feedbacksObject->id = $fd['id'];
+                $feedbacksObject->uid = $fd['uid'];
+                $feedbacksObject->title = $fd['title'];
+                $feedbacksObject->type = $fd['type'];
+                $feedbacksObject->status = $fd['status'];
+                $feedbacksObject->created = $fd['created'];
+                $feedbacksObject->name = $fd['fullname'];
+                $feedbacksObject->initials = $fd['initials'];
+                $feedbacksObject->color = $fd['color'];
+                array_push($feedbacksArray, $feedbacksObject);
+            }
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $feedbacksArray
+            ]; return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "empty",
+                "message" => "Nincsen megjeleníthető adat."
+            ]; return $this->returnObject;
+        }
+
+    }
+
     function sendFeedback ($object) {
 
         $requiredItems = array ('action', 'uid', 'title', 'description', 'type', 'attachment', 'ip');
@@ -321,7 +380,7 @@ Class Feedback {
 
     function deleteFeedback ($object) {
 
-        $requiredItems = array ('action', 'fid', 'ip');
+        $requiredItems = array ('action', 'items', 'ip');
         $objectKeys = array_keys((array)$object);
         if ($requiredItems !== $objectKeys) {
             $this->returnObject = [
@@ -341,23 +400,46 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        if ($getFeedback = $con->prepare('SELECT feedbacks.uid FROM feedbacks WHERE feedbacks.id = ?')) {
-            $getFeedback->bind_param('i', $object['fid']); $getFeedback->execute(); $getFeedback->store_result();
-            $getFeedback->bind_result($fid); $getFeedback->fetch(); $getFeedback->close();
-
-            $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?');
-            $stmt->bind_param('i', $_SESSION['id']);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
-
-            if ($fid == $_SESSION['id']) { $this->initDelete($object); }
-            else { if ($privilege > 0) { $this->initDelete($object); } }
-
-        } else {
+        if (count($object['items']) < 1) {
             $this->returnObject = [
-                "status" => "error",
-                "message" => "Hiba történt a folyamat közben."
+                "status" => "empty"
             ];
             return $this->returnObject;
         }
+
+        $deleteArray = array();
+        for ($i = 0; $i < count($object['items']); $i++) {
+
+            if ($getFeedback = $con->prepare('SELECT feedbacks.uid FROM feedbacks WHERE feedbacks.id = ?')) {
+                $getFeedback->bind_param('i', $object['items'][$i]); $getFeedback->execute(); $getFeedback->store_result();
+                $getFeedback->bind_result($fid); $getFeedback->fetch(); $getFeedback->close();
+    
+                $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?');
+                $stmt->bind_param('i', $_SESSION['id']);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
+    
+                $deleteObject = new stdClass();
+                $deleteObject->ip = $object['ip'];
+                $deleteObject->fid = $object['items'][$i];
+
+                array_push($deleteArray,
+                    [
+                        "ip" => $object['ip'],
+                        "fid" => $object['items'][$i]
+                    ]
+                );
+
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
+            }
+
+        }
+
+        if ($fid == $_SESSION['id']) { $this->initDelete($deleteArray); }
+        else { if ($privilege > 0) { $this->initDelete($deleteArray); } }
 
     }
 
@@ -373,51 +455,68 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        if ($getFeedback = $con->prepare('SELECT attachment FROM feedbacks_reply WHERE fid = ?')) {
-            $getFeedback->bind_param('i', $object['fid']); $getFeedback->execute(); $getFeedback->store_result();
-            $getFeedback->bind_result($ftch); $attachments = array();
-            while ($getFeedback->fetch()) {
+        $deletedArray = array();
+        for ($i = 0; $i < count($object); $i++) {
 
-                if (strlen($ftch) > 0) {
-
-                    $exploded = explode(';', $ftch);
-                    for ($i = 0; $i < count($exploded); $i++) {
-                        array_push($attachments, $exploded[$i]);
+            if ($getFeedback = $con->prepare('SELECT attachment FROM feedbacks_reply WHERE fid = ?')) {
+                $getFeedback->bind_param('i', $object[$i]['fid']); $getFeedback->execute(); $getFeedback->store_result();
+                $getFeedback->bind_result($ftch); $attachments = array();
+                while ($getFeedback->fetch()) {
+    
+                    if (strlen($ftch) > 0) {
+    
+                        $exploded = explode(';', $ftch);
+                        for ($i = 0; $i < count($exploded); $i++) {
+                            array_push($attachments, $exploded[$i]);
+                        }
+    
                     }
-
-                }
-
-            } $getFeedback->free_result(); $getFeedback->close();
-        }
-
-        if (count($attachments) > 0) {
-            for ($i = 0; $i < count($attachments); $i++) {
-                if (file_exists($_SERVER['DOCUMENT_ROOT'].'/assets/images/feedbacks/' . $attachments[$i])) {
-                    unlink($_SERVER['DOCUMENT_ROOT'].'/assets/images/feedbacks/' . $attachments[$i]);
+    
+                } $getFeedback->free_result(); $getFeedback->close();
+            }
+    
+            if (count($attachments) > 0) {
+                for ($i = 0; $i < count($attachments); $i++) {
+                    if (file_exists($_SERVER['DOCUMENT_ROOT'].'/assets/images/feedbacks/' . $attachments[$i])) {
+                        unlink($_SERVER['DOCUMENT_ROOT'].'/assets/images/feedbacks/' . $attachments[$i]);
+                    }
                 }
             }
-        }
+    
+            if ($deleteFeedback = $con->prepare('DELETE FROM feedbacks WHERE id = ?')) {
+                $deleteFeedback->bind_param('i', $object[$i]['fid']); $deleteFeedback->execute(); $deleteFeedback->close();
+    
+                $log_categ = "Visszajelzés törlése"; $log_desc = "#".$_SESSION['id']." felhasználó  törölte a következő visszajelzését: #". $object[$i]['fid'];
+                if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
+                    $log->bind_param('isss', $_SESSION['id'], $object[$i]['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
+                    
+                    $deletedObject = new stdClass();
+                    $deletedObject->fid = $object[$i]['fid'];
+                    $deletedObject->ip = $object[$i]['ip'];
+                    
+                    array_push($deletedArray, $deletedObject);
 
-        if ($deleteFeedback = $con->prepare('DELETE FROM feedbacks WHERE id = ?')) {
-            $deleteFeedback->bind_param('i', $object['fid']); $deleteFeedback->execute(); $deleteFeedback->close();
-
-            
-            $log_categ = "Visszajelzés törlése"; $log_desc = "#".$_SESSION['id']." felhasználó  törölte a következő visszajelzését: #". $object['fid'];
-            if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
-                $log->bind_param('isss', $_SESSION['id'], $object['ip'], $log_categ, $log_desc); $log->execute(); $log->close(); 
-                $this->returnObject = [ "status" => "success" ];
-                return $this->returnObject;
+                } else {
+                    $this->returnObject = [
+                        "status" => "error",
+                        "message" => "Hiba történt a naplózás közben."
+                    ]; return $this->returnObject;
+                }
             } else {
                 $this->returnObject = [
                     "status" => "error",
-                    "message" => "Hiba történt a naplózás közben."
-                ]; return $this->returnObject;
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
             }
+
+        }
+
+        if (count($deletedArray) > 0) {
+            $this->returnObject = [ "status" => "success" ];
+            return $this->returnObject;
         } else {
-            $this->returnObject = [
-                "status" => "error",
-                "message" => "Hiba történt a folyamat közben."
-            ];
+            $this->returnObject = [ "status" => "empty" ];
             return $this->returnObject;
         }
 
@@ -445,7 +544,42 @@ Class Feedback {
             return $this->returnObject;
         }
 
-        
+        $statusArray = array();
+        for ($i = 0; $i < count($object['items']); $i++) {
+
+            if ($getStatus = $con->prepare('SELECT status FROM feedbacks WHERE id = ?')) {
+                $getStatus->bind_param('i', $object['items'][$i]); $getStatus->execute(); $getStatus->store_result();
+                $getStatus->bind_result($fstatus); $getStatus->fetch(); $getStatus->free_result(); $getStatus->close();
+
+                $statusObject = new stdClass();
+                $statusObject->fid = $object['items'][$i];
+                $statusObject->status = $fstatus;
+
+                array_push($statusArray, $statusObject);
+
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
+            }
+
+        }
+
+        if (count($statusArray) > 0) {
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $statusArray
+            ];
+            return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "empty"
+            ];
+            return $this->returnObject;
+        }
+
 
     }
 
@@ -470,6 +604,10 @@ if (isset($postObject['action'])) {
             $feedbackAction->listFeedbacksByUser($postObject);
             die(json_encode($feedbackAction->getResults()));
         break;
+        case 'listById':
+            $feedbackAction->listFeedbacksById($postObject);
+            die(json_encode($feedbackAction->getResults()));
+        break;
         case 'send':
             $feedbackAction->sendFeedback($postObject);
             die(json_encode($feedbackAction->getResults()));
@@ -480,6 +618,10 @@ if (isset($postObject['action'])) {
         break;
         case 'delete':
             $feedbackAction->deleteFeedback($postObject);
+            die(json_encode($feedbackAction->getResults()));
+        break;
+        case 'status':
+            $feedbackAction->getFeedbackStatus($postObject);
             die(json_encode($feedbackAction->getResults()));
         break;
         default:

@@ -202,9 +202,8 @@ function get_time_ago( $time ) {
     </div>
 </div>
 <script>
-
+    
     var sltd = [];
-
     function listFeedbacks () {
 
         $(document).ready(() => {
@@ -362,77 +361,187 @@ function get_time_ago( $time ) {
             document.getElementById('feedback-delete').classList.add('pointer');
             document.getElementById('feedback-delete').classList.add('background-bg-hover');
 
+            $('#feedback-delete').off('click');
+
             $('#feedback-delete').click(() => {
-                
-                console.log('check for closed issues, then confim panel if not found');
 
-                /*
-                var panelBody = `
-                    <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
-                        <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
-                            <div class="text-danger">
-                                <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
-                            </div>
-                            <span class="text-primary bold small-med">Biztosan törölni szeretné ezt a visszajelzést?</span>
-                        </div>
-                    </div>
-                `;
-
-                var panelFooter = `
-                    <div class="flex flex-row flex-align-c flex-justify-con-c gap-2 w-fa padding-1">
-                        <span class="smaller-light text-secondary text-primary-hover pointer user-select-none" action="close">Mégsem</span>
-                        <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="delete-confirm">Törlés</span>
-                    </div>
-                `;
-
-                const panelObject = {
-                    id : 'feedback-delete-panel',
-                    parent : 'body',
-                    header : {
-                        isset : true,
-                        title : {
-                            isset : true,
-                            title : 'Visszajelzés Törlése'
+                var feedbackData = new FormData(); 
+                const feedbackObject = { action : 'status', items : list };
+                feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Feedbacks.php',
+                    data : feedbackData,
+                    loaderContainer : {
+                        isset : false,
+                        id : 'feedbacks-container',
+                        type : 'panel',
+                        iconSize : {
+                            iconWidth : '128',
+                            iconHeight : '128'
                         },
-                        close : {
-                            isset : true,
-                            id : 'cl__ebox',
-                            icon : {
-                                size : {
-                                    unit : 'px',
-                                    width : 24,
-                                    height: 24
-                                },
-                                fill : 'currentColor',
-                                title : 'Bezárás'
-                            },
+                        iconColor : {
+                            isset : false,
+                            color : 'currentColor'
+                        },
+                        loaderText : {
+                            custom : true,
+                            customText : 'Visszajelzések megjelenítése folyamatban...'
                         }
-                    },
-                    body : {
-                        isset : true,
-                        html : panelBody
-                    },
-                    footer : {
-                        isset : true,
-                        html : panelFooter
                     }
                 }
-
-                
-                let response = getFromPanelRequest(panelObject)
+                let response = getFromAjaxRequest(ajaxObject)
                 .then((data) => {
-                    $('#delete-confirm').click(() => {
-                        console.log('showin loader');
-                        var loadPanelBody = `<span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>`;
-                    });
+                    if (data.status == 'success') {
+                        let closedIssues = [];
+                        for (let i = 0; i < data.data.length; i++) {
+                            if (data.data[i].status == 2) {
+                                closedIssues.push(
+                                    {
+                                        fid : data.data[i].fid,
+                                        status : data.data[i].status
+                                    }
+                                );
+                            }
+                        }
 
-                }).catch((reason) => { console.log(reason); });
-                */
+                        if (closedIssues.length > 0) {
+
+                            var panelBody = `
+                                <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
+                                        <div class="text-danger">
+                                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                        </div>
+                                        <div class="flex flex-col flex-align-c flex-justify-con-c gap-05 w-fa">
+                                            <span class="text-primary bold small-med">Biztosan törölni szeretné ezt a visszajelzést?</span>
+                                            <span class="text-align-c text-secondary smaller-med">Olyan visszajelzést is törölni, szeretne, amelyik már le lett zárva. A törlés folytatásával ezek a visszajelzések nem lesznek törölve.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                        } else {
+
+                            var panelBody = `
+                                <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1">
+                                    <div class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-05">
+                                        <div class="text-danger">
+                                            <svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                                        </div>
+                                        <span class="text-primary bold small-med">Biztosan törölni szeretné ezt a visszajelzést?</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        var panelFooter = `
+                            <div class="flex flex-row flex-align-c flex-justify-con-c gap-2 w-fa padding-1">
+                                <span class="smaller-light text-secondary text-primary-hover pointer user-select-none" action="close">Mégsem</span>
+                                <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="delete-confirm" action="close">Törlés</span>
+                            </div>
+                        `;
+
+                        const panelObject = {
+                            id : 'feedback-select-delete-panel',
+                            parent : 'body',
+                            header : {
+                                isset : true,
+                                title : {
+                                    isset : true,
+                                    title : 'Visszajelzés Törlése'
+                                },
+                                close : {
+                                    isset : true,
+                                    id : 'cl__ebox',
+                                    icon : {
+                                        size : {
+                                            unit : 'px',
+                                            width : 24,
+                                            height: 24
+                                        },
+                                        fill : 'currentColor',
+                                        title : 'Bezárás'
+                                    },
+                                }
+                            },
+                            body : {
+                                isset : true,
+                                html : panelBody
+                            },
+                            footer : {
+                                isset : true,
+                                html : panelFooter
+                            }
+                        }
+
+                        let response = getFromPanelRequest(panelObject)
+                        .then((data) => {
+                            $('#delete-confirm').click(() => {
+
+                                for (let i = 0; i < closedIssues.length; i++) {
+                                    if (closedIssues[i].status == 2) {
+                                        if (sltd.indexOf(closedIssues[i].fid) > -1) { sltd.splice(sltd.indexOf(closedIssues[i].fid), 1); }
+                                    }
+                                }
+
+                                var feedbackData = new FormData(); 
+                                const feedbackObject = {
+                                    action : 'delete',
+                                    items  : sltd
+                                };
+
+                                $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                                    success : function (api) {
+
+                                        feedbackObject.ip = api.ip;
+                                        feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                                        const ajaxObject = {
+                                            url : '/assets/php/classes/class.Feedbacks.php',
+                                            data : feedbackData,
+                                            loaderContainer : {
+                                                isset : false,
+                                                id : 'feedback-message-con',
+                                                type : 'panel',
+                                                iconSize : {
+                                                    iconWidth : '128',
+                                                    iconHeight : '128'
+                                                },
+                                                iconColor : {
+                                                    isset : false,
+                                                    color : 'currentColor'
+                                                },
+                                                loaderText : {
+                                                    custom : true,
+                                                    customText : 'Üzenetek törlése folyamatban...'
+                                                }
+                                            }
+                                        };
+
+                                        let response = getFromAjaxRequest(ajaxObject)
+                                        .then((data) => { console.log(data);
+                                            if (data.status == 'success') {
+                                                resetDeleteButton(); listFeedbacks();
+                                                notificationSystem(0, 0, 0, 'Üzenet', 'Sikeres törlés.');
+                                            } else {
+                                                listFeedbacks();
+                                                notificationSystem(0, 0, 0, 'Üzenet', 'A visszajelzést nem sikerült törölni.');
+                                            }
+                                        }) .catch((reason) => { console.log(reason); });
+                                    }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
+                                });
+
+                            });
+                        }).catch((reason) => { console.log(reason); });
+
+                    }
+                })
+                .catch((reason) => {
+                    console.log(reason);
+                });
+
             });
 
         } else { resetDeleteButton(); }
-
-        // console.log(list.join(';'));
 
     }
 

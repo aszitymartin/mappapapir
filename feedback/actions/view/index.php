@@ -448,6 +448,7 @@
 
         const panelObject = {
             id : 'feedback-delete-panel',
+            parent : 'body',
             header : {
                 isset : true,
                 title : {
@@ -484,7 +485,7 @@
                 var feedbackData = new FormData(); 
                 const feedbackObject = {
                     action : 'delete',
-                    fid    : <?= $params['id']; ?>
+                    items    : [<?= $params['id']; ?>]
                 };
 
                 $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
