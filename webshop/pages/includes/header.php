@@ -13,25 +13,14 @@
             </div>
             <div id="bestseller-con" class="flex w-fa"></div>
             <script>
-                console.log(pid)
-
-                var bestSellerData = new FormData(); 
-                const bestSellerObject = {
-                    action : 'isBestSeller',
-                    pid  : pid
-                };
+                var bestSellerData = new FormData(); var bestSellerObject = { action : 'isBestSeller', pid  : pid };
 
                 bestSellerData.append('product', JSON.stringify(bestSellerObject));
-                const ajaxObject = {
-                    url : '/assets/php/classes/class.Products.php',
-                    data : bestSellerData,
-                    loaderContainer : { isset : false }
-                };
+                var ajaxObject = { url : '/assets/php/classes/class.Products.php', data : bestSellerData, loaderContainer : { isset : false } };
 
                 $(document).ready(() => {
                     let response = getFromAjaxRequest(ajaxObject)
-                    .then((data) => { console.log(data);
-
+                    .then((data) => {
                         if (data.status == 'success') {
                             if (data.isBestSeller) {
                                 document.getElementById('bestseller-con').innerHTML = `
@@ -42,8 +31,7 @@
                                 `;
                             }
                         }
-
-                    }) .catch((reason) => { console.log(reason); });
+                    })
                 });
 
             </script>

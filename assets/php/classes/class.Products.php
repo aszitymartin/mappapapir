@@ -1,7 +1,5 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php');
 
-// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
-
 Class Product {
 
     public $returnObject;
@@ -226,17 +224,6 @@ Class Product {
             return $this->returnObject;
         }
 
-        /*
-
-            [*] 1. Osszes kategoria kilistazasa
-            [*] 2. A keresett termek kategoriajanak megnezese
-            [*] 3. Megnezni hogy a keresett termek kategoriajaban milyen termekek vannak
-            [*] 4. Megnezni, hogy melyik rendelesben hanyszor lettek megrendelve a termekek
-            [ ] 5. Megnezni, hogy a keresett kategoriaban melyik termek lett a legtobszor rendelve
-            [ ] 6. Megnezni, hogy a keresett termek a bestseller-e -> true / false
-
-        */
-
         $category_array = array();
         $itemsByCategory_array = array();
         $ordersItems_array = array();
@@ -247,19 +234,16 @@ Class Product {
 
         $isBestSeller = false;
 
-        // 1.
         if ($getCategories = $con->prepare('SELECT DISTINCT category FROM products__category')) {
             $getCategories->execute(); $getCategories->store_result(); $getCategories->bind_result($category);
             while ($getCategories->fetch()) {
                 array_push($category_array, $category);
             } $getCategories->free_result(); $getCategories->close(); $con->next_result();
 
-            // 2.
             if ($getItemCategory = $con->prepare('SELECT category FROM products__category WHERE pid = ?')) {
                 $getItemCategory->bind_param('i', $object['pid']); $getItemCategory->execute(); $getItemCategory->store_result();
                 $getItemCategory->bind_result($itemCategory); $getItemCategory->fetch(); $getItemCategory->close();
 
-                // 3.
                 if ($getItemsByCategory = $con->prepare('SELECT pid FROM products__category WHERE category LIKE ?')) {
                     $getItemsByCategory->bind_param('s', $itemCategory); $getItemsByCategory->execute(); $getItemsByCategory->store_result();
                     $getItemsByCategory->bind_result($itemsByCategory);
@@ -267,7 +251,6 @@ Class Product {
                         array_push($itemsByCategory_array, $itemsByCategory);
                     } $getItemsByCategory->free_result(); $getItemsByCategory->close(); $con->next_result();
 
-                    // 4.
                     if ($getAllOrders = $con->prepare('SELECT items FROM orders')) {
                         $getAllOrders->execute(); $getAllOrders->store_result(); $getAllOrders->bind_result($orders);
                         while ($getAllOrders->fetch()) {
@@ -281,7 +264,6 @@ Class Product {
                                 $separatedItemsId = $separatedItemsWithQuantity[0];
 
                                 if (count($separatedItemsWithQuantity) > 1) {
-                                    // get $separatedItemsId category
                                     if ($getOrderItemCategory = $con->prepare('SELECT category FROM products__category WHERE pid = ?')) {
                                         $getOrderItemCategory->bind_param('i', $separatedItemsId); $getOrderItemCategory->execute();
                                         $getOrderItemCategory->store_result(); $getOrderItemCategory->bind_result($orderItemCategory);
@@ -297,7 +279,6 @@ Class Product {
                             }
                         }
 
-                        // Statisztika keszitese a $orderedItemsWithMatchingCategory_array elemeibol
                         for ($i = 0; $i < count($orderedItemsWithMatchingCategory_array); $i++) {
 
                             if (!in_array($orderedItemsWithMatchingCategory_array[$i][0], $orderedItemsIdGroup_array)) {
@@ -349,37 +330,6 @@ Class Product {
             // "bestSellerItem" => $orderedItemsGroupWithQuantity_array[$maxQuantity]
         ];
         return $this->returnObject;
-
-        /*
-        if ($sql = $con->prepare('SELECT items FROM orders WHERE 1')) {
-            $sql->execute(); $sql->store_result(); $sql->bind_result($orderedItems); 
-            $items = array(); $category_array = array();
-            while ($sql->fetch()) {
-                $itemsObject = new stdClass();
-                $itemsObject->items = $orderedItems;
-
-                array_push($items, $itemsObject);
-            } $sql->free_result(); $sql->close(); $con->next_result();
-
-            for ($i = 0; $i < count($items); $i++) {
-                $exploded = explode(';', $items['i']['items']);
-                for ($j = 0; $j < count($exploded); $j++) {
-                    if ($getCategory = $con->prepare('SELECT category FROM products__category WHERE pid = ?')) {
-                        $getCategory->bind_param('i', $exploded[$i]); $getCategory->execute(); $getCategory->store_result(); $getCategory->bind_result($category);
-                        $getCategory->fetch(); //$getCategory->close(); $con->next_result();
-                        array_push($category_array, $category);
-                    }
-                }
-            }
-
-            $this->returnObject = [
-                "status" => "success",
-                "object" => $category_array
-            ];
-            return $this->returnObject;
-
-        }
-        */
 
     }
 
