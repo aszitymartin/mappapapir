@@ -9,14 +9,13 @@ function get_time_ago( $time ) {
     foreach( $condition as $secs => $str ) {$d = $time_difference / $secs;if( $d >= 1 ) {$t = round( $d );return $t . ' ' . $str . ( $t > 1 ? '' : '' ) . '';}}
 }
 ?>
-<h3 class="text-primary">/admin/includes/pages/default.php</h3>
 <script src="/assets/script/quill/dist/quill.js"></script>
 <div class="flex flex-col gap-1">
     <?php $dsql = "SELECT * FROM def__page"; $dres = $con->query($dsql); $ddt = $dres->fetch_assoc(); ?>
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
         <div class="flex flex-row flex-align-c flex-justify-con-sb">
             <span class="text-primary large bold">Alap beállítások</span>
-            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer">Mentés</span>
+            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer user-select-none" id="sv-df-ch">Mentés</span>
         </div><hr style="border: 1px solid var(--background);" class="w-100">
         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 padding-1">
             <div class="flex flex-col gap-1 w-fa">
@@ -58,16 +57,16 @@ function get_time_ago( $time ) {
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
         <div class="flex flex-row flex-align-c flex-justify-con-sb">
             <span class="text-primary large bold">Webmester</span>
-            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer">Mentés</span>
+            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer user-select-none" id="sv-wm-ch">Mentés</span>
         </div><hr style="border: 1px solid var(--background);" class="w-100">
         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 padding-1">
             <div class="flex flex-col gap-1 w-fa">
                 <span class="text-primary bold">Megnevezés</span>
-                <input type="text" value="<?= $ddt['webmester']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Webmester" autocomplete="off">
+                <input id="wm-name" type="text" value="<?= $ddt['webmester']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Webmester" autocomplete="off">
             </div>
             <div class="flex flex-col gap-1 w-fa">
                 <span class="text-primary bold">Elérhetőség</span>
-                <input type="email" value="<?= $ddt['email']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Webmester elérhetőségei" autocomplete="off">
+                <input id="wm-email" type="email" value="<?= $ddt['email']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Webmester elérhetőségei" autocomplete="off">
             </div>
         </div>
     </div>
@@ -187,10 +186,10 @@ function get_time_ago( $time ) {
                     <div class="flex flex-col gap-1 w-fa ln-it-sl hd-ln-df" id="link-cons-item-'.$i.'">
                         <div class="flex flex-row gap-05 w-fa cst-var-con">
                             <div class="flex flex-col w-30 gap-025">
-                                <input type="text" value="'. explode("=",$ha[$i])[0] .'" id="link-name-'.($i+1).'" class="cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary" placeholder="Meta tag neve">
+                                <input type="text" value="'. explode("=",$ha[$i])[0] .'" id="link-name-'.($i+1).'" class="cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary" placeholder="Link neve">
                             </div>
                             <div class="flex flex-row w-70 gap-05">
-                                <input type="text" value="'. explode("=",$ha[$i])[1] .'" id="link-val-'.($i+1).'" class="cst-var-val adm__input outline-none w-fa border-soft item-bg text-primary" placeholder="Meta tag adatai">
+                                <input type="text" value="'. explode("=",$ha[$i])[1] .'" id="link-val-'.($i+1).'" class="cst-var-val adm__input outline-none w-fa border-soft item-bg text-primary" placeholder="Link útvonala">
                                 <span class="flex flex-col flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft small pointer" style="padding: .65rem;" aria-label="Eltávolítás" role="button" title="Eltávolítás" onclick="__removelinks('. $i .')">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.7 19.4L5.3 18C4.9 17.6 4.9 17 5.3 16.6L16.6 5.3C17 4.9 17.6 4.9 18 5.3L19.4 6.7C19.8 7.1 19.8 7.7 19.4 8.1L8.1 19.4C7.8 19.8 7.1 19.8 6.7 19.4Z" fill="currentColor"></path><path d="M19.5 18L18.1 19.4C17.7 19.8 17.1 19.8 16.7 19.4L5.40001 8.1C5.00001 7.7 5.00001 7.1 5.40001 6.7L6.80001 5.3C7.20001 4.9 7.80001 4.9 8.20001 5.3L19.5 16.6C19.9 16.9 19.9 17.6 19.5 18Z" fill="currentColor"></path></svg>
                                 </span>
@@ -203,6 +202,7 @@ function get_time_ago( $time ) {
             ?>
             </div>
             <div class="flex flex-col w-fa gap-1" id="link-cons"></div>
+            <div class="hidden w-fa" id="links-error-con"></div>
             <div class="flex flex-row w-fa">
                 <span id="add-links" class="primary-bg primary-bg-hover border-soft pointer user-select-none small w-fc" style="padding: .65rem;">Link hozzáadása</span>
             </div>
@@ -272,6 +272,22 @@ function get_time_ago( $time ) {
     </div>
 </div>
 <script>var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1"; var metacount = <?= count($ma); ?>; var linkcount = <?= count($ha); ?>;
+
+    var links_array = []; var defl = [];
+    defl.push(
+        <?php
+            for ($i = 0; $i < count($ha); $i++) {
+                echo "
+                {
+                    name: '".explode("=",$ha[$i])[0]."',
+                    link: '".explode("=",$ha[$i])[1]."',
+                    id  : $i
+                },
+                ";
+            }
+        ?>
+    );
+            
     $('#add-meta').click(() => { if (document.getElementById('mt-cn-it-em-in')) { document.getElementById('mt-cn-it-em-in').remove(); }
         metacount++; var cstitem = document.createElement('div'); cstitem.id = "meta-cons-item-"+metacount; cstitem.classList = "flex flex-col gap-1 w-fa mt-it-sl"; document.getElementById('meta-cons').append(cstitem);
         document.getElementById('meta-cons-item-'+metacount).innerHTML = `
@@ -293,12 +309,12 @@ function get_time_ago( $time ) {
         linkcount++; var cstitem = document.createElement('div'); cstitem.id = "link-cons-item-"+linkcount; cstitem.classList = "flex flex-col gap-1 ln-it-sl";
         document.getElementById('link-cons').append(cstitem);
         document.getElementById('link-cons-item-'+linkcount).innerHTML = `
-        <div class="flex flex-row gap-05 w-fa cst-var-con hd-ln-df" id="cst-var-${linkcount}">
+        <div class="flex flex-row gap-05 w-fa cst-var-con hd-ln-df link-item" id="cst-var-${linkcount}">
             <div class="flex flex-col w-30 gap-025">
-                <input type="text" id="link-name-${linkcount}" class='cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary' placeholder='Link neve'>
+                <input type="text" id="link-name-${linkcount}" class='link-item-name cst-var-name adm__input w-fa border-soft cst-drp-fts item-bg outline-none text-primary' placeholder='Link neve'>
             </div>
             <div class="flex flex-row w-70 gap-05">
-                <input type="text" id="link-val-${linkcount}" class='cst-var-val adm__input outline-none w-fa border-soft item-bg text-primary' placeholder='Link útvonal'>
+                <input type="text" id="link-val-${linkcount}" class='link-item-value cst-var-val adm__input outline-none w-fa border-soft item-bg text-primary' placeholder='Link útvonal'>
                 <span class="flex flex-col flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft small pointer" style="padding: .65rem;" aria-label="Eltávolítás" role="button" title="Eltávolítás" onclick="__removelinks(${linkcount})">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.7 19.4L5.3 18C4.9 17.6 4.9 17 5.3 16.6L16.6 5.3C17 4.9 17.6 4.9 18 5.3L19.4 6.7C19.8 7.1 19.8 7.7 19.4 8.1L8.1 19.4C7.8 19.8 7.1 19.8 6.7 19.4Z" fill="currentColor"/><path d="M19.5 18L18.1 19.4C17.7 19.8 17.1 19.8 16.7 19.4L5.40001 8.1C5.00001 7.7 5.00001 7.1 5.40001 6.7L6.80001 5.3C7.20001 4.9 7.80001 4.9 8.20001 5.3L19.5 16.6C19.9 16.9 19.9 17.6 19.5 18Z" fill="currentColor"/></svg>
                 </span>
@@ -306,7 +322,20 @@ function get_time_ago( $time ) {
         </div>
         <div class="hd-ln-el-er-cn" id="hd-ln-el-er-cn-${(linkcount-1)}"></div>
         `;
-    }); function __removelinks (index) { document.getElementById('link-cons-item-'+index).remove(); var ldiv = document.getElementsByClassName('ln-it-sl');
+    }); function __removelinks (index) {
+                
+        var link_name = document.getElementById('link-cons-item-'+index).querySelectorAll('input')[0].value;
+        var link_value = document.getElementById('link-cons-item-'+index).querySelectorAll('input')[1].value;
+
+        for (let i = 0; i < defl.length; i++) {
+            if (defl[i].id == index) {
+                if (i > -1) {
+                    defl.splice(i, 1);
+                }
+            }
+        }
+        
+        document.getElementById('link-cons-item-'+index).remove(); var ldiv = document.getElementsByClassName('ln-it-sl');
         if (ldiv.length < 1) { document.getElementById('ln-it-con').innerHTML = `<span class="text-muted user-select-none text-align-c" id="ln-cn-it-em-in">Egy link sem található, vagy el lett távolítva. Amennyiben fel szeretne venni új linket, kattintson a <strong>Link hozzáadása</strong> gombra.</span>`; }
     } var minActive = 0; var miniArr = [];  var newsminActive = 0; var newsMiniArr = [];
     function __inituploader () { var minIndex = document.getElementsByClassName('miniature-upload').length;  minActive++; minIndex++; 
@@ -503,72 +532,256 @@ function get_time_ago( $time ) {
         }
     }
 
-    // Linkek mentese
-    $('#sv-hd-ln').click(() => {
-        let dec = <?= count($ha); ?>;
-        var de = document.getElementsByClassName('hd-ln-df');
-        const defl = [
-            <?php
-                for ($i = 0; $i < count($ha); $i++) {
-                    echo "
-                    {
-                        name: '".explode("=",$ha[$i])[0]."',
-                        link: '".explode("=",$ha[$i])[1]."'
-                    },
-                    ";
-                }
-            ?>
-        ]; var adefla = [];
-
-        for (let i = 0; i < de.length; i++) {
-            adefla.push(
-                {
-                    name: de[i].querySelector('#link-name-'+(i+1)).value,
-                    link: de[i].querySelector('#link-val-'+(i+1)).value
-                }
-            );
-        }
+    // Alap beallitasok mentese
+    $('#sv-df-ch').click(() => {
         
-        var adefle = [];
 
-        for (let i = 0; i < defl.length; i++) {
-            for (let j = 0; j < adefla.length; j++) {
-                if (defl[i].name == adefla[j].name) {
-                    adefle.push(
-                        {
-                            id: j,
-                            name: adefla[j].name
-                        }
-                    );
-                } if (defl[i].link == adefla[j].link) {
-                    adefle.push(
-                        {
-                            id: j,
-                            link: adefla[j].link
-                        }
-                    );
+
+    });
+
+    // Webmester beallitasok mentese
+    $('#sv-wm-ch').click(() => {
+        
+        var wm_name = document.getElementById('wm-name').value;
+        var wm_email = document.getElementById('wm-email').value;
+
+        if (wm_name.length > 0 && wm_email.length > 0) {
+
+            var panelBody = `
+            <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                <span>Adatok mentése folyamatban</span>
+            </div>
+        `;
+
+        const panelObject = {
+            id : 'feedback-select-delete-panel',
+            parent : 'body',
+            header : {
+                isset : true,
+                title : {
+                    isset : true,
+                    title : 'Webmester szerkesztése'
+                },
+                close : {
+                    isset : true,
+                    id : 'cl__ebox',
+                    icon : {
+                        size : {
+                            unit : 'px',
+                            width : 24,
+                            height: 24
+                        },
+                        fill : 'currentColor',
+                        title : 'Bezárás'
+                    },
                 }
+            },
+            body : {
+                isset : true,
+                html : panelBody
+            },
+            footer : {
+                isset : false,
             }
         }
 
-        const groupAdefle = (adefle = []) => { let result = [];
-        result = adefle.reduce((r, a) => {
-            r[a.id] = r[a.id] || []; r[a.id].push(a); return r;
-        }, Object.create(null)); return result;
-        }; const gadefle = [{items: groupAdefle(adefle)}];
+        var webmasterData = new FormData(); 
+        const webmasterObject = {
+            action : 'changeWebmaster',
+            name  : wm_name,
+            email : wm_email
+        };
 
-        var ec = document.getElementsByClassName('hd-ln-el-er-cn'); for (let i = 0; i < ec.length; i++) { ec[i].innerHTML = ``; } var cnid = Object.keys(gadefle[0].items);
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
+                webmasterObject.ip = api.ip;
+                webmasterData.append('default', JSON.stringify(webmasterObject));
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Default.php',
+                    data : webmasterData,
+                    loaderContainer : { isset : false }
+                }
 
-        for (let i = 0; i < cnid.length; i++) {
-            console.log(cnid[i]);
-            var gname = gadefle[0].items[cnid[i]][0]?.name ? 'név (<em>' + gadefle[0].items[cnid[i]][0]?.name + '</em>)' : '';
-            var glink = gadefle[0].items[cnid[i]][1]?.link ? 'link (<em>' + gadefle[0].items[cnid[i]][1]?.link + '</em>)' : '';
-            document.getElementById('hd-ln-el-er-cn-'+cnid[i]).innerHTML = `
-            <div class="flex flex-row flex-align-c w-fa gap-1 user-select-none small-med text-danger">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
-                <span>A megadott ${gname} ${glink}</span>
-            </div>
-            `;
+                let response = getFromPanelRequest(panelObject)
+                .then((data) => {
+                    let response = getFromAjaxRequest(ajaxObject)
+                    .then((data) => {
+                        if (data.status == 'success') {
+                            document.getElementById('panel-body').innerHTML = `
+                                <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                <span>Sikeres módosítás</span>
+                            `;
+                        } else {
+                            document.getElementById('panel-body').innerHTML = `
+                                <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                <span>${data.message}</span>
+                            `;
+                        }
+                    }).catch((reason) => { console.log(reason); });
+                }).catch((reason) => { console.log(reason); });
+
+            }
+        });
+
         }
+
     });
+
+    // Linkek mentese
+    $('#sv-hd-ln').click(() => {
+
+        function checkDuplicates (array) {
+            return (new Set(array)).size !== array.length;
+        }
+
+        let dec = <?= count($ha); ?>;
+        var de = document.getElementsByClassName('hd-ln-df');
+        var adefla = [];
+
+
+        defl = [];
+
+        for (let i = 0; i < de.length; i++) {
+            defl.push(
+                {
+                    name : de[i].getElementsByClassName('cst-var-name')[0].value,
+                    link : de[i].getElementsByClassName('cst-var-val')[0].value,
+                    id   : Number(de[i].id.split('-')[de[i].id.split('-').length-1])
+                }
+            );
+        }
+
+        var created_links_array = [];
+        var created_links = document.getElementsByClassName('link-item');
+        for (let i = 0; i < created_links.length; i++) {
+            var created_link_name = created_links[i].getElementsByClassName('link-item-name')[0].value;
+            var created_link_value = created_links[i].getElementsByClassName('link-item-value')[0].value;
+
+            if (created_link_name.length > 0 && created_link_value.length > 0) {
+                created_links_array.push(
+                    {
+                        name : created_link_name,
+                        link : created_link_value,
+                        id   : Number(created_links[i].id.split('-')[created_links[i].id.split('-').length-1])
+                    }
+                );
+            }
+
+        }
+
+        var all_items = defl;
+        var link_names_array = [];
+        var link_values_array = [];
+
+        for (let i = 0; i < all_items.length; i++) {
+
+            if (all_items[i].name.length > 0 && all_items[i].link.length > 0) {
+                link_names_array.push(all_items[i].name);
+                link_values_array.push(all_items[i].link);
+            } else {
+                if (i > -1) {
+                    all_items.splice(i, 1);
+                }
+            }
+
+        }
+
+        console.log(all_items);
+
+        if (checkDuplicates(link_names_array) || checkDuplicates(link_values_array)) {
+            document.getElementById('links-error-con').classList.replace('hidden', 'flex');
+            document.getElementById('links-error-con').innerHTML = `
+                <div class="flex flex-row flex-align-c flex-justify-con-fs gap-1 w-fa text-danger small user-select-none">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    <span>Nem szerepelhet duplikáció a linkek között!</span>
+                </div>
+            `;
+        } else {
+            document.getElementById('links-error-con').classList.replace('flex', 'hidden');
+            document.getElementById('links-error-con').innerHTML = ``;
+
+            var panelBody = `
+                <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span>Adatok mentése folyamatban</span>
+                </div>
+            `;
+
+            const panelObject = {
+                id : 'feedback-select-delete-panel',
+                parent : 'body',
+                header : {
+                    isset : true,
+                    title : {
+                        isset : true,
+                        title : 'Fejléc linkek mentése'
+                    },
+                    close : {
+                        isset : true,
+                        id : 'cl__ebox',
+                        icon : {
+                            size : {
+                                unit : 'px',
+                                width : 24,
+                                height: 24
+                            },
+                            fill : 'currentColor',
+                            title : 'Bezárás'
+                        },
+                    }
+                },
+                body : {
+                    isset : true,
+                    html : panelBody
+                },
+                footer : {
+                    isset : false,
+                }
+            }
+
+            var linkData = new FormData(); 
+            const linkObject = {
+                action : 'changeHeaderLink',
+                items  : all_items
+            };
+
+            $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                success : function (api) {
+                    linkObject.ip = api.ip;
+                    linkData.append('default', JSON.stringify(linkObject));
+
+                    const ajaxObject = {
+                        url : '/assets/php/classes/class.Default.php',
+                        data : linkData,
+                        loaderContainer : { isset : false }
+                    }
+
+                    let response = getFromPanelRequest(panelObject)
+                    .then((data) => {
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => {
+                            if (data.status == 'success') {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                    <span>Sikeres módosítás</span>
+                                `;
+                            } else {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                    <span>${data.message}</span>
+                                `;
+                            }
+                        }).catch((reason) => { console.log(reason); });
+                    }).catch((reason) => { console.log(reason); });
+
+                }
+            });
+            
+        }
+
+    });
+
+
+
 </script>

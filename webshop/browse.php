@@ -45,7 +45,7 @@
                         echo '
                         <a href="/search/'.$categ.'" class="flex flex-col flex-align-c flex-justify-con-sb gap-1 padding-1 border-soft pointer background-bg-hover mn-ctg-sh">
                             <div class="product-miniature drop-shadow pointer" style="background-image: url(&quot;/assets/images/uploads/'.$thumb.'&quot;); width: 2rem; height: 2rem;"></div>
-                            <span>'.$categ.'</span>
+                            <span class="text-primary">'.$categ.'</span>
                         </a>
                         ';
                     }
