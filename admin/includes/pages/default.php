@@ -76,7 +76,7 @@ function get_time_ago( $time ) {
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
         <div class="flex flex-row flex-align-c flex-justify-con-sb">
             <span class="text-primary large bold">Meta tagok</span>
-            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer">Mentés</span>
+            <span id="sv-mt-ch" class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer user-select-none">Mentés</span>
         </div><hr style="border: 1px solid var(--background);" class="w-100">
         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 padding-1 w-fa">
             <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 w-fa" id="mt-it-con">
@@ -101,6 +101,7 @@ function get_time_ago( $time ) {
             ?>
             </div>
             <div class="flex flex-col w-fa gap-1" id="meta-cons"></div>
+            <div class="hidden w-fa" id="meta-error-con"></div>
             <div class="flex flex-row w-fa">
                 <span id="add-meta" class="primary-bg primary-bg-hover border-soft pointer user-select-none small w-fc" style="padding: .65rem;">Meta hozzáadása</span>
             </div>
@@ -287,6 +288,23 @@ function get_time_ago( $time ) {
             }
         ?>
     );
+
+    var metl = [];
+    metl.push(
+        <?php
+            for ($i = 0; $i < count($ma); $i++) {
+                echo "
+                {
+                    name: '".explode("=",$ma[$i])[0]."',
+                    content: '".explode("=",$ma[$i])[1]."',
+                    id  : $i
+                },
+                ";
+            }
+        ?>
+    );
+
+    console.log(metl);
             
     $('#add-meta').click(() => { if (document.getElementById('mt-cn-it-em-in')) { document.getElementById('mt-cn-it-em-in').remove(); }
         metacount++; var cstitem = document.createElement('div'); cstitem.id = "meta-cons-item-"+metacount; cstitem.classList = "flex flex-col gap-1 w-fa mt-it-sl"; document.getElementById('meta-cons').append(cstitem);
@@ -303,7 +321,17 @@ function get_time_ago( $time ) {
             </div>
         </div>
         `;
-    }); function __removemeta (index) { document.getElementById('meta-cons-item-'+index).remove(); var mdiv = document.getElementsByClassName('mt-it-sl');
+    }); function __removemeta (index) {
+        
+        for (let i = 0; i < metl.length; i++) {
+            if (metl[i].id == index) {
+                if (i > -1) {
+                    metl.splice(i, 1);
+                }
+            }
+        }
+
+        document.getElementById('meta-cons-item-'+index).remove(); var mdiv = document.getElementsByClassName('mt-it-sl');
         if (mdiv.length < 1) { document.getElementById('mt-it-con').innerHTML = `<span class="text-muted user-select-none text-align-c" id="mt-cn-it-em-in">Egy meta tag sem található, vagy el lett távolítva. Amennyiben fel szeretne venni új meta tagokat, kattintson a <strong>Meta hozzáadása</strong> gombra.</span>`; }
     } $('#add-links').click(() => { if (document.getElementById('ln-cn-it-em-in')) { document.getElementById('ln-cn-it-em-in').remove(); }
         linkcount++; var cstitem = document.createElement('div'); cstitem.id = "link-cons-item-"+linkcount; cstitem.classList = "flex flex-col gap-1 ln-it-sl";
@@ -539,6 +567,112 @@ function get_time_ago( $time ) {
 
     });
 
+    // Meta tagok mentese
+    $('#sv-mt-ch').click(() => {
+        
+        var mt = document.getElementsByClassName('mt-it-sl');
+        metl = [];
+
+        for (let i = 0; i < mt.length; i++) {
+            metl.push(
+                {
+                    name : mt[i].getElementsByClassName('cst-var-name')[0].value,
+                    content : mt[i].getElementsByClassName('cst-var-val')[0].value,
+                    id   : Number(mt[i].id.split('-')[mt[i].id.split('-').length-1])
+                }
+            );
+        }
+        
+        for (let i = 0; i < metl.length; i++) {
+
+            if (metl[i].name.length < 1 && metl[i].content.length < 1) {
+                if (i > -1) {
+                    metl.splice(i, 1);
+                }
+            }
+
+        }
+
+        var panelBody = `
+            <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                <span>Adatok mentése folyamatban</span>
+            </div>
+        `;
+
+        const panelObject = {
+            id : 'save-meta-panel',
+            parent : 'body',
+            header : {
+                isset : true,
+                title : {
+                    isset : true,
+                    title : 'Meta tagok mentése'
+                },
+                close : {
+                    isset : true,
+                    id : 'cl__ebox',
+                    icon : {
+                        size : {
+                            unit : 'px',
+                            width : 24,
+                            height: 24
+                        },
+                        fill : 'currentColor',
+                        title : 'Bezárás'
+                    },
+                }
+            },
+            body : {
+                isset : true,
+                html : panelBody
+            },
+            footer : {
+                isset : false,
+            }
+        }
+
+        var metaData = new FormData(); 
+        const metaObject = {
+            action : 'changeMetaTags',
+            items  : metl
+        };
+
+        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+            success : function (api) {
+                metaObject.ip = api.ip;
+                metaData.append('default', JSON.stringify(metaObject));
+
+                const ajaxObject = {
+                    url : '/assets/php/classes/class.Default.php',
+                    data : metaData,
+                    loaderContainer : { isset : false }
+                }
+
+                let response = getFromPanelRequest(panelObject)
+                .then((data) => {
+                    let response = getFromAjaxRequest(ajaxObject)
+                    .then((data) => {
+                        if (data.status == 'success') {
+                            document.getElementById('panel-body').innerHTML = `
+                                <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                <span>Sikeres módosítás</span>
+                            `;
+                        } else {
+                            document.getElementById('panel-body').innerHTML = `
+                                <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                <span>${data.message}</span>
+                            `;
+                        }
+                    }).catch((reason) => { console.log(reason); });
+                }).catch((reason) => { console.log(reason); });
+
+            }
+        });
+
+    });
+
+
     // Webmester beallitasok mentese
     $('#sv-wm-ch').click(() => {
         
@@ -555,7 +689,7 @@ function get_time_ago( $time ) {
         `;
 
         const panelObject = {
-            id : 'feedback-select-delete-panel',
+            id : 'save-webmaster-panel',
             parent : 'body',
             header : {
                 isset : true,
@@ -635,9 +769,7 @@ function get_time_ago( $time ) {
             return (new Set(array)).size !== array.length;
         }
 
-        let dec = <?= count($ha); ?>;
         var de = document.getElementsByClassName('hd-ln-df');
-        var adefla = [];
 
 
         defl = [];
@@ -687,8 +819,6 @@ function get_time_ago( $time ) {
 
         }
 
-        console.log(all_items);
-
         if (checkDuplicates(link_names_array) || checkDuplicates(link_values_array)) {
             document.getElementById('links-error-con').classList.replace('hidden', 'flex');
             document.getElementById('links-error-con').innerHTML = `
@@ -709,7 +839,7 @@ function get_time_ago( $time ) {
             `;
 
             const panelObject = {
-                id : 'feedback-select-delete-panel',
+                id : 'save-header-links-panel',
                 parent : 'body',
                 header : {
                     isset : true,

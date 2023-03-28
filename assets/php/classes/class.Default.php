@@ -167,6 +167,57 @@ class Page {
 
     }
 
+    function changeMetaTags ($object) {
+
+        $requiredItems = array ('action', 'items', 'ip');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $items_array = array();
+        for ($i = 0; $i < count($object['items']); $i++) {
+            array_push($items_array, 
+                $object['items'][$i]['name'] . '=' . $object['items'][$i]['content']
+            );
+        }
+
+        $imploded_links = implode(';', $items_array);
+
+        if ($changeLinks = $con->prepare('UPDATE def__page SET meta = ?')) {
+            $changeLinks->bind_param('s', $imploded_links); $changeLinks->execute(); $changeLinks->store_result(); $changeLinks->close();
+
+            $logData = new stdClass();
+            $logData->ip = $object['ip'];
+            $logData->category = 'Meta tagok szerkesztése';
+            $logData->description = '#' . $_SESSION['id'] . ' felhasználó módosította a meta tagokat : ' . $imploded_links;
+
+            $this->log($logData);
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
     function getResults () {
         return $this->returnObject;
     }
@@ -190,6 +241,10 @@ if (isset($postObject['action'])) {
         break;
         case 'changeWebmaster':
             $defultAction->changeWebmaster($postObject);
+            die(json_encode($defultAction->getResults()));
+        break;
+        case 'changeMetaTags':
+            $defultAction->changeMetaTags($postObject);
             die(json_encode($defultAction->getResults()));
         break;
         default:
