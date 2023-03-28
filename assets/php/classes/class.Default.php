@@ -218,6 +218,181 @@ class Page {
 
     }
 
+    function changeDefault ($object) {
+
+        $requiredItems = array ('action', 'name', 'posy', 'desc', 'ip');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($changeWebmaster = $con->prepare('UPDATE def__page SET title = ?, posy = ?, description = ?')) {
+            $changeWebmaster->bind_param('sss', $object['name'], $object['posy'], $object['desc']); $changeWebmaster->execute(); $changeWebmaster->store_result();
+
+            $logData = new stdClass();
+            $logData->ip = $object['ip'];
+            $logData->category = 'Oldal adatainak módosítása';
+            $logData->description = '#' . $_SESSION['id'] . ' felhasználó módosította az oldal adatait.';
+
+            $this->log($logData);
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function listPageIcons () {
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        $files_array = array();
+
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/images/default/';
+        $images = glob($path."*");
+        foreach($images as $image) {
+            $image_name = explode('/', $image)[count(explode('/', $image)) - 1];
+            $image_date = explode('-', $image_name)[0];
+            $image_creator = explode('-', $image_name)[1];
+            $image_ext = explode('.', $image_name)[1];
+
+            $image_date_year = substr($image_date, 0, 4); $image_date_month = substr($image_date, 4, 2);
+            $image_date_day = substr($image_date, 6, 2); $image_date_hour = substr($image_date, 8, 2);
+            $image_date_min = substr($image_date, 10, 2); $image_date_sec = substr($image_date, 12, 2);
+            $d=mktime($image_date_hour, $image_date_min, $image_date_sec, $image_date_month, $image_date_day, $image_date_year);
+            $file_created = date("Y-m-d H:i:s", $d);
+
+            if ($getCreator = $con->prepare('SELECT fullname FROM customers WHERE id = ?')) {
+                $getCreator->bind_param('i', $image_creator); $getCreator->execute(); $getCreator->store_result();
+                $getCreator->bind_result($creator_name); $getCreator->fetch();
+                $images = new stdClass();
+                $images->name = $image_name;
+                $images->created = $file_created;
+                $images->creator = $creator_name;
+                $images->ext = $image_ext;
+
+                array_push($files_array, $images);
+
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
+            }
+
+        }
+
+        if (count($files_array) > 0) {
+            $this->returnObject = [
+                "status" => "success",
+                "data" => $files_array
+            ];
+            return $this->returnObject;
+        } else {
+            $this->returnObject = [
+                "status" => "empty"
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
+    function changePageIcon ($object, $attachment) {
+
+        die('asdasdasd');
+
+        function check ($type) { $exten = ['png', 'jpg', 'jpeg', 'ico', 'svg', 'gif']; if (in_array($type, $exten)) { return 'true'; } else { return 'false'; } }
+        function upload ($file) { $target_dir = $_SERVER['DOCUMENT_ROOT'].'/assets/images/default/'; $name = basename($file['name']); $type = $file['type']; $tmp = $file['tmp_name']; $doc = date('YmdHis') . '-' . $_SESSION['id'] . '.' . basename($type); if (move_uploaded_file($tmp, $target_dir . '' . $doc)) { return $doc; } else { return false; die('Miniatűr feltöltése meghiusúlt, a termék nem lett létrehozva.'); } }
+
+        $requiredItems = array ('ip');
+        $objectKeys = array_keys((array)$object);
+        if ($requiredItems !== $objectKeys) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nincs elegendő adat a folytatáshoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($object['uid'] == 0) {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Érvénytelen felhasználó."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($this->connect()['status'] == 'success') {
+            $con = $this->connect()['data'];
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Nem sikerült kapcsolódni az adatbázishoz."
+            ];
+            return $this->returnObject;
+        }
+
+        if ($selectFeedbackInfo = $con->prepare('SELECT uid, status FROM feedbacks WHERE id = ?')) {
+            $selectFeedbackInfo->bind_param('i', $object['fid']); $selectFeedbackInfo->execute(); $selectFeedbackInfo->store_result();
+            $selectFeedbackInfo->bind_result($feedbackCreator, $feedbackStatus); $selectFeedbackInfo->fetch(); $selectFeedbackInfo->close();
+
+            if ($feedbackStatus == 0 && $feedbackCreator != $_SESSION['id']) {
+                if ($updateFeedbackStatus = $con->prepare('UPDATE feedbacks SET status = 1 WHERE id = ?')) {
+                    $updateFeedbackStatus->bind_param('i', $object['fid']); $updateFeedbackStatus->execute(); $updateFeedbackStatus->close();
+                }
+            }
+
+            if ($sql = $con->prepare('INSERT INTO feedbacks_reply (fid, uid, message, attachment) VALUES (?, ?, ?, ?)')) {
+                $formatted_attachments = []; for ($i = 0; $i < count($attachment); $i++) { if (check(basename($attachment['atch' . ($i + 1)]['type']))) { array_push($formatted_attachments, upload($attachment['atch' . ($i + 1)])); } }
+                $attachments = implode(';', $formatted_attachments);
+                $sql->bind_param('iiss', $object['fid'], $object['uid'], htmlspecialchars($object['message'], ENT_QUOTES), $attachments);
+                $sql->execute(); $sql->close(); $this->returnObject = [ "status" => "success" ]; return $this->returnObject;
+    
+            } else {
+                $this->returnObject = [
+                    "status" => "error",
+                    "message" => "Hiba történt a folyamat közben."
+                ];
+                return $this->returnObject;
+            }
+
+        } else {
+            $this->returnObject = [
+                "status" => "error",
+                "message" => "Hiba történt a folyamat közben."
+            ];
+            return $this->returnObject;
+        }
+
+    }
+
     function getResults () {
         return $this->returnObject;
     }
@@ -228,6 +403,7 @@ $defultAction = new Page();
 $returnObject = new stdClass();
 
 $postObject = json_decode($_POST['default'], true);
+$attachmentObject = $_FILES;
 
 if (isset($postObject['action'])) {
     switch ($postObject['action']) {
@@ -247,14 +423,30 @@ if (isset($postObject['action'])) {
             $defultAction->changeMetaTags($postObject);
             die(json_encode($defultAction->getResults()));
         break;
+        case 'changeDefault':
+            $defultAction->changeDefault($postObject);
+            die(json_encode($defultAction->getResults()));
+        break;
+        case 'listPageIcons':
+            $defultAction->listPageIcons();
+            die(json_encode($defultAction->getResults()));
+        break;
         default:
             $returnObject->status = "error"; $returnObject->message = "Érvénytelen kérés.";
             die(json_encode($returnObject));
         break;
     }
 } else {
-    $returnObject->status = "error"; $returnObject->message = "Hiányzó adatok.";
-    die(json_encode(($returnObject)));
+
+    if (count($attachmentObject) > 0) {
+        $insertObject = $_POST;
+        $defultAction->changePageIcon($insertObject, $attachmentObject);
+        die(json_encode($defultAction->getResults()));
+    } else {
+        $returnObject->status = "error"; $returnObject->message = "Hiányzó adatok.";
+        die(json_encode(($returnObject)));
+    }
+
 }
 
 ?>

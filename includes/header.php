@@ -20,11 +20,11 @@
                 echo '<meta name="description" content="'. $hdt['description'] .'" />';
                 echo '<meta name="webmaster" content="'. $hdt['webmester'] .'" />';
                 echo '<meta name="contact" content="'. $hdt['email'] .'" />';
-            } $hsql = "SELECT title, icon FROM def__page"; $hres = $con->query($hsql); $hsdt = $hres->fetch_assoc();
+            } $hsql = "SELECT title, posy, icon FROM def__page"; $hres = $con->query($hsql); $hsdt = $hres->fetch_assoc();
         ?>
                 
         <link rel="stylesheet" href="/assets/style/main.css" content-type="text/css" />
-        <link href="/assets/icons/<?= $hsdt['icon']; ?>" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+        <link href="/assets/images/default/<?= $hsdt['icon']; ?>" rel="shortcut icon" type="image/vnd.microsoft.icon" />
         <link rel="stylesheet" href="/assets/script/swiper/swiper-bundle.min.css" content-type="text/css" />
         <link href="/assets/script/quill/dist/quill.snow.css" rel="stylesheet">
         <link href="/assets/script/tagify/dist/tagify.css" rel="stylesheet">
@@ -80,9 +80,9 @@
             <div id='header_con' class='container padding-1 border-soft item-bg box-shadow'>
                 <div id='header_title' class='header_title flex flex-row flex-align-c flex-justify-con-sb'>
                     <a href="/" class='flex flex-align-l flex-justify-con-l flex-col pointer'>
-                        <span class='header_title_heading'>Mappa Papír</span>
+                        <span class='header_title_heading'><?= $hsdt['title']; ?></span>
                         <span class='header_title_desc'>
-                            <span key="header-title-desc">Minden ami írószer.</span>
+                            <span key="header-title-desc"><?= $hsdt['posy']; ?></span>
                         </span>
                     </a>
                     <div id='header_middle' class='header_middle_con flex flex-col'>

@@ -20,32 +20,57 @@ function get_time_ago( $time ) {
         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 padding-1">
             <div class="flex flex-col gap-1 w-fa">
                 <span class="text-primary bold">Oldal neve</span>
-                <input type="text" value="<?= $ddt['title']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Oldal neve" autocomplete="off">
+                <input id="page-name" type="text" value="<?= $ddt['title']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Oldal neve" autocomplete="off">
+            </div>
+            <div class="flex flex-col gap-1 w-fa">
+                <span class="text-primary bold">Oldal mottója</span>
+                <input id="page-posy" type="text" value="<?= $ddt['posy']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Oldal mottója" autocomplete="off">
             </div>
             <div class="flex flex-col gap-1 w-fa">
                 <span class="text-primary bold">Oldal leírása</span>
-                <input type="text" value="<?= $ddt['description']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Oldal leírása" autocomplete="off">
+                <input id="page-desc" type="text" value="<?= $ddt['description']; ?>" class="w-fa text-primary border-soft background-bg padding-1-05 outline-none border-none" placeholder="Oldal leírása" autocomplete="off">
             </div>
-            <div class="flex flex-col gap-1 w-fa">
-                <span class="text-primary bold">Oldal ikonja</span>
-                <div class="flex flex-row gap-1 w-fa">
-                <?php $iurl = "'/assets/icons/". $ddt['icon'] ."'"; ?>
-                    <div class="flex flex-col flex-align-c gap-025 text-primary small-med">
-                        <div style="background-image: url(<?= $iurl; ?>); background-size: cover; background-repeat: no-repeat;" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed"></div>
-                        <em>Jelenlegi</em>
-                    </div>
-                    <div class="flex flex-row gap-1" id="miniatures-con"></div>
-                    <div id="min-upl-con">
-                        <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed" onclick="__inituploader()">
-                            <div class="flex flex-row-d-col-m flex-align-c gap-1">
-                                <div class="flex flex-row flex-align-c gap-1">
-                                    <div class="flex flex-col flex-align-c flex-justify-con-c">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor"></path><path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor"></path></svg>
-                                        <span class="text-muted small-med w-fa text-align-c">Hozzáadás</span>
-                                    </div>
+            <div class="hidden w-fa" id="def-error-con"></div>
+        </div>
+    </div>
+</div>
+<div class="flex flex-col gap-1">
+    <?php $dsql = "SELECT * FROM def__page"; $dres = $con->query($dsql); $ddt = $dres->fetch_assoc(); ?>
+    <div class="flex flex-col w-fa border-soft item-bg box-shadow">
+        <div class="flex flex-col w-fa gap-05 padding-1">
+            <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                <span class="text-primary large bold">Oldal ikonja</span>
+                <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer user-select-none" id="sv-ic-ch">Mentés</span>
+            </div>
+            <hr style="border: 1px solid var(--background);" class="w-100">
+        </div>
+        <div class="flex flex-col gap-1 w-fa padding-1">
+            <div class="flex flex-row gap-1 w-fa">
+                <?php $iurl = "'/assets/images/default/". $ddt['icon'] ."'"; ?>
+                <div class="flex flex-col flex-align-c gap-025 text-primary small-med">
+                    <div style="background-image: url(<?= $iurl; ?>); background-size: cover; background-repeat: no-repeat;" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed"></div>
+                    <em>Jelenlegi</em>
+                </div>
+                <div class="flex flex-row gap-1" id="miniatures-con"></div>
+                <div id="min-upl-con">
+                    <div id="miniature-uploader" class="flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft border-secondary-dotted background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed" onclick="__inituploader()">
+                        <div class="flex flex-row-d-col-m flex-align-c gap-1">
+                            <div class="flex flex-row flex-align-c gap-1">
+                                <div class="flex flex-col flex-align-c flex-justify-con-c">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13V11C3 10.4 3.4 10 4 10H20C20.6 10 21 10.4 21 11V13C21 13.6 20.6 14 20 14H4C3.4 14 3 13.6 3 13Z" fill="currentColor"></path><path d="M13 21H11C10.4 21 10 20.6 10 20V4C10 3.4 10.4 3 11 3H13C13.6 3 14 3.4 14 4V20C14 20.6 13.6 21 13 21Z" fill="currentColor"></path></svg>
+                                    <span class="text-muted small-med w-fa text-align-c">Hozzáadás</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col flex-align-c w-fa gap-1" id="image-history-con" style="padding-bottom: 1rem;">
+            <span class="flex flex-row w-fa text-secondary padding-1">Előző ikonok</span>
+            <div class="flex flex-col w-fa gap-1 border-soft item-bg">
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-row w-fa overflow-x-scroll hide-scroll item-bg border-soft" id="image_history">
                     </div>
                 </div>
             </div>
@@ -273,8 +298,7 @@ function get_time_ago( $time ) {
     </div>
 </div>
 <script>var c__wrapper = document.createElement('div'); c__wrapper.classList = "wrapper_dark fadein"; var c__box = document.createElement('div'); c__box.classList = "d__confirm popup fixed flex flex-col border-soft item-bg box-shadow padding-1"; var metacount = <?= count($ma); ?>; var linkcount = <?= count($ha); ?>;
-
-    var links_array = []; var defl = [];
+    var links_array = []; var defl = []; var metl = [];
     defl.push(
         <?php
             for ($i = 0; $i < count($ha); $i++) {
@@ -288,8 +312,6 @@ function get_time_ago( $time ) {
             }
         ?>
     );
-
-    var metl = [];
     metl.push(
         <?php
             for ($i = 0; $i < count($ma); $i++) {
@@ -303,8 +325,6 @@ function get_time_ago( $time ) {
             }
         ?>
     );
-
-    console.log(metl);
             
     $('#add-meta').click(() => { if (document.getElementById('mt-cn-it-em-in')) { document.getElementById('mt-cn-it-em-in').remove(); }
         metacount++; var cstitem = document.createElement('div'); cstitem.id = "meta-cons-item-"+metacount; cstitem.classList = "flex flex-col gap-1 w-fa mt-it-sl"; document.getElementById('meta-cons').append(cstitem);
@@ -563,7 +583,184 @@ function get_time_ago( $time ) {
     // Alap beallitasok mentese
     $('#sv-df-ch').click(() => {
         
+        var page_name = document.getElementById('page-name').value;
+        var page_posy = document.getElementById('page-posy').value;
+        var page_desc = document.getElementById('page-desc').value;
 
+        if (page_name.length > 0 && page_posy.length > 0 && page_desc.length > 0) {
+            document.getElementById('def-error-con').classList.replace('flex', 'hidden');
+            document.getElementById('def-error-con').innerHTML = ``;
+
+
+            var panelBody = `
+                <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span>Adatok mentése folyamatban</span>
+                </div>
+            `;
+
+            const panelObject = {
+                id : 'save-default-panel',
+                parent : 'body',
+                header : {
+                    isset : true,
+                    title : {
+                        isset : true,
+                        title : 'Alap beállítások szerkesztése'
+                    },
+                    close : {
+                        isset : true,
+                        id : 'cl__ebox',
+                        icon : {
+                            size : {
+                                unit : 'px',
+                                width : 24,
+                                height: 24
+                            },
+                            fill : 'currentColor',
+                            title : 'Bezárás'
+                        },
+                    }
+                },
+                body : {
+                    isset : true,
+                    html : panelBody
+                },
+                footer : {
+                    isset : false,
+                }
+            }
+
+            var defaultData = new FormData(); 
+            const defaultObject = {
+                action : 'changeDefault',
+                name : page_name,
+                posy : page_posy,
+                desc : page_desc
+            };
+
+            $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                success : function (api) {
+                    defaultObject.ip = api.ip;
+                    defaultData.append('default', JSON.stringify(defaultObject));
+                    const ajaxObject = {
+                        url : '/assets/php/classes/class.Default.php',
+                        data : defaultData,
+                        loaderContainer : { isset : false }
+                    }
+
+                    let response = getFromPanelRequest(panelObject)
+                    .then((data) => {
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => {
+                            if (data.status == 'success') {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                    <span>Sikeres módosítás</span>
+                                `;
+                            } else {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                    <span>${data.message}</span>
+                                `;
+                            }
+                        }).catch((reason) => { console.log(reason); });
+                    }).catch((reason) => { console.log(reason); });
+
+                }
+            });
+
+        } else {
+            document.getElementById('def-error-con').classList.replace('hidden', 'flex');
+            document.getElementById('def-error-con').innerHTML = `
+                <div class="flex flex-row flex-align-c flex-justify-con-fs gap-1 w-fa text-danger small user-select-none">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg>
+                    <span>A mezők kitöltése kötelező!</span>
+                </div>
+            `;
+        }
+
+    });
+
+    // Oldal ikonjanak mentese
+    $('#sv-ic-ch').click(() => {
+
+        if (miniArr.length > 0) {
+            console.log('saving');
+
+            var panelBody = `
+                <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span>Adatok mentése folyamatban</span>
+                </div>
+            `;
+
+            const panelObject = {
+                id : 'save-icon-panel',
+                parent : 'body',
+                header : {
+                    isset : true,
+                    title : {
+                        isset : true,
+                        title : 'Ikon szerkesztése'
+                    },
+                    close : {
+                        isset : true,
+                        id : 'cl__ebox',
+                        icon : {
+                            size : {
+                                unit : 'px',
+                                width : 24,
+                                height: 24
+                            },
+                            fill : 'currentColor',
+                            title : 'Bezárás'
+                        },
+                    }
+                },
+                body : {
+                    isset : true,
+                    html : panelBody
+                },
+                footer : {
+                    isset : false,
+                }
+            }
+
+            var iconData = new FormData(); 
+
+            $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                success : function (api) {
+                    iconData.append('ip', api.ip);
+                    iconData.append('icon', miniArr[0]);
+                    const ajaxObject = {
+                        url : '/assets/php/classes/class.Default.php',
+                        data : iconData,
+                        loaderContainer : { isset : false }
+                    }
+
+                    let response = getFromPanelRequest(panelObject)
+                    .then((data) => {
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => {
+                            if (data.status == 'success') {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                    <span>Sikeres módosítás</span>
+                                `;
+                            } else {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                    <span>${data.message}</span>
+                                `;
+                            }
+                        }).catch((reason) => { console.log(reason); });
+                    }).catch((reason) => { console.log(reason); });
+
+                }
+            });
+
+        }
 
     });
 
@@ -672,7 +869,6 @@ function get_time_ago( $time ) {
 
     });
 
-
     // Webmester beallitasok mentese
     $('#sv-wm-ch').click(() => {
         
@@ -682,81 +878,81 @@ function get_time_ago( $time ) {
         if (wm_name.length > 0 && wm_email.length > 0) {
 
             var panelBody = `
-            <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
-                <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
-                <span>Adatok mentése folyamatban</span>
-            </div>
-        `;
+                <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span>Adatok mentése folyamatban</span>
+                </div>
+            `;
 
-        const panelObject = {
-            id : 'save-webmaster-panel',
-            parent : 'body',
-            header : {
-                isset : true,
-                title : {
+            const panelObject = {
+                id : 'save-webmaster-panel',
+                parent : 'body',
+                header : {
                     isset : true,
-                    title : 'Webmester szerkesztése'
-                },
-                close : {
-                    isset : true,
-                    id : 'cl__ebox',
-                    icon : {
-                        size : {
-                            unit : 'px',
-                            width : 24,
-                            height: 24
-                        },
-                        fill : 'currentColor',
-                        title : 'Bezárás'
+                    title : {
+                        isset : true,
+                        title : 'Webmester szerkesztése'
                     },
+                    close : {
+                        isset : true,
+                        id : 'cl__ebox',
+                        icon : {
+                            size : {
+                                unit : 'px',
+                                width : 24,
+                                height: 24
+                            },
+                            fill : 'currentColor',
+                            title : 'Bezárás'
+                        },
+                    }
+                },
+                body : {
+                    isset : true,
+                    html : panelBody
+                },
+                footer : {
+                    isset : false,
                 }
-            },
-            body : {
-                isset : true,
-                html : panelBody
-            },
-            footer : {
-                isset : false,
             }
-        }
 
-        var webmasterData = new FormData(); 
-        const webmasterObject = {
-            action : 'changeWebmaster',
-            name  : wm_name,
-            email : wm_email
-        };
+            var webmasterData = new FormData(); 
+            const webmasterObject = {
+                action : 'changeWebmaster',
+                name  : wm_name,
+                email : wm_email
+            };
 
-        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
-            success : function (api) {
-                webmasterObject.ip = api.ip;
-                webmasterData.append('default', JSON.stringify(webmasterObject));
-                const ajaxObject = {
-                    url : '/assets/php/classes/class.Default.php',
-                    data : webmasterData,
-                    loaderContainer : { isset : false }
-                }
+            $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                success : function (api) {
+                    webmasterObject.ip = api.ip;
+                    webmasterData.append('default', JSON.stringify(webmasterObject));
+                    const ajaxObject = {
+                        url : '/assets/php/classes/class.Default.php',
+                        data : webmasterData,
+                        loaderContainer : { isset : false }
+                    }
 
-                let response = getFromPanelRequest(panelObject)
-                .then((data) => {
-                    let response = getFromAjaxRequest(ajaxObject)
+                    let response = getFromPanelRequest(panelObject)
                     .then((data) => {
-                        if (data.status == 'success') {
-                            document.getElementById('panel-body').innerHTML = `
-                                <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
-                                <span>Sikeres módosítás</span>
-                            `;
-                        } else {
-                            document.getElementById('panel-body').innerHTML = `
-                                <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
-                                <span>${data.message}</span>
-                            `;
-                        }
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => {
+                            if (data.status == 'success') {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                    <span>Sikeres módosítás</span>
+                                `;
+                            } else {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                    <span>${data.message}</span>
+                                `;
+                            }
+                        }).catch((reason) => { console.log(reason); });
                     }).catch((reason) => { console.log(reason); });
-                }).catch((reason) => { console.log(reason); });
 
-            }
-        });
+                }
+            });
 
         }
 
@@ -912,6 +1108,105 @@ function get_time_ago( $time ) {
 
     });
 
+    $(document).ready(() => {
 
+        var imagesData = new FormData(); 
+        const imagesObject = {
+            action : 'listPageIcons',
+        };
+
+        imagesData.append('default', JSON.stringify(imagesObject));
+        const ajaxObject = {
+            url : '/assets/php/classes/class.Default.php',
+            data : imagesData,
+            loaderContainer : {
+                isset : true,
+                id : 'image_history',
+                type : 'panel',
+                iconSize : {
+                    iconWidth : '128',
+                    iconHeight : '128'
+                },
+                iconColor : {
+                    isset : false,
+                    color : 'currentColor'
+                },
+                loaderText : {
+                    custom : true,
+                    customText : 'Visszajelzések megjelenítése folyamatban...'
+                }
+            }
+        }
+
+        let response = getFromAjaxRequest(ajaxObject)
+        .then((data) => {
+            if (data.status == 'success') {
+
+                if (data.data.length > 0) {
+
+                    for (let i = 0; i < data.data.length; i++) {
+                        if (data.data[i].name == "<?= $ddt['icon']; ?>") {
+                            data.data.splice(i, 1);
+                        }
+                    }
+
+                    if (data.data.length > 0) {
+                        document.getElementById('image_history').innerHTML = `
+                        <table id="image_history_table" class="sess__history text-muted text-align-c w-fa item-bg padding-05 table-padding-05 table-fixed compare-table text-align-c" style="border-collapse: collapse;">
+                            <tr class="small uppercase sessh__header tr-padding-05" style="line-height: 2;">
+                                <th>Kép</th>
+                                <th>Feltöltő</th>
+                                <th>Fájl neve</th>
+                                <th>Fájl formátuma</th>
+                                <th>Feltöltés dátuma</th>
+                                <th></th>
+                            </tr>
+                        </table>
+                        `;
+                        for (let i = 0; i < data.data.length; i++) {
+                            document.getElementById('image_history_table').innerHTML += `
+                            <tr class="sessh__body">
+                                <td class="padding-1">
+                                    <div id="history-image-${i}" title="${data.data[i].name}" style='background-size: cover; background-repeat: no-repeat;"' class="flex flex-row-d-col-m flex-align-c flex-justify-con-c user-select-none w-fc pointer miniature-fixed"></div>
+                                </td>
+                                <td class="padding-tb-1 text-primary bold">${data.data[i].creator}</td>
+                                <td class="padding-tb-1">${data.data[i].name}</td>
+                                <td class="padding-tb-1">.${data.data[i].ext}</td>
+                                <td class="padding-tb-1">${data.data[i].created}</td>
+                                <td class="padding-1">
+                                    <span class="text-secondary text-primary-hover pointer user-select-none" title="Alkalmaz">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.5" d="M18 2H9C7.34315 2 6 3.34315 6 5H8C8 4.44772 8.44772 4 9 4H18C18.5523 4 19 4.44772 19 5V16C19 16.5523 18.5523 17 18 17V19C19.6569 19 21 17.6569 21 16V5C21 3.34315 19.6569 2 18 2Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M14.7857 7.125H6.21429C5.62255 7.125 5.14286 7.6007 5.14286 8.1875V18.8125C5.14286 19.3993 5.62255 19.875 6.21429 19.875H14.7857C15.3774 19.875 15.8571 19.3993 15.8571 18.8125V8.1875C15.8571 7.6007 15.3774 7.125 14.7857 7.125ZM6.21429 5C4.43908 5 3 6.42709 3 8.1875V18.8125C3 20.5729 4.43909 22 6.21429 22H14.7857C16.5609 22 18 20.5729 18 18.8125V8.1875C18 6.42709 16.5609 5 14.7857 5H6.21429Z" fill="currentColor"/></svg>
+                                    </span>
+                                </td>
+                            </tr>
+                            `;
+                            document.getElementById('history-image-'+i).style.backgroundImage = `url('/assets/images/default/${data.data[i].name}')`;
+                        }
+                    } else {
+                        document.getElementById('image-history-con').remove();    
+                    }
+
+                } else {
+                    document.getElementById('image-history-con').remove();
+                }
+
+            } else {
+                document.getElementById('image_history').innerHTML = `
+                    <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                        <span><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                        <span id="loaderText">Hiba történt a megjelenítés közben.</span>
+                    </div>
+                `;
+            }
+        }).catch((reason) => {
+            document.getElementById('image_history').innerHTML = `
+                <div class="flex flex-col flex-align-c flex-justify-con-c gap-1 small text-muted user-select-none w-fa">
+                    <span><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                    <span id="loaderText">Hiba történt a megjelenítés közben.</span>
+                </div>
+            `;
+        });
+
+    });
 
 </script>
