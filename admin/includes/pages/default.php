@@ -686,7 +686,6 @@ function get_time_ago( $time ) {
     $('#sv-ic-ch').click(() => {
 
         if (miniArr.length > 0) {
-            console.log('saving');
 
             var panelBody = `
                 <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
@@ -1174,21 +1173,15 @@ function get_time_ago( $time ) {
                                 <td class="padding-tb-1">.${data.data[i].ext}</td>
                                 <td class="padding-tb-1">${data.data[i].created}</td>
                                 <td class="padding-1">
-                                    <span class="text-secondary text-primary-hover pointer user-select-none" title="Alkalmaz">
+                                    <span class="text-secondary text-primary-hover pointer user-select-none" id="${data.data[i].name}" onclick="changeIconFromHistory(this.id)" title="Alkalmaz">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.5" d="M18 2H9C7.34315 2 6 3.34315 6 5H8C8 4.44772 8.44772 4 9 4H18C18.5523 4 19 4.44772 19 5V16C19 16.5523 18.5523 17 18 17V19C19.6569 19 21 17.6569 21 16V5C21 3.34315 19.6569 2 18 2Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M14.7857 7.125H6.21429C5.62255 7.125 5.14286 7.6007 5.14286 8.1875V18.8125C5.14286 19.3993 5.62255 19.875 6.21429 19.875H14.7857C15.3774 19.875 15.8571 19.3993 15.8571 18.8125V8.1875C15.8571 7.6007 15.3774 7.125 14.7857 7.125ZM6.21429 5C4.43908 5 3 6.42709 3 8.1875V18.8125C3 20.5729 4.43909 22 6.21429 22H14.7857C16.5609 22 18 20.5729 18 18.8125V8.1875C18 6.42709 16.5609 5 14.7857 5H6.21429Z" fill="currentColor"/></svg>
                                     </span>
                                 </td>
                             </tr>
-                            `;
-                            document.getElementById('history-image-'+i).style.backgroundImage = `url('/assets/images/default/${data.data[i].name}')`;
+                            `; document.getElementById('history-image-'+i).style.backgroundImage = `url('/assets/images/default/${data.data[i].name}')`;
                         }
-                    } else {
-                        document.getElementById('image-history-con').remove();    
-                    }
-
-                } else {
-                    document.getElementById('image-history-con').remove();
-                }
+                    } else { document.getElementById('image-history-con').remove(); }
+                } else { document.getElementById('image-history-con').remove(); }
 
             } else {
                 document.getElementById('image_history').innerHTML = `
@@ -1208,5 +1201,88 @@ function get_time_ago( $time ) {
         });
 
     });
+
+    function changeIconFromHistory (icon) {
+
+        console.log(icon);
+
+        var panelBody = `
+                <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
+                    <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
+                    <span>Adatok mentése folyamatban</span>
+                </div>
+            `;
+
+            const panelObject = {
+                id : 'save-icon-history-panel',
+                parent : 'body',
+                header : {
+                    isset : true,
+                    title : {
+                        isset : true,
+                        title : 'Ikon módosítása'
+                    },
+                    close : {
+                        isset : true,
+                        id : 'cl__ebox',
+                        icon : {
+                            size : {
+                                unit : 'px',
+                                width : 24,
+                                height: 24
+                            },
+                            fill : 'currentColor',
+                            title : 'Bezárás'
+                        },
+                    }
+                },
+                body : {
+                    isset : true,
+                    html : panelBody
+                },
+                footer : {
+                    isset : false,
+                }
+            }
+
+            var iconHistoryData = new FormData(); 
+            const iconHistoryObject = {
+                action : 'changeIconFromHistory',
+                name : icon
+            };
+
+            $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
+                success : function (api) {
+                    iconHistoryObject.ip = api.ip;
+                    iconHistoryData.append('default', JSON.stringify(iconHistoryObject));
+                    const ajaxObject = {
+                        url : '/assets/php/classes/class.Default.php',
+                        data : iconHistoryData,
+                        loaderContainer : { isset : false }
+                    }
+
+                    let response = getFromPanelRequest(panelObject)
+                    .then((data) => {
+                        let response = getFromAjaxRequest(ajaxObject)
+                        .then((data) => { console.log(data);
+                            if (data.status == 'success') {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
+                                    <span>Sikeres módosítás</span>
+                                `;
+                            } else {
+                                document.getElementById('panel-body').innerHTML = `
+                                    <span class="text-danger"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"/><rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"/></svg></span>
+                                    <span>${data.message}</span>
+                                `;
+                            }
+                        }).catch((reason) => { console.log(reason); });
+                    }).catch((reason) => { console.log(reason); });
+
+                }
+            });
+
+
+    }
 
 </script>
