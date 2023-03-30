@@ -138,7 +138,7 @@ function get_time_ago( $time ) {
     <div class="flex flex-col w-fa gap-1 border-soft item-bg box-shadow padding-1">
         <div class="flex flex-row flex-align-c flex-justify-con-sb">
             <span class="text-primary large bold">Kiemelt Hírek <em>(<?= $res->num_rows; ?>)</em></span>
-            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer">Hozzáadás</span>
+            <span class="primary-bg primary-bg-hover border-soft-light padding-05 small pointer user-select-none" id="an-hn-sv">Hozzáadás</span>
         </div><hr style="border: 1px solid var(--background);" class="w-100">
         <div class="flex flex-col flex-align-c flex-justify-con-c gap-1">
             <?php
@@ -1204,8 +1204,6 @@ function get_time_ago( $time ) {
 
     function changeIconFromHistory (icon) {
 
-        console.log(icon);
-
         var panelBody = `
                 <div id="panel-body" class="flex flex-col flex-align-c flex-justify-con-c w-fa gap-1 user-select-none padding-1 text-muted user-select-none">
                     <span><svg class='wizard_input_loading' id="loaderIcon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><polygon points="0 0 24 0 24 24 0 24"/></g><path d="M12,4 L12,6 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,10.9603196 17.7360885,9.96126435 17.2402578,9.07513926 L18.9856052,8.09853149 C19.6473536,9.28117708 20,10.6161442 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 Z" fill="currentColor" fill-rule="nonzero" opacity="0.4" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) "/></g></svg></span>
@@ -1264,7 +1262,7 @@ function get_time_ago( $time ) {
                     let response = getFromPanelRequest(panelObject)
                     .then((data) => {
                         let response = getFromAjaxRequest(ajaxObject)
-                        .then((data) => { console.log(data);
+                        .then((data) => {
                             if (data.status == 'success') {
                                 document.getElementById('panel-body').innerHTML = `
                                     <span class="text-success"><svg width="128" height="128" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"/><path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor"/></svg></span>
@@ -1284,5 +1282,50 @@ function get_time_ago( $time ) {
 
 
     }
+
+    // Kiemelt hir hozzadasa
+    $('#an-hn-sv').click(() => {
+
+        var panelFooter = `
+            <div class="flex flex-row flex-align-c flex-justify-con-c gap-2 w-fa padding-1">
+                <span class="smaller-light text-secondary text-primary-hover pointer user-select-none" action="close">Mégsem</span>
+                <span class="flex flex-row flex-align-c flex-justify-con-c danger-bg danger-bg-hover border-soft-light padding-05-1 pointer user-select-none" id="delete-confirm" action="close">Törlés</span>
+            </div>
+        `;
+
+        const panelObject = {
+            id : 'feedback-add-news-panel',
+            parent : 'body',
+            header : {
+                isset : true,
+                title : {
+                    isset : true,
+                    title : 'Hír létrehozása'
+                },
+                close : {
+                    isset : true,
+                    id : 'cl__ebox',
+                    icon : {
+                        size : {
+                            unit : 'px',
+                            width : 24,
+                            height: 24
+                        },
+                        fill : 'currentColor',
+                        title : 'Bezárás'
+                    },
+                }
+            },
+            body : {
+                isset : true,
+                html : panelBody
+            },
+            footer : {
+                isset : true,
+                html : panelFooter
+            }
+        }
+
+    });
 
 </script>

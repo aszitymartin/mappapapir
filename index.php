@@ -14,6 +14,11 @@ $route->add("/orders/m/{oid}","admin/orders/manage/index.php");
 $route->add("/feedback","feedback/index.php");
 $route->add("/feedback/v/{id}","feedback/actions/view/index.php");
 
+$route->add("/news","news/index.php");
+$route->add("/news/v/{id}","news/view/index.php");
+$route->add("/news/c/","news/create/index.php");
+$route->add("/news/e/{id}","news/edit/index.php");
+
 $route->add("/help/{term}","/index.php");
 $route->notFound("errors/404.php");
 ?>
