@@ -25,6 +25,11 @@ class Page {
 
     private function log ($object) {
 
+        require_once($_SERVER['DOCUMENT_ROOT'].'/assets/php/classes/class.Api.php');
+        $apiAction = new Api();
+        $apiAction->getUserIp();
+        $apiData = $apiAction->getResults();
+
         if ($this->connect()['status'] == 'success') {
             $con = $this->connect()['data'];
         } else {
@@ -36,7 +41,7 @@ class Page {
         }
 
         if ($log = $con->prepare('INSERT INTO log (uid, ip, category, description) VALUES(?,?,?,?)')) {
-            $log->bind_param('isss', $_SESSION['id'], $object->ip, $object->category, $object->description); $log->execute(); $log->close(); 
+            $log->bind_param('isss', $_SESSION['id'], $apiData['ip'], $object->category, $object->description); $log->execute(); $log->close(); 
             $this->returnObject = [
                 "status" => "success"
             ]; return $this->returnObject;

@@ -1,4 +1,7 @@
-<?php require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); include($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php'); $uid = $_SESSION['id']; $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close(); ?>
+<?php
+require_once($_SERVER['DOCUMENT_ROOT'].'/includes/inc.php'); require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.php'); include($_SERVER['DOCUMENT_ROOT'].'/assets/alph.php'); $uid = $_SESSION['id']; $stmt = $con->prepare('SELECT privilege FROM customers__priv  WHERE uid = ?'); if (isset($_SESSION['loggedin'])) {$id = $_SESSION['id'];} $stmt->bind_param('i', $id);$stmt->execute(); $stmt->bind_result($privilege); $stmt->fetch();$stmt->close();
+if ($privilege < 1) { echo '<script>window.location.href = "/"</script>'; header('Location: /'); die(); exit(); }
+?>
 <script src="/assets/script/quill/dist/quill.js"></script><script src="/assets/script/tagify/dist/tagify.js"></script>
 
 <main id="main">
@@ -7,7 +10,7 @@
             <div class="flex flex-col w-fa gap-2 border-soft item-bg box-shadow padding-1">
                 <div class="flex flex-row flex-align-c flex-justify-con-sb">
                     <span class="text-primary larger bold">Hír létrehozása</span>
-                    <span id="send-feedback" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
+                    <span id="news-create" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
                         <span class="flex flex-col flex-align-c flex-justify-con-c">Létrehozás</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
                     </span>
@@ -43,46 +46,10 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-05">
-                    <span class="text-secondary small">Visszajelzés típusa</span>
-                    <input name='feedback-type' id='feedback-type' class='adm__input w-fa border-soft cst-drp-fts prd-ch-fr-er' placeholder='Visszajelzés típusa'>
-                    <script>
-                        var prd_mtk_inp = document.querySelector('input[name="feedback-type"]'),
-                        tagify = new Tagify(prd_mtk_inp, { 
-                            userInput: false,
-                            whitelist: [
-                                {
-                                    "value"    : "Webáruház",
-                                    "readonly" : true
-                                },
-                                {
-                                    "value"    : "Termékek",
-                                    "readonly" : true
-                                },
-                                {
-                                    "value"    : "Rendelés",
-                                    "readonly" : true
-                                },
-                                {
-                                    "value"    : "Szállítás",
-                                    "readonly" : true
-                                },
-                                {
-                                    "value"    : "Felhasználó",
-                                    "readonly" : true
-                                },
-                                {
-                                    "value"    : "Weboldal",
-                                    "readonly" : true
-                                },
-                                {
-                                    "value"    : "Egyéb",
-                                    "readonly" : true
-                                },
-                            ], maxTags: 1, dropdown: { maxItems: 7, classname: "tags-look", enabled: 0, closeOnSelect: false }, originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(',')
-                        });
-                    </script>
-                    <span class="text-muted small-med">Válassza ki a visszajelzés típusát.</span>
-                    <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="feedback-error-type"></div>
+                    <span class="text-secondary small">Hír rövid leírása</span>
+                    <input name='news-brief-desc' type="text" id='news-brief-desc' class='adm__input w-fa border-soft cst-drp-fts prd-ch-fr-er outline-none' placeholder='Adja meg a hír leírását röviden'>
+                    <span class="text-muted small-med">Ez a szöveg fog megjelenni a hír főcíme alatt.</span>
+                    <div class="flex flex-row flex-align-c flex-justify-con-fe w-fa feedback-error-con" id="news-bief-desc-error-type"></div>
                 </div>
             </div>
         </form>
@@ -101,7 +68,7 @@
                 </div>
                 <span class="text-muted small-med">Amennyiben a hírnek van törse, jelölje be ezt az opciót</span>
             </div>
-            <div class="flex flex-col gap-05">
+            <div class="hidden flex-col gap-05" id="news-body-con">
                 <span class="text-secondary small">Hír törzse</span>
                 <div class="flex flex-col">
                     <div id="news-body-editor" class="border-soft prd-ch-fr-er-ce" style="height: 32rem;"></div>
@@ -128,45 +95,19 @@
 
 <script>
     var minActive = 0; var miniArr = [];
-    $('#send-feedback').click(() => {
-        
-        var error_con = document.getElementsByClassName('feedback-error-con');
-        for (let i = 0; i < error_con.length; i++) { error_con[i].innerHTML = ``; }
+    $('#news-create').click(() => {
 
-        var feedbackData = new FormData(); 
-        const feedbackObject = {
-            action : 'send',
-            uid : <?= isset($_SESSION['id']) ? $_SESSION['id'] : '0'; ?>,
-            title : document.getElementById('feedback-title').value,
-            description : document.getElementById('prod-meta-editor').getElementsByClassName('ql-editor')[0].textContent,
-            type : document.getElementById('feedback-type').value,
-            attachment : [],
-        };
-
-        for (let i = 0; i < miniArr.length; i++) {
-            feedbackObject.attachment.push(
-                {
-                    type : miniArr[i].type,
-                    file : miniArr[i],
-                    prop : {
-                        name : miniArr[i].name,
-                        size : miniArr[i].size,
-                        type : miniArr[i].type,
-                        lastModified : miniArr[i].lastModified,
-                        webkitRelativePath : miniArr[i].webkitRelativePath
-                    }
-                }
-            );
-        }
-
+        var newsData = new FormData(); 
         $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
             success : function (api) {
 
-                feedbackObject.ip = api.ip;
-                feedbackData.append('feedback', JSON.stringify(feedbackObject));
+                newsData.append('title', document.getElementById('news-title').value);
+                newsData.append('image', miniArr[0]);
+                newsData.append('desc', document.getElementById('news-brief-desc').value);
+                newsData.append("ip", api.ip);
                 const ajaxObject = {
                     url : '/assets/php/classes/class.Feedbacks.php',
-                    data : feedbackData,
+                    data : newsData,
                     loaderContainer : {
                         isset : true,
                         id : 'send-feedback',
@@ -216,8 +157,16 @@
 
     });
 
+    $('#news-config-body').click(() => {
+        if (document.getElementById('news-config-body').checked) {
+            document.getElementById('news-body-con').classList.replace('hidden', 'flex');
+        } else {
+            document.getElementById('news-body-con').classList.replace('flex', 'hidden');
+        }
+    });
+
     function __inituploader () { var minIndex = document.getElementsByClassName('miniature-upload').length;  minActive++; minIndex++; 
-        if (minIndex <= 5) {
+        if (minIndex <= 1) {
             document.getElementById('miniatures-con').innerHTML += `
             <div id="miniature-upload-${minActive}" class="miniature-upload flex flex-row-d-col-m flex-align-c flex-justify-con-c border-soft background-bg background-bg-hover text-primary padding-1 user-select-none w-fc pointer miniature-fixed relative">
                 <input type="file" id="miniature-input-${minActive}" class="hidden miniature-input">
@@ -236,7 +185,7 @@
             </div>
             `; var remBtn = document.getElementsByClassName('mini-action');
             for (let i = 0; i < remBtn.length; i++) { remBtn[i].setAttribute('onclick', '__removeminiature('+minIndex+', '+remBtn[i].getAttribute('data-active')+')'); }
-        } if (minIndex == 5 || minIndex > 5) { document.getElementById('miniature-uploader').remove(); document.getElementById('miniatures-con').innerHTML += ``; }
+        } if (minIndex == 1 || minIndex > 1) { document.getElementById('miniature-uploader').remove(); document.getElementById('miniatures-con').innerHTML += ``; }
     } function __minupload (e) {
         document.getElementById('miniature-input-'+e).addEventListener('click', () => {
             document.getElementById('min-icon-'+e).innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.3" d="M19 22H5C4.4 22 4 21.6 4 21V3C4 2.4 4.4 2 5 2H14L20 8V21C20 21.6 19.6 22 19 22Z" fill="currentColor"/><g clip-path="url(#clip0_787_1289)"><path d="M9.56133 15.7161C9.72781 15.5251 9.5922 15.227 9.33885 15.227H8.58033C8.57539 15.1519 8.57262 15.0763 8.57262 15C8.57262 13.1101 10.1101 11.5726 12 11.5726C12.7576 11.5726 13.4585 11.8198 14.0265 12.2377C14.2106 12.3731 14.4732 12.3609 14.6216 12.1872L15.1671 11.5491C15.3072 11.3852 15.2931 11.1382 15.1235 11.005C14.2353 10.3077 13.1468 9.92944 12 9.92944C10.6456 9.92944 9.37229 10.4569 8.41458 11.4146C7.4569 12.3723 6.92945 13.6456 6.92945 15C6.92945 15.0759 6.93135 15.1516 6.93465 15.2269H6.29574C6.0424 15.2269 5.90677 15.5251 6.07326 15.7161L7.51455 17.3693L7.81729 17.7166L8.90421 16.4698L9.56133 15.7161Z" fill="currentColor"/><path d="M17.9268 14.7516L16.8518 13.5185L16.1828 12.7511L15.2276 13.8468L14.4388 14.7516C14.2723 14.9426 14.4079 15.2407 14.6612 15.2407H15.4189C15.2949 17.0187 13.809 18.4274 12.0001 18.4274C11.347 18.4274 10.736 18.2437 10.216 17.9253C10.0338 17.8138 9.79309 17.8362 9.6543 17.9985L9.10058 18.6463C8.95391 18.8179 8.97742 19.0782 9.16428 19.2048C9.99513 19.7678 10.9743 20.0706 12.0001 20.0706C13.3545 20.0706 14.6278 19.5432 15.5855 18.5855C16.4863 17.6847 17.0063 16.5047 17.0649 15.2407H17.7043C17.9577 15.2407 18.0933 14.9426 17.9268 14.7516Z" fill="currentColor"/></g><path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="currentColor"/><defs><clipPath id="clip0_787_1289"><rect width="12" height="12" fill="white" transform="translate(6 9)"/></clipPath></defs></svg>`;
