@@ -23,6 +23,7 @@
     <li><a href="#felhasználókhoz-kapcsolódó-táblák">Felhasználókhoz kapcsolódó táblák</a></li>
     <li><a href="#termékekhez-kapcsolódó-táblák">Termékekhez kapcsolódó táblák</a></li>
     <li><a href="#rendeléshez-kapcsolódó-táblák">Rendeléshez kapcsolódó táblák</a></li>
+    <li><a href="#oldal-alap-beállításaihoz-kapcsolódó-táblák">Oldal alap beállításaihoz kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -256,5 +257,21 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
     <li>orders__ship – Szállítási mód mentése</li>
     <li>orders__invoice – Számlázási adatok tárolása</li>
     <li>orders__user – Rendelő adatainak mentése</li>
+</ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Oldal alap beállításaihoz kapcsolódó táblák
+<p>A tervem az volt ezekkel a táblákkal, hogy az oldal alap beállításait ne csak közvetlenül a forráskódból tudjuk módosítani, hanem az admin panelen belül is legyen lehetőség ezeket szerkeszteni.</p>
+<p>Az eddigiek szerint a felhasználó tudja módosítani az oldal nevét, ikonját mottóját, a webmesteri eléréseket, a meta tagokat, sőt még a fejlécben megjeleníthető linkeket is módosítani tudja.</p>
+<p>A terveim közé tartozik az is, hogy a főoldalon, illetve a webáruház oldalon megjelenő híreket is tudjuk kezelni az admin panelen belül, ne csak a forráskódból. Erre sajnos még nincsen lehetőség, de az adatbázisban a táblái már létrevannak hozva, de kissebb optimalizálások nem ártanak neki, de az alapja megvan.</p>
+
+![Screenshot from 2023-04-07 13-11-58](https://user-images.githubusercontent.com/105912216/230601288-f57d9812-c978-42f4-8736-9be30bb46450.png)
+
+<p>A következő táblák vesznek így részt az oldal alap beállítási között</p>
+<ul>
+    <li>def__page – Oldal legalapabb beállításai</li>
+    <li>def__news – Főoldalon megjelenő hírek</li>
+    <li>def__news__status – Hírek státuszai</li>
+    <li>def__header – Fejléc linkjei</li>
 </ul>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
