@@ -18,6 +18,9 @@
     <li><a href="#telepítés-utáni-tesztelések">Telepítés utáni tesztelések</a></li>
     <li><a href="#windows-operációs-rendszereken">Windows operációs rendszereken</a></li>
     <li><a href="#linux-operációs-rendszereken">Linux operációs rendszereken</a></li>
+    <li><a href="#első-lépések">Első lépések</a></li>
+    <li><a href="#adatbázis-szerkezetének-kialakítása">Adatbázis szerkezetének kialakítása</a></li>
+    <li><a href="#felhasználókhoz-kapcsolódó-táblák">Felhasználókhoz kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -169,6 +172,51 @@ meg a terminálunkat és írjuk bele a következőket:</em></p>
 <pre><strong>sudo chmod 777 /var/www/html/</strong></pre>
 
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Első lépések
+
+<h2>Adatbázis szerkezetének kialakítása</h2>
+<p>
+Amint végeztem a megflelő szoftverek, könyvtárak és telepítésével, és üzembehelyezésével, a következő lépés az adatbázis szerkezetének kialakítása volt. Ez a folyamat kicsit több időt vett igénybe, ugyanis egy nagyobb méretű adatbázisban gondolkodtam, így a megtervezése is időigényes volt. Sajnos az adatbázisomat nem tudtam kialakítani a legelején, így menet közben kisebb-nagyobb javítgatásokon esett át, ami okozott némi kellemetlenséget, de a végére összeállt a kép.
+</p>
+<h3>Felhasználókhoz kapcsolódó táblák</h3>
+<p>
+Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „customers” táblát, ahova a regisztrált felhasználó alap adatait mentjük el, mintpéldául a felhasználó nevét, e-mail címét, jelszavát, és regisztrációjának dátumát. Ezen kívűl természetesen tartalmaz még néhány adatot, de azok nem elsődlegesek az oldal működésében.
+</p>
+
+![image](https://user-images.githubusercontent.com/105912216/230589131-cb02c21e-c62c-4361-b3e2-97d6fca86e6b.png)
+
+<h3>Táblák csoportosítása</h3>
+<p>A felhasználóhoz tartozó adatok, amiket regisztrációnál adott meg, kategóriákra bontva. Ebben a csoportban a következő táblák szerepelnek</p>
+<ul>
+  <li>customers__ship – Szállítási adatok</li>
+  <li>customers__inv – Számlázási adatok</li>
+  <li>customers__lang – Nyelvi preferenciák</li>
+  <li>customers__header – Automatikusan generált monogramm, színek a felhasználóhoz</li>
+  <li>customers__priv – Felhasználó jogosultságai</li>
+  <li>customers__money – Felhasználó egyenlegét tartalmazó tábla (Elavult)</li>
+  <li>customers__token – Bejelentkezési tokenek mentése</li>
+</ul>
+<p>A felhasználóhoz csatolt kártyák adatai, és beállításai. </p>
+<ul>
+  <li>customers__card – Kártyák alap adatainak mentése</li>
+  <li>customers__card__info – Kiegészítő adatok</li>
+  <li>customers__card__primary – Elsődleges kártya mentése</li>
+  <li>custoemrs__transactions – Egyenleg módosítás, feliratkozások kezelése</li>
+  <li>customers__card__deleted – Törölt kártyák mentése</li>
+</ul>
+<p>Felhasználók feliratkozásainak kezelésére szóló táblák csoportosítása</p>
+<ul>
+  <li>customers__card__subscription</li>
+  <li>customers__subpay__pool</li>
+  <li>customers__subscription__data</li>
+  <li>customers__subscription__payment</li>
+</ul>
+<p>Egyéb csoportosítások</p>
+<ul>
+  <li>customers__deleted – Törölt felhasználók adatai</li>
+  <li>customers__deactivated – Deaktivált felhasználók</li>
+</ul>
 
 * [Next.js](https://nextjs.org/)
 * [React.js](https://reactjs.org/)
