@@ -381,11 +381,12 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 <p>A „login_attempts” táblába mentődik el minden olyan próbálkozás, amikor valaki be akart jelentkezni az oldalra. Ha olyan fiókba próbált bejelentkezni, amelyik létezik az oldalon, a fiók tulajdonosa ezt az információt meg tudja tekinteni a profil részlegen. A sikeres és a sikertelen próbálkozás is el van mentve.</p>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
-<h2>Fájlrendszer kialakítása a szerveren</h2>
-<p>
-	Az adatbázis kialakítása után a fájlrendszer kialakítása volt a következő lépés. Ez a folyamat is elég bonyolult volt, nehéz kialakítani úgy egy összetett rendszert, hogy átlátható és könnyen kezelhető legyen. A kialakítással az volt a bajom, hogy folyton új funkciókat adtam hozzá a weboldalhoz, amiket később átalakítottam, vagy újra gondoltam teljesen, így én is bele bonyolódtam, ezért kicsit összekuszálódtak a dolgok, és tartalmaz olyan fájlokat a szerver, amit már nem használok, de nem merek kitörölni, mert az egy régebbi verzióhoz tartozik, ami működött és benne hagytam, ha netán visszatérnék az alkalmazásukhoz.
-	A gondok ott kezdődtek, hogy nem objekt orientált programozást használtam az elején, hanem csak a folyamat végefelé kezdtem el alkalmazni, így nem lett az összes metódus átültetve egy osztályba, de a kezdeti elemek már ki lettek alakítva. Ezt orvosolni lehet, egy alaposabb átvizsgálással, és több idő ráfordításával, de addig maradtak benne felesleges, vagy ismétlődő elemek.
-</p>
+# Fájlrendszer kialakítása a szerveren
+<p>Az adatbázis kialakítása után a fájlrendszer kialakítása volt a következő lépés. Ez a folyamat is elég bonyolult volt, nehéz kialakítani úgy egy összetett rendszert, hogy átlátható és könnyen kezelhető legyen. A kialakítással az volt a bajom, hogy folyton új funkciókat adtam hozzá a weboldalhoz, amiket később átalakítottam, vagy újra gondoltam teljesen, így én is bele bonyolódtam, ezért kicsit összekuszálódtak a dolgok, és tartalmaz olyan fájlokat a szerver, amit már nem használok, de nem merek kitörölni, mert az egy régebbi verzióhoz tartozik, ami működött és benne hagytam, ha netán visszatérnék az alkalmazásukhoz.</p>
+
+![filesystem](https://user-images.githubusercontent.com/105912216/230679072-7d7d784f-23d5-4bd1-9e1b-583f2ac60407.png)
+
+<p>A gondok ott kezdődtek, hogy nem objekt orientált programozást használtam az elején, hanem csak a folyamat végefelé kezdtem el alkalmazni, így nem lett az összes metódus átültetve egy osztályba, de a kezdeti elemek már ki lettek alakítva. Ezt orvosolni lehet, egy alaposabb átvizsgálással, és több idő ráfordításával, de addig maradtak benne felesleges, vagy ismétlődő elemek.</p>
 <h2>Mappák</h2>
 <h3>Actions</h3>
 <p>Az „Actions” mappában megtalálhatóak az alapvető PHP scriptek, például a bejelentkeztetési, kijelentkeztetési script, és a regisztrációs script. Ezeken kívűl még megtalálható a téma kezelése, és néhány beállítási script, bár ezek nagy része már át lett helyezve egy másik gyűjtő mappába és át lett alakítva, így mostmár OOP központú lett.</p>
