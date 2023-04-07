@@ -22,6 +22,7 @@
     <li><a href="#adatbázis-szerkezetének-kialakítása">Adatbázis szerkezetének kialakítása</a></li>
     <li><a href="#felhasználókhoz-kapcsolódó-táblák">Felhasználókhoz kapcsolódó táblák</a></li>
     <li><a href="#termékekhez-kapcsolódó-táblák">Termékekhez kapcsolódó táblák</a></li>
+    <li><a href="#rendeléshez-kapcsolódó-táblák">Rendeléshez kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -240,4 +241,20 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
     <li>products__search – A keresés algoritmust segítő tábla</li>
     <li>products__inventory – Raktár beállítások</li>
 </ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
+# Rendeléshez kapcsolódó tábkák
+<p>A rendeléseknél el kellett gondolkoznom, hogy hogyan szeretném eltárolni az adatokat. Ugyanis, ha a vevő csak egy darab terméket szeretne rendelni egyszerre, akkor sokkal egyszerűbb dolgom lett volna, de mivel több terméket is lehet egyszerre rendelni, így a táblák kialakítása elég sajátos lett szerintem, mivel a rendelt termékeket és a mennyiségüket egyetlen sorba mentem egy pontosvesszővel a termékeket, és a mennyiségeket egy kettősponttal elválasztva. Ugyan ezzel spórolok, mivel ha a felhasználó 10 darab terméket vásárol egyszerre, nem fog 10 sort létrehozni az adatbázisomban, csak 1 darabot, viszont sokkal bonyolultabb lesz ezzel az adattal dolgozni a továbbiakban, mivel mindig ki kell nyerni az adatokat, hogy pontosan milyen termékből rendelt mennyit, és ezt mindig splittelni kell, valamint így nem tudtam kapcsolatokat teremteni a rendelések és a termékek között.</p>
+
+![Screenshot from 2023-04-07 12-45-45](https://user-images.githubusercontent.com/105912216/230598137-de30d553-64d8-41c5-810f-6054bf1023a9.png)
+
+
+<p>A logika itt is a megszokottak szerint épül fel: a fő táblám az „orders”, és ehhez a táblához kapcsolódik az a 4, ahova a rendeléshez tartozó adatokat mentem el. Az orders táblába csak a leg alapabb dolgokat mentem, mint a rendelő azonosítóját, a termék tömbböt, a rendelés státuszát és a rendelés leadásának dátumát.</p>
+<p>A következő táblák kapcsolódnak még az „orders” táblához:</p>
+<ul>
+    <li>orders__payment – Fizetési mód és a kuponok mentése</li>
+    <li>orders__ship – Szállítási mód mentése</li>
+    <li>orders__invoice – Számlázási adatok tárolása</li>
+    <li>orders__user – Rendelő adatainak mentése</li>
+</ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
