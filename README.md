@@ -419,6 +419,7 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 <h3>Webshop</h3>
 <p>A Webshop mappában a webáruházhoz tartozó scriptek, oldalak találhatóak. Többek között a rendelés funkciót tartalmazó script is ebben a mappába van tárolva, valamint a termékek keresésére szolgáló kód is itt van.</p>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
 <h2>Fájlok</h2>
 <p>A root mappában még található néhány fájl, vagy mappa ami vagy nem elérhető a felhasználóknak, vagy el lesz távolítva publikálásná, vagy akár olyanok amelyeket nem lett volna célszerű külön mappába helyezni.</p>
