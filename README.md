@@ -25,6 +25,7 @@
     <li><a href="#rendeléshez-kapcsolódó-táblák">Rendeléshez kapcsolódó táblák</a></li>
     <li><a href="#oldal-alap-beállításaihoz-kapcsolódó-táblák">Oldal alap beállításaihoz kapcsolódó táblák</a></li>
     <li><a href="#termék-véleményezéséhez-kapcsolódó-táblák">Termék véleményezéséhez kapcsolódó táblák</a></li>
+    <li><a href="#e-mail-és-jelszó-kezeléshez-kapcsolódó-táblák">E-mail és jelszó kezeléshez kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -289,5 +290,23 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
     <li>rvr__w – Figyelmeztetett felhasználók</li>
     <li>rv__r – Jelentett vélemények</li>
     <li>rv__u – Hasznosnak talált vélemények</li>
+</ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# E-mail és jelszó kezeléshez kapcsolódó táblák
+
+<p>Az oldalon az e-mail címnek nem csak annyi a szerepe, hogy be tudjunk jelentkezni, hanem fel is iratkozhatunk különböző hírlevelekre, vagy értesítést kaphatunk, ha egy termék újra elérhető lesz, amit meg szeretnénk vásárolni. Ugyanakkor az e-mail még a két lépcsős hitelesítésre is szükséges. <em>(Ez a funkció jelenleg nem elérhető)</em></p>
+<p>A jelszavak is több táblában vannak tárolva. Egy olyan táblában, ahol megnézzük, hogy a felhasználó használ-e két lépcsős hitelesítést, és ha igen, akkor milyen fajtát. A másik táblában pedig a jelszó változtatási előzmények vannak tárolva. Ez arra jó, ha a felhasználó meg szeretné változtatni a jelszavát, akkor meg tudjuk nézni, hogy tényleg új jelszót fog adni, vagy a jelenlegit próbálja mégegyszer beállítani.</p>
+
+![email_password](https://user-images.githubusercontent.com/105912216/230625636-70a22b38-e1ce-471a-aaa2-7bb418e500b2.png)
+
+<p>A táblák kapcsolódnak ide</p>
+<ul>
+    <li>e__banned – Tiltott e-mail címek</li>
+    <li>e__subs – Hírlevélre feliratkozottak</li>
+    <li>notify – Elfogyott termék készletfrissítésére feliratkozottak</li>
+    <li>u__email – Felhasználói email címek</li>
+    <li>u__password – Felhasználók jelszavai és hitelesítések</li>
+    <li>u__pass__history – Jelszó előzmények</li>
 </ul>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
