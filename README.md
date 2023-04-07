@@ -300,7 +300,7 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 ![email_password](https://user-images.githubusercontent.com/105912216/230625636-70a22b38-e1ce-471a-aaa2-7bb418e500b2.png)
 
-<p>A táblák kapcsolódnak ide</p>
+<p>A következő táblák kapcsolódnak ide</p>
 <ul>
     <li>e__banned – Tiltott e-mail címek</li>
     <li>e__subs – Hírlevélre feliratkozottak</li>
