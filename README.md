@@ -27,6 +27,7 @@
     <li><a href="#termék-véleményezéséhez-kapcsolódó-táblák">Termék véleményezéséhez kapcsolódó táblák</a></li>
     <li><a href="#e-mail-és-jelszó-kezeléshez-kapcsolódó-táblák">E-mail és jelszó kezeléshez kapcsolódó táblák</a></li>
     <li><a href="#visszajelzésekhez-kapcsolódó-táblák">Visszajelzésekhez kapcsolódó táblák</a></li>
+    <li><a href="#besorolatlan-táblák">Besorolatlan táblák</a></li>
 </ol>
 </details>
 
@@ -323,4 +324,12 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
     <li>feedbacks – Visszajelzéseket itt hozza létre</li>
     <li>feedbacks_reply – A válaszok a visszajelzése itt lesznek mentve </li>
 </ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Besorolatlan táblák
+<p>Akadnak olyan táblák, amiket nem lehet egy csoportba sorolni, így azokat itt említem meg.</p>
+<p>A „vouchers” táblában az aktuális kuponok találhatóak. Ennek a táblának az adatait csak a vásárlás folyamata közben veszi igénybe a program.</p>
+<p>A „cart” és a „bookmarks” tábla szinte ugyan az, mivel a „cart” táblában a kosárhoz adott termékek adatai találhatóak, a „bookmarks” táblában pedig a könyvjelzőhöz adott termékek.</p>
+<p>A „log” táblában található a legtöbb adat. Ide történik a naplózás. Ip címekre és kategóriákra bontva találhatóak benne az adatok.</p>
+<p>A „login_attempts” táblába mentődik el minden olyan próbálkozás, amikor valaki be akart jelentkezni az oldalra. Ha olyan fiókba próbált bejelentkezni, amelyik létezik az oldalon, a fiók tulajdonosa ezt az információt meg tudja tekinteni a profil részlegen. A sikeres és a sikertelen próbálkozás is el van mentve.</p>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
