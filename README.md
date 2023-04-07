@@ -5,29 +5,73 @@
   <summary>Tartalomjegyzék</summary>
   <ol>
     <li><a href="#előszó">Előszó</a></li>
-    <li><a href="#szükséges-kellékek-és-fejlesztői-környezet">Szükséges kellékek és fejlesztői környezet</a></li>
-    <li><a href="#operációs-rendszer-választása">Operációs rendszer választása</a></li>
-    <li><a href="#fejlesztői-környezet-választása">Fejlesztői környezet választása</a></li>
-    <li><a href="#verziókezelés">Verziókezelés</a></li>
-    <li><a href="#programozási-nyelvek-kiválasztása">Programozási nyelvek kiválasztása</a></li>
-    <li><a href="#frontend-nyelvek-választása">FrontEnd nyelvek választása</a></li>
-    <li><a href="#backend-nyelvek-választása">BackEnd nyelvek választása</a></li>
-    <li><a href="#adatbázis-kezelés">Adatbázis kezelés</a></li>
-    <li><a href="#kiegészítő-könyvtárak">Kiegészítő könyvtárak</a></li>
-    <li><a href="#telepítés-és-üzembe-helyezés">Telepítés és üzembe helyezés</a></li>
-    <li><a href="#telepítés-utáni-tesztelések">Telepítés utáni tesztelések</a></li>
-    <li><a href="#windows-operációs-rendszereken">Windows operációs rendszereken</a></li>
-    <li><a href="#linux-operációs-rendszereken">Linux operációs rendszereken</a></li>
-    <li><a href="#első-lépések">Első lépések</a></li>
-    <li><a href="#adatbázis-szerkezetének-kialakítása">Adatbázis szerkezetének kialakítása</a></li>
-    <li><a href="#felhasználókhoz-kapcsolódó-táblák">Felhasználókhoz kapcsolódó táblák</a></li>
-    <li><a href="#termékekhez-kapcsolódó-táblák">Termékekhez kapcsolódó táblák</a></li>
-    <li><a href="#rendeléshez-kapcsolódó-táblák">Rendeléshez kapcsolódó táblák</a></li>
-    <li><a href="#oldal-alap-beállításaihoz-kapcsolódó-táblák">Oldal alap beállításaihoz kapcsolódó táblák</a></li>
-    <li><a href="#termék-véleményezéséhez-kapcsolódó-táblák">Termék véleményezéséhez kapcsolódó táblák</a></li>
-    <li><a href="#e-mail-és-jelszó-kezeléshez-kapcsolódó-táblák">E-mail és jelszó kezeléshez kapcsolódó táblák</a></li>
-    <li><a href="#visszajelzésekhez-kapcsolódó-táblák">Visszajelzésekhez kapcsolódó táblák</a></li>
-    <li><a href="#besorolatlan-táblák">Besorolatlan táblák</a></li>
+    <li><a href="#szükséges-kellékek-és-fejlesztői-környezet">Szükséges kellékek és fejlesztői környezet</a>
+      <ul>
+        <li><a href="#operációs-rendszer-választása">Operációs rendszer választása</a></li>
+        <li><a href="#fejlesztői-környezet-választása">Fejlesztői környezet választása</a></li>
+        <li><a href="#verziókezelés">Verziókezelés</a></li>
+        <li><a href="#programozási-nyelvek-kiválasztása">Programozási nyelvek kiválasztása</a>
+          <ul>
+            <li><a href="#frontend-nyelvek-választása">FrontEnd nyelvek választása</a></li>
+            <li><a href="#backend-nyelvek-választása">BackEnd nyelvek választása</a></li>
+            <li><a href="#adatbázis-kezelés">Adatbázis kezelés</a></li>
+          </ul>
+        </li>
+        <li><a href="#kiegészítő-könyvtárak">Kiegészítő könyvtárak</a></li>
+      </ul>
+    </li>
+    <li><a href="#telepítés-és-üzembe-helyezés">Telepítés és üzembe helyezés</a>
+      <ul>
+        <li><a href="#telepítés-utáni-tesztelések">Telepítés utáni tesztelések</a>
+          <ul>
+            <li><a href="#windows-operációs-rendszereken">Windows operációs rendszereken</a></li>
+            <li><a href="#linux-operációs-rendszereken">Linux operációs rendszereken</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#első-lépések">Első lépések</a>
+      <ul>
+        <li><a href="#adatbázis-szerkezetének-kialakítása">Adatbázis szerkezetének kialakítása</a>
+          <ul>
+            <li><a href="#felhasználókhoz-kapcsolódó-táblák">Felhasználókhoz kapcsolódó táblák</a></li>
+            <li><a href="#termékekhez-kapcsolódó-táblák">Termékekhez kapcsolódó táblák</a></li>
+            <li><a href="#rendeléshez-kapcsolódó-táblák">Rendeléshez kapcsolódó táblák</a></li>
+            <li><a href="#oldal-alap-beállításaihoz-kapcsolódó-táblák">Oldal alap beállításaihoz kapcsolódó táblák</a></li>
+            <li><a href="#termék-véleményezéséhez-kapcsolódó-táblák">Termék véleményezéséhez kapcsolódó táblák</a></li>
+            <li><a href="#e-mail-és-jelszó-kezeléshez-kapcsolódó-táblák">E-mail és jelszó kezeléshez kapcsolódó táblák</a></li>
+            <li><a href="#visszajelzésekhez-kapcsolódó-táblák">Visszajelzésekhez kapcsolódó táblák</a></li>
+            <li><a href="#besorolatlan-táblák">Besorolatlan táblák</a></li>
+          </ul>
+        </li>
+        <li><a href="#fájlrendszer-kialakítása-a-szerveren">Fájlrendszer kialakítása a szerveren</a>
+          <ul>
+            <li><a href="#mappák">Mappák</a>
+              <ul>
+                <li><a href="#actions">Actions</a></li>
+                <li><a href="#admin">Admin</a></li>
+                <li><a href="#assets">Assets</a></li>
+                <li><a href="#config">Config</a></li>
+                <li><a href="#errors">Errors</a></li>
+                <li><a href="#feedback">Feedback</a></li>
+                <li><a href="#includes">Includes</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#router">Router</a></li>
+                <li><a href="#webshop">Webshop</a></li>
+              </ul>
+            </li>
+            <li><a href="#fájlok">Fájlok</a>
+              <ul>
+                <li><a href="#indexphp">Index.php</a></li>
+                <li><a href="#htaccess">.htaccess</a></li>
+                <li><a href="#homephp">home.php</a></li>
+                <li><a href="#profilephp">profile.php</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
 </ol>
 </details>
 
@@ -335,4 +379,56 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 <p>A „cart” és a „bookmarks” tábla szinte ugyan az, mivel a „cart” táblában a kosárhoz adott termékek adatai találhatóak, a „bookmarks” táblában pedig a könyvjelzőhöz adott termékek.</p>
 <p>A „log” táblában található a legtöbb adat. Ide történik a naplózás. Ip címekre és kategóriákra bontva találhatóak benne az adatok.</p>
 <p>A „login_attempts” táblába mentődik el minden olyan próbálkozás, amikor valaki be akart jelentkezni az oldalra. Ha olyan fiókba próbált bejelentkezni, amelyik létezik az oldalon, a fiók tulajdonosa ezt az információt meg tudja tekinteni a profil részlegen. A sikeres és a sikertelen próbálkozás is el van mentve.</p>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+<h2>Fájlrendszer kialakítása a szerveren</h2>
+<p>
+	Az adatbázis kialakítása után a fájlrendszer kialakítása volt a következő lépés. Ez a folyamat is elég bonyolult volt, nehéz kialakítani úgy egy összetett rendszert, hogy átlátható és könnyen kezelhető legyen. A kialakítással az volt a bajom, hogy folyton új funkciókat adtam hozzá a weboldalhoz, amiket később átalakítottam, vagy újra gondoltam teljesen, így én is bele bonyolódtam, ezért kicsit összekuszálódtak a dolgok, és tartalmaz olyan fájlokat a szerver, amit már nem használok, de nem merek kitörölni, mert az egy régebbi verzióhoz tartozik, ami működött és benne hagytam, ha netán visszatérnék az alkalmazásukhoz.
+	A gondok ott kezdődtek, hogy nem objekt orientált programozást használtam az elején, hanem csak a folyamat végefelé kezdtem el alkalmazni, így nem lett az összes metódus átültetve egy osztályba, de a kezdeti elemek már ki lettek alakítva. Ezt orvosolni lehet, egy alaposabb átvizsgálással, és több idő ráfordításával, de addig maradtak benne felesleges, vagy ismétlődő elemek.
+</p>
+<h2>Mappák</h2>
+<h3>Actions</h3>
+<p>Az „Actions” mappában megtalálhatóak az alapvető PHP scriptek, például a bejelentkeztetési, kijelentkeztetési script, és a regisztrációs script. Ezeken kívűl még megtalálható a téma kezelése, és néhány beállítási script, bár ezek nagy része már át lett helyezve egy másik gyűjtő mappába és át lett alakítva, így mostmár OOP központú lett.</p>
+
+<h3>Admin</h3>
+<p>Ebben a mappában az admin panelben elhelyezkedő scriptket vannak. Ezt a mappát nem éri el olyan felhasználó, amelyik nincsen bejelentkezve, valamint a bejelentkezett felhasználók közül is csak azok érhetik el, amelyeknek a jogosultságuk nagyobb, mint 0 (vásárló).</p>
+<p>Ez a mappa is több almappár van osztva, az admin panelben megjelenő oldalak ide vannak gyűjtve, bár sajnos nem az összes, ami a mappák elnevezéséből eredő nem egyértelműség miatt történt. Ezek mappák áthelyezése tervben, van, bár nagy a valószínűsége, hogy egy jó pár elérési útvonalat át kellene írni, és úgy sem lenne biztos, hogy működne, így sajnos ezek már nem fognak áthelyezésre kerülni a záródolgozat leadása előtt.</p>
+
+<h3>Assets</h3>
+<p>Ez a mappa talán az egyik legfontosabb mappa a szerveren, ugyanis ide vannak összegyűjtve a JavaScript, PHP, CSS fájlok, valamint az oldal ikonja, a képek ide vannak feltöltve a termékekről, visszajeltésekből és a hírekről is.</p>
+<p>Ebben a mappában található meg a legtöbb fájl, ugyanis ezek nagy része dinamikusan növekszik a hozzáadott termékekkel együtt.</p>
+
+<h3>Config</h3>
+<p>Ebben a mappában csak az adatbázishoz való csatlakozást létrehozó PHP script található meg.</p>
+
+<h3>Errors</h3>
+<p>Az Errors mappában megtalálható fájlok, csak a különböző hibaüzenetekre készített fájlok található meg, azokból is csak a három fő hibakódé: a 404, a 404 és az 500-as hibakódé, bár az utóbbi fájlnak nincsen sok értelme, ugyanis 500-as hibakód esetén nagy a valószínűsége, hogy nem lesz megjeleníthető ez a fájl, de a többi két fájl tökéletesen megjelenik az adott hibakódra.</p>
+
+<h3>Feedback</h3>
+<p>Ez a mappa a visszajelzések kezelésére született meg. Felépítése érdekes, mert néhány elemét nem tekintheti meg mindenki, van amelyiket csak a megfelelő jogosultsággal rendelkezők tekinthetik meg, de van olyan amit megtekinthet az is aki írta a visszajelzést. Egy közös, hogy a nem bejelentkezett felhasználók nem férnek hozzá egyik fájlhoz sem ebben a mappában.</p>
+
+<h3>Includes</h3>
+<p>Ez a mappa egy kicsit érdekesre sikeredett, mert néhány része nem tartozik ide, hanem az „assets” mappában lenne a helye, de már ittmaradtak. Természetesen ezeket át lehetne helyezni, de nem befolyásol semmit, csak az átláthatóságát a szervernek, de az a felhasználók részéről teljesen lényegtelen.</p>
+<p>Itt vannak tárolva a telefonra optimalizált elemek is, például a Sidenav, vagy a fejléc, amik máshogyan jelennek meg, vagy viselkednek különböző képernyő felbontásoknál.</p>
+
+<h3>News</h3>
+<p>A News mappában a főoldalon megjelenő hírek kezelésére alkalmas oldalak jelenek meg, de mivel ezt a funkciót nem tudtam még befejezni, így nem kizárt, hogy a jövőben úgy lesz alakítva ez a mappa, hogy a webáruház részlegén megjelenő hírek kezelésére szolgáló oldalak is itt jelenjenek meg.</p>
+
+<h3>Router</h3>
+<p>Ez a mappa a legfontosabb mappa a szerveren, ugyanis ez olyan osztályokat tartalmaz, ami lehetővé teszi, hogy routolást használjak a szerveren mindenféle harmadik féltől származó kiegészítők, vagy pluginok nélkül.</p>
+
+<h3>Webshop</h3>
+<p>A Webshop mappában a webáruházhoz tartozó scriptek, oldalak találhatóak. Többek között a rendelés funkciót tartalmazó script is ebben a mappába van tárolva, valamint a termékek keresésére szolgáló kód is itt van.</p>
+
+<h2>Fájlok</h2>
+<p>A root mappában még található néhány fájl, vagy mappa ami vagy nem elérhető a felhasználóknak, vagy el lesz távolítva publikálásná, vagy akár olyanok amelyeket nem lett volna célszerű külön mappába helyezni.</p>
+<p>A legfontosabb fájlokat emelném ki:</p>
+<h3>Index.php</h3>
+<p>Ez a fájl arra szolgál, hogy amint a böngészőben el akarják érni az oldalt, az összes kérés erre a fájlra fog mutatni, ami routeolási adatokat tartalmaz, hogy az adott kérés alapján hová irányítsa át a felhasználót.</p>
+<h3>.htaccess</h3>
+<p>Ez az a fájl ami lehetővé teszi, hogy működjön a PHP Router, ugyanis ebben a fájlban a szerver konfigurálása történik. Ezt a fájlt nem érik el a felhasználók, és ez szerencsére a szerver alapbeállításaiban van, hogy elérhetetlen legyen, ugyanis kritikus adatokat tartlamaz.</p>
+<h3>home.php</h3>
+<p>Erre a fájlra lesz átirányítva alapból a felhasználó, ha nem ad meg semmilyen queryt a linkben. Ebben a fájlban található meg a főoldal minden scriptje.</p>
+<h3>profile.php</h3>
+<p>Ez a fájl a profil oldal alapja, ide töltődnek majd be a többi fájlok, amik megjelenítik a felhasználó adatait, hogy tudja kezelni a profilját.</p>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
