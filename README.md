@@ -27,7 +27,7 @@
 </ol>
 </details>
 
-![Screenshot from 2022-05-21 18-31-53](https://user-images.githubusercontent.com/105912216/169660860-90219acd-e5c5-4b36-93c0-8a90f016a9f4.png)
+![home](https://user-images.githubusercontent.com/105912216/230601842-594abbad-6025-457b-90f0-9375fbd8bc1c.png)
 
 # Előszó
 
