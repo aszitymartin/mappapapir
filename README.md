@@ -24,6 +24,7 @@
     <li><a href="#termékekhez-kapcsolódó-táblák">Termékekhez kapcsolódó táblák</a></li>
     <li><a href="#rendeléshez-kapcsolódó-táblák">Rendeléshez kapcsolódó táblák</a></li>
     <li><a href="#oldal-alap-beállításaihoz-kapcsolódó-táblák">Oldal alap beállításaihoz kapcsolódó táblák</a></li>
+    <li><a href="#termék-véleményezéséhez-kapcsolódó-táblák">Termék véleményezéséhez kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -273,5 +274,20 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
     <li>def__news – Főoldalon megjelenő hírek</li>
     <li>def__news__status – Hírek státuszai</li>
     <li>def__header – Fejléc linkjei</li>
+</ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Termék véleményezéséhez kapcsolódó táblák
+<p>A létrehozott termékeknél, ahol be van kapcsolva az a lehetőség, hogy lehessen írni értékelést, a bejelentkezett felhasználók írhatnak véleményt, vagy csak értékelhetik a terméket a megszokott csillagozásos rendszerrel.</p>
+<p>A felhasználók beállíthatják, hogy az értékelés amit írtak az publikus legyen-e, vagy ne legyen a nevük feltüntetve az oldalon. Amennyiben nem szeretnék, hogy nevük megjelenjen, a nevük helyett egy „Privát felhasználó” szöveg fog megjelenni.</p>
+<p>A felhasználók szerkeszthetik a véleményüket, illetve törölhetik is. A felhasználóknak továbbá joguk van értékelni mások véleményét, a „Hasznos” gombra kattintva az értékelés alatt. Amennyiben viszont sértőnek találják az értékelést, a felhasználó jelentheti azt az értékelést, amit majd az admin panelben meg lehet tekinteni és azt a rá jogosultak el tudják bírálni. Amennyiben tényleg sértőnek találták azt a véleményt a felhasználót akát el is lehet tiltani a további véleményezésektől.</p>
+
+![reviews](https://user-images.githubusercontent.com/105912216/230604152-c934ab8d-9061-4afd-b1e9-7121f8eeccfa.png)
+
+<p>A következő táblák kapcsolódnak a „reviews” táblához</p>
+<ul>
+    <li>rvr__w – Figyelmeztetett felhasználók</li>
+    <li>rv__r – Jelentett vélemények</li>
+    <li>rv__u – Hasznosnak talált vélemények</li>
 </ul>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
