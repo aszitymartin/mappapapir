@@ -26,6 +26,7 @@
     <li><a href="#oldal-alap-beállításaihoz-kapcsolódó-táblák">Oldal alap beállításaihoz kapcsolódó táblák</a></li>
     <li><a href="#termék-véleményezéséhez-kapcsolódó-táblák">Termék véleményezéséhez kapcsolódó táblák</a></li>
     <li><a href="#e-mail-és-jelszó-kezeléshez-kapcsolódó-táblák">E-mail és jelszó kezeléshez kapcsolódó táblák</a></li>
+    <li><a href="#visszajelzésekhez-kapcsolódó-táblák">Visszajelzésekhez kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -308,5 +309,18 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
     <li>u__email – Felhasználói email címek</li>
     <li>u__password – Felhasználók jelszavai és hitelesítések</li>
     <li>u__pass__history – Jelszó előzmények</li>
+</ul>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Visszajelzésekhez kapcsolódó táblák
+<p>Egy ilyen oldalon elengedhetetlen a vásárlók visszajelzéseire való építés. Akármilyen hibát talál a felhasználó, az jelezni tudja a megfelelő személynek, amit az admin panelen meg lehet tekinteni és kezelni is lehet.</p>
+
+![feedback](https://user-images.githubusercontent.com/105912216/230632887-444a9711-e61f-4dc3-bb39-39cd6afc4aae.png)
+
+<p>A felhasználó tud nyitni egy új visszajelzést, ahol le tudja írni észrevételeit, sőt még képeket is tud csatolni. Az illetékes meg tudja tekinteni az admin panelben, és tud válaszolni a visszajejzésre, valamint kezelni is tudja azokat. Tudja törölni, és a szátuszát módosítani.</p>
+<p>A következő táblák voltak szükségesek ehhez</p>
+<ul>
+    <li>feedbacks – Visszajelzéseket itt hozza létre</li>
+    <li>feedbacks_reply – A válaszok a visszajelzése itt lesznek mentve </li>
 </ul>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
