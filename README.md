@@ -21,6 +21,7 @@
     <li><a href="#első-lépések">Első lépések</a></li>
     <li><a href="#adatbázis-szerkezetének-kialakítása">Adatbázis szerkezetének kialakítása</a></li>
     <li><a href="#felhasználókhoz-kapcsolódó-táblák">Felhasználókhoz kapcsolódó táblák</a></li>
+    <li><a href="#termékekhez-kapcsolódó-táblák">Termékekhez kapcsolódó táblák</a></li>
 </ol>
 </details>
 
@@ -219,4 +220,24 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 </ul>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
+# Termékekhez kapcsolódó táblák
+<p>Ahhoz, hogy létre tudjunk hozni termékeket az oldalon, vagy kezelni tudjuk őket, létre kell hozni egy erre a célre szolgáló táblázatot, ezért egyből csináltam is 11 darab táblát.</p>
+
+![Screenshot from 2023-04-07 12-24-50](https://user-images.githubusercontent.com/105912216/230595328-a9e6e84f-2739-44e6-b8d2-7b46df245013.png)
+
+
+<p>A táblákat itt is ugyanolyan logika alapján csoportosítottam, mint a felhasználói tábla csoportnál. Itt a „products” tábla az alap tábla, és ehhez kapcsolódik az összes olyan tábla, amelyiknek köze van a termékhez valamilyen módon. Ebben a táblában van mentve a termék neve, leírása és a fő képe, valamint a létrehozásának dátuma.</p>
+<p>A products táblához a következő táblák kapcsolódnak:</p>
+<ul>
+    <li>products__category – Termék kategóriája</li>
+    <li>products__shipping – Szállítási beállítások</li>
+    <li>products__meta – Termék meta tagjainak beállítása</li>
+    <li>products__review – Termékhez tartozó értékelések beállítása</li>
+    <li>products__pricing – Árazás, leértékelések beállítása</li>
+    <li>products__media – Termék miniatűrjei</li>
+    <li>products__status – Termék státusza</li>
+    <li>products__variations – Termék variációja</li>
+    <li>products__search – A keresés algoritmust segítő tábla</li>
+    <li>products__inventory – Raktár beállítások</li>
+</ul>
 
