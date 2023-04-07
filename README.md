@@ -328,6 +328,9 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 # Besorolatlan táblák
 <p>Akadnak olyan táblák, amiket nem lehet egy csoportba sorolni, így azokat itt említem meg.</p>
+
+![uncategorised](https://user-images.githubusercontent.com/105912216/230665888-75f274ff-9934-43c6-bbbb-e1893d12f2fd.png)
+
 <p>A „vouchers” táblában az aktuális kuponok találhatóak. Ennek a táblának az adatait csak a vásárlás folyamata közben veszi igénybe a program.</p>
 <p>A „cart” és a „bookmarks” tábla szinte ugyan az, mivel a „cart” táblában a kosárhoz adott termékek adatai találhatóak, a „bookmarks” táblában pedig a könyvjelzőhöz adott termékek.</p>
 <p>A „log” táblában található a legtöbb adat. Ide történik a naplózás. Ip címekre és kategóriákra bontva találhatóak benne az adatok.</p>
