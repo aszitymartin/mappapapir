@@ -570,3 +570,63 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 <small><em>Termékek ábra</em></small>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Autentikáció
+
+<p>Amint elkészültem a főoldallal, a következő lépés az volt, hogy ne csak úgy tudjak létrehozni felhasználókat, hogy közvetlenül az adatbázisban hozom létre, hanem akartam rá egy scriptet és front-end elemeket is. Előszőr a regisztrációval kezdtem, ami elég hosszadalmasra sikeredett, tekintve az adatok mennyiségét, amit meg kell adni, hogy a felhasználó regisztrálni tudjon.</p>
+<h2>Regisztráció</h2>
+<p>Regisztrálni csak akkor lehet egy fiókot, ha a felhasználó még nincsen bejelentkezve. Ez kivételesen nem igaz, ha az admin panelből szeretnénk létrehozni fiókokat, mert ott bármikor bármennyit létre lehet hozni.</p>
+<p>A regisztráció úgy történik, hogy a fejlécben megjelenő “Belépés”  gombra kattintva megjelenő panelen kiválasztjuk a “Regisztráció” menüpontot és kitöltjük az űrlapot.</p>
+
+![register](https://user-images.githubusercontent.com/105912216/230723243-0ed210f7-d8ae-45e6-ad0a-3652e65287d1.png)
+
+<small><em>Regisztrációs panel ábra</em></small>
+<h3>Script</h3>
+<p>A regisztrációs script megírása elég sok időt vett igénybe, és így sem fedtem le minden hibalehetőséget. Az első hiba, amit elkövettem, hogy az adatbázisba mentéskor nem egy prepared statement-et használtam, amiben lett volna egy Transaction, hanem minden táblába íráskor egy külön prepared statementet hoztam létre, így az eredmény ugyanaz, ha az egyik folyamat közben hiba lép fel, akkor az egész regisztrációt megszakítja, és a már létrehozott adatokat törölni fogja, csak sokkal több időt vett igényben, és feleslegesn bonyolult. Ezt lehet orvosolni, és nagyon valószínű, hogy a későbbiekben újra lesz gondolva ez a script.</p>
+
+![register_script](https://user-images.githubusercontent.com/105912216/230723251-001c52cf-ea0e-4c03-a5d0-a5bc3db39bc9.png)
+
+<small><em>Regisztrációs Script: Egymásba ágyazott prepared statementek ábra</em></small>
+<p>A script megnézi, hogy sikerült-e létrehozni a felhasználót a megadott adatokkal, és ha hiba nélkül sikerült hozzáadni az adatbázishoz, elkezdi generlálni a felhasználó kártyáját, amivel fizetni tud majd az oldalon. Ez a kártya minden felhasználónak egyedi, és csak 1 darabbal rendelkezhet fiókonként. Ennek a kártyának a lejárati dátuma 3 évre lett állítva. Amint létre lett hozva a kártya, a script beállítja ezt elsődlegesnek, és elmenti a naplózási táblába a sikeres regisztrációról szóló szöveget. Amennyiben a kártya létrehozása közben hiba történik, a felhasználó törlése kerül, és a regisztrációt újra kell kezdeni.</p>
+
+<h2>Bejelentkezés</h2>
+<p>Amint végeztem a Regisztrációs scripttel, a bejelentkezési funkció volt a következő, amit el kellett készítenem. A bejelentkezés szintént csak akkor érhető el, ha a felhasználó még nincsen bejelentkezve. Bejelentkezni a megszokott módon, a fejlécen megjelenő “Belépés” gombra kattintva lehet.</p>
+<p>Itt két dolog történhet. Ha már valaki be volt jelentkezve erről a gépről az oldalra, és úgy jelentkezett ki, hogy mentette a bejelentkezési adatokat, akkor az oldal felkínálja, hogy jelentkezzen be abba a fiókba, vagy jelentkezzen be egy másikba.</p>
+
+![login](https://user-images.githubusercontent.com/105912216/230723264-24729be6-aaeb-4467-b8c2-69fd089720e9.png)
+
+<small><em>Bejelentkezési panel: Nincsen mentett fiók ábra</em></small>
+<p>Amennyiben vannak mentve bejelentkezési adatok, az űrlap helyett meg fog jelenni a mentett felhasználók bejelentkezési adatai egy listában, és azokat kiválasztva tud bejelentkezni, a megfelelő jelszó megadása után a felhasználó.</p>
+<p>Abban az esetben, ha nem szerepel a fiókja a mentettek listájában, akkor a “Bejelentkezés másik fiókkal” gombra kattintva meg kell adnia az e-mail címét és jelszavát, hogy be tudjon jelentkezni.</p>
+
+![login-history](https://user-images.githubusercontent.com/105912216/230723280-62cc76d4-291c-4812-9ff1-52a505c2ff96.png)
+
+<small><em>Bejelentkezési panel: Mentett fiókok listája ábra</em></small>
+<h3>Script</h3>
+<p>A bejelentkezés scriptje már nem vett olyan sok időt igénybe, mint a regisztrációje, ugyanis itt már lényegesen kevesebb feltételre kellett figyelni. </p>
+<p>Előszőr meg kellett nézni, hogy létezik-e olyan felhasználó az adatbázisban, akinek az-e az e-mail címe, amit a felhasználó megadott a bejelentkezés során. Amennyiben nincsen, akkor a kód visszatér egy hibaüzenettel, amit a front end résznél lekezelek, hogy tudja a felhasználó, hogy pontosan mi is a hiba.</p>
+<p>Amennyiben létezik felhasználó a megadott e-mail címmel meg kell nézni, hogy a jelszavak egyeznek-e. Amennyiben nem egyeznek a jelszavak, akkor egy naplózás fog megtörténni, hogy a megadott e-mail címmel valaki megpróbált bejelentkezni sikertelenül. A fiók tulajdonosa megtudja tekinteni a bejelentkezési próbálkozásokat.</p>
+<p>Abban az esetben, ha az e-mail cím és a jelszó is egyezik az adatbázisban lévővel, ugyanúgy naplózás fog történni, csak annyi változik, hogy a bejelentkezés sikeresen történt meg. A naplózás után megnézzük, hogy a felhasználó fiókja jelenleg deaktiválva van-e. Amenyiben deaktiválva van, kiszedjük a fiókját a deaktiváltak közül, így már nem lesz érvényben a felfüggesztés, és használhatja tovább a fiókját.</p>
+<p>Ugyanezt meg kell nézni, hogy a felhasználó jelenleg a töröltek listájában van-e. Amennyiben igen, akkor kiszedjük onnan, és folytathatja a bejelentkezést.</p>
+<p>A felhasználó törlés úgy működik az oldalon, hogy amint a felhasználó törölni szeretné a fiókját, kijelentkeztetjük az oldalról és a fiókja egy olyan táblába mentődik el, amit egy event script minden nap éjfélkor mégnézi, hogy mennyi ideje van abban a táblában a fiók. Amint már a 30.napja van ott, a fiókot véglegesen törli az adatbázisból.</p>
+<p>Amint a jelszó és e-mail páros helyes, jön a sütik kezelése, és egy olyan sütit hozunk létre a böngészőben, hogy akárhányszor belép az oldalra a felhasználó, megnézi, hogy létre van-e hozva az “__au__login” süti. Ebben a sütiben vannak tárolva a felhasználó egyedi tokene, amit minden bejelentkezésnél megkap. Ez arra szolgál, hogy ne jelentkeztesse ki a felhasználót az oldalról a böngésző, amint a böngésző session-je lejár, ami általában fél óra alapból. Ez egy olyan “Remember me” funkcióként lett létrehozva.</p>
+
+![login_script](https://user-images.githubusercontent.com/105912216/230723293-3887db55-7cb5-4f7a-a751-3939c1b5fd7e.png)
+
+<small><em>Bejelentkezési script: Süti létrehozása ábra</em></small>
+
+<h2>Kijelentkezés</h2>
+<p>A bejelentkezés után jött a kijelentkezés script, ahol szerettem volna, hogy a felhasználónak meglegyen a joga, hogy eldönthesse, hogy szeretné-e menteni a bejelentkezési adatait, hogy legközelebb könnyebb legyen a belépés, vagy teljesen törölje a böngészőből az adatait.</p>
+
+![logout](https://user-images.githubusercontent.com/105912216/230723306-ff54222c-42e4-4033-8333-01e0e0c4a852.png)
+
+<small><em>Kijelentkezés ábra</em></small>
+
+<h3>Script</h3>
+<p>Az autentikácós scriptek közül a kijelentkezés volt a legkönnyebb, ugyanis itt csak annyit kellett mengéznem, hogy a felhasználó szeretné-e menteni az adatait, vagy nem. Amennyiben nem, csak törlöm a session változóit, a sütiket és törlöm az egész munkamenetét.</p>
+<p>Az adatok mentése funkció se volt sokkal bonyolultabb, mivel itt csak egy sütit kellett módosítanom, nem törölnöm, a kód többi része ugyanaz. Meg kellett nézni, hogy pontosan melyik azonosítóval rendelkező felhasználóról van szó, megkeresni a sütiben, hogy tényleg nincs-e ilyen, és ha nincs akkor csak hozzáfűzöm a süti végére, és folytatom a kijelentkeztetését.</p>
+
+![logout-script](https://user-images.githubusercontent.com/105912216/230723318-db4e7f86-5109-4d15-b95c-a19449af2584.png)
+
+<small><em>Kijelentkezési script ábra</em></small>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
