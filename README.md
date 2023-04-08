@@ -134,6 +134,25 @@
         <li><a href="#felfüggesztés">Felfüggesztés</a></li>
       </ul>
     </li>
+    <li><a href="#termékek">Termékek</a>
+      <ul>
+        <li><a href="#bestseller-funkció">Bestseller funkció<a></li>
+        <li><a href="#összehasonlítás-hasonló-termékekkel">Összehasonlítás hasonló termékekkel</a></li>
+        <li><a href="#értékelés-szekció">Értékelés szekció</a>
+	  <ul>
+	    <li><a href="#értékelés-írása">Értékelés írása</a></li>
+	    <li><a href="#további-funkciók">További funkciók</a></li>
+	  </ul>
+	</li>
+      </ul>
+    </li>
+    <li><a href="#webáruház">Webáruház</a></li>
+    <li><a href="#keresés-funkció">Keresés funkció</a>
+      <ul>
+        <li><a href="#navigációs-sáv">Navigációs sáv</a></li>
+        <li><a href="#találatok-listája">Találatok listája</a></li>
+      </ul>
+    </li>
 </ol>
 </details>
 
@@ -811,7 +830,7 @@ Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárl
 <p>Ez a funkció még sajnos csak demó módban van, ugyanis az adatbázisban nem szerepel elegendő termék, hogy teljeskörő összehasonlítási algoritmust tudjak írni, így ez az oldal jelenleg üres.</p>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 	
-#Webáruház
+# Webáruház
 
 <p>A webáruház oldal arra szolgál, hogy megjelenítse az összes terméket, ami elérhető az oldalon, kategóriákra bontva. Az oldal tetején szerepel egy banner, ahova különböző leárazással, promóciókkal kapcsolatos képeket lehet majd felvenni, de ez még nincs bevezetve, így csak egy előre megírt elemeket tartalmaz.</p>
 <p>A banner szekció alatt egy hasonló elem található mint a főoldalon. Egy olyan csík helyezkedik el, ami megjeleníti a népszerű kategóriákat képpel ellátva. Ezekre a képekre kattintva szűrhet rá a keresett kategóriákra a termékek közül.</p>
@@ -824,7 +843,7 @@ Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárl
 <small><em>Hírlevél promóció ábra</em></small>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 	
-#Keresés funkció
+# Keresés funkció
 
 <p>Az fejlécében elhelyezett keresés gomb, amelyet már fentebb bemutattam a Fejléc kialakítás részben sajnos nem kapta meg az elegendő törődésemet, mint amit megérdemelne, ugyanis ez a funkció az egyik legfontosabb eleme a webáruháznak, hogy a felhasználók szűrni tudják a termékeinket.</p>
 <p>A gond az, hogy a keresési algoritmus nem teljes, és néhány feltételt figyelmen kívűl hagy, vagy éppenséggel olyan terméket jelenít meg, aminek semmi köze nincs a keresett termékhez.</p>
