@@ -72,6 +72,21 @@
         </li>
       </ul>
     </li>
+    <li><a href="#html-szerkezet">HTML Szerkezet</a>
+      <ul>
+        <li><a href="#fejléc-kialakítása">Fejléc kialakítása</a>
+          <ul>
+            <li><a href="#kijelző-méretek">Kijelző méretek</a>
+              <ul>
+                <li><a href="#nagyobb-kijelzőn-megjelenő-fejléc">Nagyobb kijelzőn megjelenő fejléc</a></li>
+                <li><a href="#telefonokon-megjelenő-fejléc">Telefonokon megjelenő fejléc</a></li>
+              </ul>
+            </li>
+            <li><a href="#fejlécen-elhelyezkedő-gombok">Fejlécen elhelyezkedő gombok</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
 </ol>
 </details>
 
@@ -434,3 +449,39 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 <h3>profile.php</h3>
 <p>Ez a fájl a profil oldal alapja, ide töltődnek majd be a többi fájlok, amik megjelenítik a felhasználó adatait, hogy tudja kezelni a profilját.</p>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# HTML Szerkezet
+
+<p>Az adatbázis és a fájlrendszer kialakítása után a következő lépés a HTML szerkezet és az oldal felépítése volt. Amit már a korábbi projektjeimből megtanultam, az az hogy a header és a footer külön fájlba fog kerülni, hogy aztán csak be kelljen importálni, ne kelljen az összes oldalon újra begépelni, mivel ez hatalmas időpazarlás, és sokkal nehezebb lesz szerkeszteni ezeket a szekciókat később, így csak egy-egy fájlt kell szerkeszteni, ha módosítani akarok valamit.</p>
+<h2>Fejléc kialakítása</h2>
+<p>A fejlécet úgy szerettem volna kialakítani, hogy ne takarjon ki túl sok helyet az oldalból, de a szükséges adatok és gombok megtalálhatóak legyenek rajta. Mivel az oldal nem tölti ki az egész képernyőt, hanem oldalsó margókat használ, így a fejlécet sem akartam, hogy teljes szélességet használjon. Mivel nagyon unalmasnak vélem a megszokott teljes szélességű, az oldal tetejénél kezdődő sablonos fejléceket, ezért próbáltam egy egyedi stílust használni, és egy lebegő sziget szerűségre gondoltam, ami nagyon megtettszett, így ennél maradtam.</p>
+<p>Természetesen a különböző képernyő felbontásoknál nem biztos, hogy megfelelően működne, vagy nézne ki ez a koncepció, így készítettem egy külön fejlécet telefonos nézetre is, ami már sajnos kicsit több helyet foglal el, de ezt még valószínűleg optimalizálni fogok, és próbálom minimalizálni a fejléc magasságát.</p>
+<h2>Kijelző méretek</h2>
+<h3>Nagyobb kijelzőn megjelenő fejléc</h3>
+	<p>Erre a kijelzőméretre próbáltam a leg kompaktabb és a lehető leg célszerűbb stílust kialakítani, ugyanis ezt a fejlécet többen fogján látni, mint a telefonos nézetűet.</p>
+  
+![header-desktop](https://user-images.githubusercontent.com/105912216/230711072-58c1f3a6-06fa-4449-875f-5e0dc263e602.png)
+
+<small><em>Nagyobb méretű kijelzőkön megjelenő fejléc: A felhasználó be van jelentkezve</em></small>
+<p>A fejléc alapvetően három részre osztódik. A bal szélén az oldal neve, valamint a cég mottója jelenik meg. Ettől kicsit jobbra, de nem egészen középen az oldal főbb linkjei jelennek meg. A jobb oldalon pedig a fontosabb gombok találhatóak, úgymint a keresés gomb, a profil gomb, és a kosár megtekintése gomb.</p>
+<p>Ezek a gombok csak a bejelentkezett felhasználóknál jelenik meg, azoknak a felhasználóknak, akik nincsenek bejelentkezve, más gomb fog megjelenni a fejlécben.</p>
+
+![header-desktop-lu](https://user-images.githubusercontent.com/105912216/230711088-069f596c-a568-4e53-be35-cbf6868db658.png)
+
+<small><em>Nagyobb méretű kijelzőkön megjelenő fejléc: A felhasználó nincsen bejelentkezve</em></small>
+<p>A szokásos keresés gomb továbbra is elérhető, de a profil és a kosár gomb helyett egy „Belépés” gomb fog megjelenni, amelyre rákattinva a felhasználó bejelentkezhet, vagy regisztrálhat egy új profilt.</p>
+<h3>Telefonokon megjelenő fejléc</h3>
+
+![header_mobile](https://user-images.githubusercontent.com/105912216/230711099-d64272a8-7a87-40ff-ae3d-f675c32c4539.png)
+
+<small><em>Telefonos nézetnél megjelenő feljéc: A felhasználó be van jelentkezve</em></small>
+<p>Telefonos nézeten már kicsit máshogy néz ki a fejléc, ugyanis itt csak kettő részre osztható az egész. Pontosabban két sorra. Az első sor is két részre van osztva: A bal oldalon a megszokott cég neve és mottója, a jobb oldalon pedig a kosár ikon. Ez a kosár ikon helyett pedig ugyanaz a „Belépés” gomb fog megjelenni, amikor nincs bejelentkezve a felhasználó, mint a nagyobb méretű kijelzőknél. </p>
+
+![header-mobile-lu](https://user-images.githubusercontent.com/105912216/230711101-b0433c2d-f1d6-4afa-80f8-a357be4066c1.png)
+
+<small><em>Telefonos nézetnél megjelenő feljéc: A felhasználó nincsen bejelentkezve</em></small>
+
+<h3>Fejlécen elhelyezkedő gombok</h3>
+<p>A fejlécet úgy szerettem volna kialakítani, hogy ne takarjon ki túl sok helyet az oldalból, de a szükséges adatok és gombok megtalálhatóak legyenek rajta. Mivel az oldal nem tölti ki az egész képernyőt, hanem oldalsó margókat használ, így a fejlécet sem akartam, hogy teljes szélességet használjon. Mivel nagyon unalmasnak vélem a megszokott teljes szélességű, az oldal tetejénél kezdődő sablonos fejléceket, ezért próbáltam egy egyedi stílust használni, és egy lebegő sziget szerűségre gondoltam, ami nagyon megtettszett, így ennél maradtam.</p>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
