@@ -759,3 +759,84 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 <p>A felasználó választhat, hogy fel szeretné-e függeszteni a profilját, vagy teljesen törölni szeretné-e a fiókot. Mind a kettőnek megvan az előnye és hátránya, de a fiók felfüggesztését ajánlom a felhasználóknak a törlés helyett. Ahogy az az ábrán is látszik egyik művelet sem történik meg egyből, mind a kettőnek van futási ideje. Deaktiválást követően, amint a felhasználó újra belép a fiókjába, többet nem lesz a felfüggesztett státusz a fiókján. Viszont ha a törlés opciót választotta a felhasználó, a kijelentkezetése után egy 30 napos futamidő fog elindulni, így ha a felhasználó nem lép be a fiókjába 30 napon belül, akkor a fiókját és a hozzá tartozó minden adat el lesz távolítva az oldalról és nem lesz lehetőség visszaállításra. Abban az esetben, ha a felhasználó belép a 30 napos időszakban, a számláló megáll, és kikerül a törlési folyamatból.</p>
 
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Termékek
+
+<p>A termék szekció az egyik legfontosabb elem az oldalon, ugyanis itt jelennek meg a termék adatai, itt tudja a felhasználó a kosarához adni a terméket, vagy megvásárolni azt. A termék oldal felépítése közben próbáltam a letisztultságra törekedni, de közben a lehető legtöbb információt szerettem volna közölni a vásárlóval. A termék oldal felépítése 4 elemből áll. A fő elem a bal oldalon megjelenő mező, ahol a termék képe látható, az árazásával és az akció gombokkal, amik segítségével hozzá tudja adni a kosarához a terméket, vagy a mentett elemekhez adni, vagy megvásárolni az adott terméket.</p>
+<p>A fő szekció mellett jelenik meg az „Általános” oldal, a „Vélemények” oldal, és legvégül a „Hasonló termékek” oldal. Az általános és a vélemények oldalnak azonos a felépítése.</p>
+<p>Egy fejléc szekciót tartalmaznak, ahol a termék neve látható, alatta az értékelései összegzése, és a termék kategóriáját megjelenítő címkék.</p>
+<h2>Bestseller funkció</h2>
+<p>Egy viszonylag új funkcióval bővítettem a fejlécet, ami pedig a „Bestseller” jelzés. Ez a jelzés akkor jelenik meg, ha az adott termék kategóriáján belül ez az a termék, amelyet a legtöbben vették meg.
+Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárlásokat tartalmazó adatbázis felépítése miatt.</p>
+
+![bestseller](https://user-images.githubusercontent.com/105912216/230741253-b813d854-21a0-4524-8e55-74f7e68d966b.png)
+
+<small><em>Bestseller algoritmus részlet ábrája</em></small>
+
+<p>Az algoritmus megnézi, hogy az adott terméknek mi a ketegóriája, majd kiszedi az összes rendel termék azonosítóját, és megnézi, hogy az azonosítóhoz milyen ketegória tartozik. Ha a ketegória egyezik a keresettel, akkor egy számlálóhoz hozzáadja a termékhez tartozó rendelt mennyiséget, és ezekből az adatokból egy statisztikát készít. A statisztikát sorba rendezi és megnézi, hogy melyik termékből rendelték a legtöbbet, és ha megegyezik a keresett termék azonosítójával, akkor az a termék a bestseller.</p>
+
+<h2>Összehasonlítás hasonló termékekkel</h2>
+<p>Az oldal alján jelenik meg egy olyan szekció, ahol egy táblázatban láthatjuk, hogy az adott termékhez melyik más termékek hasonlítanak a legjobban, és ezeket össze lehet hasonlítani különböző szempontok alapján.</p>
+
+![compare](https://user-images.githubusercontent.com/105912216/230741259-3f3d7529-4edc-4507-ac3c-f8b425fd31c5.png)
+
+<small><em>Termék összehasonlítása szekció ábra</em></small
+
+<h2>Értékelés szekció</h2>
+<p>A termékekhez a bejelentkezett felhasználók tudnak értékeléseket írni, amelyek megjelennek az oldalon. Az értékelési rendszer több szempont alapján is működik. Lehet értékelést írni, ahol csak a csillagos rendszert hasznlája a felhasználó, és van olyan, amikor a véleményét is kifejtheti a termék alatt.</p>
+
+![review_preview](https://user-images.githubusercontent.com/105912216/230741272-41d7cf82-de66-4886-b5a7-616c5300c539.png)
+
+<small><em>Értékelések ábra</em></small>
+
+<p>Egy új funkció, hogy az értékelés mellett megjelenik egy szöveg: “Hitelesített vásárló”, ami akkor fog megjelenni, ha az értékelés szerzője valóban megvette a szóbanforgó terméket.</p>
+<p>Egy olyan algoritmust tervezek bevezetni, amelyik úgy számolja ki a termék értékeléséinek átlagát, hogy figyelembe veszi, hogy az értékelés írója valóban megvette-e a terméket. Amennyiben megvette a terméket, az értékelése nagyobb súlyzással fog beleszámítani a százalékszámításban. A jelenlegi rendszer szerint, ugyanakkora súlyzással bír a hitelesített vásárló vélemény, mint annak az értékelővel, aki nem vette meg a terméket.</p>
+
+<h3>Értékelés írása</h3>
+<p>Az értékelés írása funkció csak a bejelentkezett felhasználók számára elérhető. Az értékelés a megszokott csillagos rendszer alapján működik, és lehetősége van az értékelőnek kifejteni a véleményét is.</p>
+<p>További funkció, hogy a felhasználó élhet a joggal, hogy szeretné-e hogy az értékelése mellett fel legyen-e tüntetve a neve, vagy ne. Amennyiben nem szeretne élni a lehetőséggel, a többi felhasználó annyit fog látni, hogy egy privát felhasználó értékelte a terméket.</p>
+
+![review_write](https://user-images.githubusercontent.com/105912216/230741279-c5abacf2-bcea-4132-a732-7d7a7c36c9b4.png)
+
+<small><em>Értékelés írása ábra</em></small>
+
+<p>További lehetőség az értékeléssel kapcsolatban, hogy az értékelés írója bármikor szerkesztheti az értékelését, és módosíthatja annak minden elemét. Bele értve a csillagok számát, a véleményét, vagy akár a nevének feltüntetését is módosíthatja.</p>
+
+<h3>További funkciók</h3>
+<p>Egy másik funkció, hogy az értékeléseket is lehet értékelni, hogy mennyire találták az emberek hasznosnak azt a véleményt a termékkel kapcsolatban. Erre a „Hasznos” gomb szolgál az értékelések alatt. Mindig a leghasznosabb értékelés fog megjelenni legfelül, és így van sorrendbe állítva, hasznosság szerint.</p>
+<p>A felhasználók természetesen jelenthetik az értékeléseket, ha sértő tartalmat foglal magába, vagy nem oda illő elemeket tartalmaz, vagy akár szándékosan próbálja lehúzni a termék értékelését. Az értékelések jelentését nem lehet visszavonni, és a visszajelzés jelentése funkcióval visszaélőket is jelzi a rendszer, így a helytelen használat szankciókat vonhat maga után. A jelentett értékeléseket látják az illetékesek az admin panelben és elbírálhatják, hogy valóban sértő-e a tartalma. Ezeket a véleményeket törölni tudják, és fel is tudják függeszteni a felhasználót, vagy megvonhatják a jogát a további értékelések írásától.</p>
+
+<h2>Hasonló termékek szekciója</h2>
+<p>Ebben a szekcióban fognak megjelenni az adott termékhez hasonló termékek, akár márka, szín, méret, vagy más feltételek alapján.</p>
+<p>Ez a funkció még sajnos csak demó módban van, ugyanis az adatbázisban nem szerepel elegendő termék, hogy teljeskörő összehasonlítási algoritmust tudjak írni, így ez az oldal jelenleg üres.</p>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+	
+#Webáruház
+
+<p>A webáruház oldal arra szolgál, hogy megjelenítse az összes terméket, ami elérhető az oldalon, kategóriákra bontva. Az oldal tetején szerepel egy banner, ahova különböző leárazással, promóciókkal kapcsolatos képeket lehet majd felvenni, de ez még nincs bevezetve, így csak egy előre megírt elemeket tartalmaz.</p>
+<p>A banner szekció alatt egy hasonló elem található mint a főoldalon. Egy olyan csík helyezkedik el, ami megjeleníti a népszerű kategóriákat képpel ellátva. Ezekre a képekre kattintva szűrhet rá a keresett kategóriákra a termékek közül.</p>
+<p>Ezek alatt helyezkedik el egy olyan elem, ami már nem található meg a főoldalon. A leárazott termékek listája. Itt azok a termékek jelennek meg amelyek ára jelenleg le van árazva, így könnyebben észrevehetik a vásárlók azokat.</p>
+<p>Ez a szekció alatt található meg egy olyan elem, amelyik működik is, meg nem is. Ez az elem a hírlevél funkció. A bejelentkezett felhasználók megadhatják, hogy milyen e-mail címmel szeretnének feliratkozni a hírlevélre. A hírlevélre való feliratkozással jogosultak lesznek egy egyszeri alkalommal használható 2000 Ft értékű ledvezményre. Ha a felhasználó feliratkozik a hírlevélre, de még nem használta fel a kupont és leiratkozik, a kuponja elveszik és nem használhatja többet, ha újból feliratkozik, illetva az az e-mail cím amivel leiratkozott, többet nem lesz jogosult a promóció igénybevételére, akármelyik felhasználó szeretné használni.</p>
+<p>A fel és le iratkozás funkció működik, csak a promóciót nem építettem még bele a vásárlás folyamatába, így a felhsználó hiába van feliratkozva, nem fogja levonni a rendszer azt a 2000 forintot.</p>
+
+![newsletter](https://user-images.githubusercontent.com/105912216/230741292-54e7d08f-4055-4a72-8155-2bace73c31c8.png)
+
+<small><em>Hírlevél promóció ábra</em></small>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+	
+#Keresés funkció
+
+<p>Az fejlécében elhelyezett keresés gomb, amelyet már fentebb bemutattam a Fejléc kialakítás részben sajnos nem kapta meg az elegendő törődésemet, mint amit megérdemelne, ugyanis ez a funkció az egyik legfontosabb eleme a webáruháznak, hogy a felhasználók szűrni tudják a termékeinket.</p>
+<p>A gond az, hogy a keresési algoritmus nem teljes, és néhány feltételt figyelmen kívűl hagy, vagy éppenséggel olyan terméket jelenít meg, aminek semmi köze nincs a keresett termékhez.</p>
+
+<h2>Navigációs sáv</h2>
+<p>A keresés oldal két részre van bontva. Bal oldalon helyezkedik el a navigációs sáv, ahol további szűrőket lehet alkalmazni a keresett kifejezésre. Lehet termékekre, értékelésekre, valamint ár tartományra szűrni. További szűrési lehetőség, hogy a visszatérítést és az utólagos rendelést is lehet szűrni.</p>
+<p>Annyi újdonságot szeretnék még hozzá adni a navigációs sávhoz, hogy jelenjenek meg feltételek a termék variációból is, hogy azokra is lehessen szűrni.</p>
+
+<h2>Találatok listája</h2>
+<p>Az oldal többi részén a talált elemek listája jelenik meg, ahol a keresett kifejezésre, az algoritmus által megfelelőnek gondolt termékek fognak megjelenni, amikből a felhasználó választhat.</p>
+
+![search_result](https://user-images.githubusercontent.com/105912216/230741300-87ccbce1-fd78-44f4-80d1-8a3ad246524a.png)
+
+<small><em>Keresési találatok ábra</em></small>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
