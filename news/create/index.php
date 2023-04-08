@@ -8,12 +8,15 @@ if ($privilege < 1) { echo '<script>window.location.href = "/"</script>'; header
     <div class="flex flex-col flex-align-c gap-2 w-fa">
         <form class="w-fa" action="" method="post" enctype="multipart/form-data">
             <div class="flex flex-col w-fa gap-2 border-soft item-bg box-shadow padding-1">
-                <div class="flex flex-row flex-align-c flex-justify-con-sb">
-                    <span class="text-primary larger bold">Hír létrehozása</span>
-                    <span id="news-create" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
-                        <span class="flex flex-col flex-align-c flex-justify-con-c">Létrehozás</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
-                    </span>
+                <div class="flex flex-col w-fa gap-025">
+                    <div class="flex flex-row flex-align-c flex-justify-con-sb">
+                        <span class="text-primary larger bold">Hír létrehozása</span>
+                        <span id="news-create" class="flex flex-row flex-align-c flex-justify-con-c w-fc gap-05 primary-bg primary-bg-hover border-soft padding-05 user-select-none pointer small-med bold">
+                            <span class="flex flex-col flex-align-c flex-justify-con-c">Létrehozás</span>
+                            <svg width="19.2" height="19.2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor"/></svg>
+                        </span>
+                    </div>
+                    <div class="hidden flex-row flex-align-c flex-justify-con-fe small text-danger" id="news-save-error-con"></div>
                 </div>
                 <div class="flex flex-col gap-05">
                     <span class="text-secondary small">Hír címe</span>
@@ -97,63 +100,61 @@ if ($privilege < 1) { echo '<script>window.location.href = "/"</script>'; header
     var minActive = 0; var miniArr = [];
     $('#news-create').click(() => {
 
-        var newsData = new FormData(); 
-        $.ajax({url: "https://api.ipdata.co?api-key=739837e232548988c86b954108794b57bd3e1dbcd6eb550bfa53e544", dataType: 'json',
-            success : function (api) {
+        var news_title = document.getElementById('news-title').value;
+        var news_attachment = miniArr[0];
+        var news_desc = document.getElementById('news-brief-desc').value;
+        var news_body = document.getElementById('news-config-body').checked ? document.getElementById('news-body-editor').getElementsByClassName('ql-editor')[0].innerHTML : '';
+        var news_related = document.getElementById('news-config-related').checked ? 1 : 0;
+        
+        console.log(news_title);
+        console.log(news_attachment);
+        console.log(news_desc);
+        console.log(news_body);
+        console.log(news_related);
 
-                newsData.append('title', document.getElementById('news-title').value);
-                newsData.append('image', miniArr[0]);
-                newsData.append('desc', document.getElementById('news-brief-desc').value);
-                newsData.append("ip", api.ip);
-                const ajaxObject = {
-                    url : '/assets/php/classes/class.Feedbacks.php',
-                    data : newsData,
-                    loaderContainer : {
+        if (miniArr.length > 0 && news_title.length > 0 && news_desc.length > 0) {
+    
+            document.getElementById('news-save-error-con').classList.replace('flex', 'hidden');
+            document.getElementById('news-save-error-con').innerHTML = ``;
+
+            var newsData = new FormData(); 
+            newsData.append('title', news_title);
+            newsData.append('attachment', news_attachment);
+            newsData.append('desc', news_desc);
+            newsData.append('body', news_body);
+            newsData.append('related', news_related);
+            const ajaxObject = {
+                url : '/assets/php/classes/class.News.php',
+                data : newsData,
+                loaderContainer : {
+                    isset : true,
+                    id : 'news-create',
+                    type : 'button',
+                    iconSize : {
+                        iconWidth : '19.2',
+                        iconHeight : '19.2'
+                    },
+                    iconColor : {
                         isset : true,
-                        id : 'send-feedback',
-                        type : 'button',
-                        iconSize : {
-                            iconWidth : '19.2',
-                            iconHeight : '19.2'
-                        },
-                        iconColor : {
-                            isset : true,
-                            color : 'currentColor'
-                        },
-                        loaderText : {
-                            custom : true,
-                            customText : 'Elküldés'
-                        }
+                        color : 'currentColor'
+                    },
+                    loaderText : {
+                        custom : true,
+                        customText : 'Létrehozás'
                     }
-                };
-
-                let response = getFromAjaxValidate(ajaxObject, 'feedback')
-                .then((data) => {
-                    if (data.length > 0) { for (let i = 0; i < data.length; i++) { document.getElementById('feedback-error-' + data[i]).innerHTML = `<span class="small-med text-danger">Ez a mező kitöltése kötelező!</span>`; } }
-                    else {
-                        let response = getFromAjaxRequest(ajaxObject)
-                        .then((data) => {
-                            if (data.status == 'success') {
-                                var attachment_data = new FormData();
-                                for (let i = 0; i < miniArr.length; i++) { attachment_data.append('atch'+(i+1), miniArr[i]); }
-                                attachment_data.append('fid', data.data.fid); attachment_data.append('uid', <?= $_SESSION['id']; ?>);
-                                attachment_data.append('message', feedbackObject.description);
-                                $.ajax({ enctype: "multipart/form-data", type: "POST", url: "/assets/php/classes/class.Feedbacks.php", data: attachment_data, dataType: 'json', contentType: false, processData: false,
-                                    success : function (s) {
-                                        if (s.status == 'success') {
-                                            $('#send-feedback').off('click');
-                                            notificationSystem(0, 0, 0, 'Üzenet', 'Visszajelzés sikeresen elküldve.');
-                                            showPanel(0, 'tab-overview');
-                                        }
-                                    }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); }
-                                });
-                            }
-                        }).catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
-                    }
-                }).catch((reason) => { notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
-
-            }, error : function (e) { notificationSystem(1, 0, 0, 'Üzenet', 'Nem tudtunk kapcsolódni a kiszolgáltatóhoz.'); }
-        });
+                }
+            };
+    
+            let response = getFromAjaxRequest(ajaxObject)
+            .then((data) => { console.log(data);
+                if (data.status == 'success') {
+                    
+                }
+            }).catch((reason) => { console.log(reason); notificationSystem(1, 0, 0, 'Üzenet', 'Hiba történt a folyamat közben.'); });
+        } else {
+            document.getElementById('news-save-error-con').classList.replace('hidden', 'flex');
+            document.getElementById('news-save-error-con').innerHTML = `A mezők kitőltése kötelező!`;
+        }
 
     });
 
@@ -162,6 +163,7 @@ if ($privilege < 1) { echo '<script>window.location.href = "/"</script>'; header
             document.getElementById('news-body-con').classList.replace('hidden', 'flex');
         } else {
             document.getElementById('news-body-con').classList.replace('flex', 'hidden');
+            quill.deleteText(0, quill.getLength());
         }
     });
 
