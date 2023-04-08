@@ -535,6 +535,7 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 <small><em>Lábléc ábra</em></small>
 <p>A footert két részre osztottam fel: Egy sort, ahol kattintható gombok vannak, például a keresés gomb, futárszolgálat információk, vagy visszajelzés gomb. Ez alatt található a cég logója, és a további linkek, például az ÁSZF link, Süti beállítások..</p>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
 <h2>Főoldal kialakítása</h2>
 <p>A főoldal kialakításánál nem akartam túlzásba esni, és nem szerettem volna teli rakni mindenféle reklámmal, vagy zsúfolni az elemeket. Nem is szerettem volna túl sok terméket megjeleníteni a fő oldalon, ugyanis arra való a Webáruház oldal. Azt szerettem volna, ha a főoldal csak egy landing page lenne, és nem a termékek vásárlása lenne a fő cél. Éppen ezért helyeztem el a főoldal legelejére a szolgáltatások sávot, ahol megtekinthetik, hogy a cég milyen szolgáltatásokat nyújt.</p>
