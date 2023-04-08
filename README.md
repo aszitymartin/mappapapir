@@ -96,11 +96,30 @@
 	  <ul>
 	    <li><a href="#szolgáltatások-sáv">Szolgáltatások sáv</a></li>
 	    <li><a href="#kiemelt-hírek">Kiemelt hírek</a></li>
-	    <li><a href="#kiemelt.kategóriák">Kiemelt kategóriákt</a></li>
+	    <li><a href="#kiemelt-kategóriák">Kiemelt kategóriák</a></li>
 	    <li><a href="#legnépszerűbb-termék">Legnépszerűbb termék</a></li>
 	    <li><a href="#termékek">Termékek</a></li>
 	  </ul>
       	</li>
+      </ul>
+    </li>
+    <li><a href="#autentikáció">Autentikáció</a>
+      <ul>
+        <li><a href="#regisztráció">Regisztráció</a>
+	  <ul>
+	    <li><a href="#script">Script</a></li>
+	  </ul>
+        </li>
+        <li><a href="#bejelentkezés">Bejelentkezés</a>
+	  <ul>
+	    <li><a href="#script-1">Script</a></li>
+	  </ul>
+        </li>
+        <li><a href="#kijelentkezés">Kijelentkezés</a>
+	  <ul>
+	    <li><a href="#script-2">Script</a></li>
+	  </ul>
+        </li>
       </ul>
     </li>
 </ol>
