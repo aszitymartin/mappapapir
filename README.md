@@ -122,6 +122,18 @@
         </li>
       </ul>
     </li>
+    <li><a href="#profil-oldal">Profil oldal</a>
+      <ul>
+        <li><a href="#profil-áttekintése">Profil áttekintése<a></li>
+        <li><a href="#személyes-információk">Személyes információk</a></li>
+        <li><a href="#fiók-információk">Fiók információk</a></li>
+        <li><a href="#biztonság">Biztonság</a></li>
+	<li><a href="#jelszó-kezelése">Jelszó kezelése</a></li>
+        <li><a href="#email-beállítások">Email beállítások</a></li>
+	<li><a href="#mentett-kártyák">Mentett kártyák</a></li>
+        <li><a href="#felfüggesztés">Felfüggesztés</a></li>
+      </ul>
+    </li>
 </ol>
 </details>
 
