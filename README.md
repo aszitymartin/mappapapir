@@ -481,7 +481,34 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 <small><em>Telefonos nézetnél megjelenő feljéc: A felhasználó nincsen bejelentkezve</em></small>
 
-<h3>Fejlécen elhelyezkedő gombok</h3>
-<p>A fejlécet úgy szerettem volna kialakítani, hogy ne takarjon ki túl sok helyet az oldalból, de a szükséges adatok és gombok megtalálhatóak legyenek rajta. Mivel az oldal nem tölti ki az egész képernyőt, hanem oldalsó margókat használ, így a fejlécet sem akartam, hogy teljes szélességet használjon. Mivel nagyon unalmasnak vélem a megszokott teljes szélességű, az oldal tetejénél kezdődő sablonos fejléceket, ezért próbáltam egy egyedi stílust használni, és egy lebegő sziget szerűségre gondoltam, ami nagyon megtettszett, így ennél maradtam.</p>
+<h2>Fejlécen elhelyezkedő gombok</h2>
+<p>A fejlécen megjelenő gomboknak mind egyedi funkciójuk van, és ezek is eltérőek lehetnek telefonos nézetben, mint a nagy méretű képernyőkön. </p>
+<h3>Keresés gomb</h3>
+<p>A fejlécen elhelyezkedő gombok közül az első, és a valószínűleg a legtöbbet használt gomb a a keresés gomb. Erre kattintva egy ablak jelenik meg, ahol egy keresési mező fog megjelenni, ahova be tudjuk gépelni a keresett termék nevét, márkáját, vagy kategóriáját.</p>
+
+![header-search](https://user-images.githubusercontent.com/105912216/230716276-9ef62b69-ad79-4b83-95b6-83eeab8c16e4.png)
+
+<small><em>Keresési mező képe</em></small>
+<p>A keresési mező alatt meg fognak jelenni a keresési javaslatok, amennyiben vannak. Amennyiben nem található termék a keresett kifejezésre, egy szöveg jelenik meg: “Nem található a keresett termék”.</p>
+
+![header-search-keyw](https://user-images.githubusercontent.com/105912216/230716293-a77bf233-0f62-4000-80ae-f57a271bf4ef.png)
+
+<small><em>Keresési mező: Keresett kifejezésre találat</em></small>
+<p>A javaslatok alatt található egy két részre osztott szekció. A bal oldalon a “Gyakori kérdések” szekció található ami sajnos még nem működik, mivel nem jutottam még el odáig. A jobb oldalon pedig az “Ajánlott termékeink” mező található. Igazából ez a rész csak megjeleníti az utolsó 4 terméket, amit hozzáadunk az oldalhoz. Bár még annyival lehetne fokozni, hogy csak a bestseller termékeket jelenítse meg, de ez már csak a jövő kérdése.</p>
+
+<h3>Profil gomb</h3>
+<p>A fejléc jobb oldalán elhelyezkedő gombok közül a második gomb több funkciót tartalmaz. Amennyiben a felhasználó be van jelentkezve, rengeteg lehetőség közül választhat, többek között a profil megtekintése opció, de itt tudja megtekinetni a mentett termékeket, a rendelési előzményeit, vagy akár a beállításait is itt tudja módosítani, úgy mint az oldal témáját.</p>
+
+![header-profile](https://user-images.githubusercontent.com/105912216/230716331-581ac7c1-c77a-441c-a1c0-cd88db860af5.png)
+
+<small><em>Fejécben megjelenő profil menü ábrája</em></small>
+<p>Amennyiben a felhasználó nincsen bejelentkezve, a már fentebb említett “Belépés” gomb fog megjelenni, amelyre kattintva megjelenik egy panel, ahol be tud jelentkezni, vagy regisztrálni tud egy új fiókot.</p>
+
+<h3>Bevásárlókosár gomb</h3>
+<p>A fejléc jobb oldali szekciójában az utolsó gomb a Bevásárlókosár gomb, ami a nevéből értetődően arra szolgál, hogy a kosárba adott termékeket tudjuk megtekintei és kezelni azokat. Valamint ez a funkció még arra is szolgál, hogy innen tudjuk megvásárolni csak azokat a termékeket amelyeket a kosárba adtunk, így nem kell egyesével megrendelni azokat.</p>
+
+![header-basket](https://user-images.githubusercontent.com/105912216/230716339-1b196697-0acb-4a71-8be6-c92b32eabd57.png)
+
+<small><em>Bevásárlókosár panel ábrája</em></small>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
