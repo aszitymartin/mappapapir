@@ -518,3 +518,44 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 <small><em>Bevásárlókosár panel ábrája</em></small>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
+<h2>Lábléc kialakítása</h2>
+<p>A lábléc kialakításánal a fő célom az volt, hogy ne legyen túlságosan zsúfolt, felesleges adatokkal telitűzdelve. Egy letisztult, egyszerű footert szerettem volna elhelyezni amely a főbb funkcionalitásait megtartva helyezkedne el az oldalak legalján.</p>
+
+![footer](https://user-images.githubusercontent.com/105912216/230718747-831d3c5d-b49c-4547-8c80-71b16f643fac.png)
+
+<small><em>Lábléc ábra</em></small>
+<p>A footert két részre osztottam fel: Egy sort, ahol kattintható gombok vannak, például a keresés gomb, futárszolgálat információk, vagy visszajelzés gomb. Ez alatt található a cég logója, és a további linkek, például az ÁSZF link, Süti beállítások..</p>
+
+<h2>Főoldal kialakítása</h2>
+<p>A főoldal kialakításánál nem akartam túlzásba esni, és nem szerettem volna teli rakni mindenféle reklámmal, vagy zsúfolni az elemeket. Nem is szerettem volna túl sok terméket megjeleníteni a fő oldalon, ugyanis arra való a Webáruház oldal. Azt szerettem volna, ha a főoldal csak egy landing page lenne, és nem a termékek vásárlása lenne a fő cél. Éppen ezért helyeztem el a főoldal legelejére a szolgáltatások sávot, ahol megtekinthetik, hogy a cég milyen szolgáltatásokat nyújt.</p>
+<h3>Szolgáltatások sáv</h3>
+<p>A szolgáltatások résznél ki szerettem volna emelni, hogy mivel is foglalkozik igazából a cég, és nem csak irodai eszközöket ad el, hanem nyomtatással, könyv kötéssel, tervezéssel is foglalkozik. </p>
+
+![services](https://user-images.githubusercontent.com/105912216/230718762-0c670ea2-7f6e-4548-872b-d8c2f603e1e8.png)
+
+<small><em>Szolgáltatások sáv ábra</em></small>
+<h3>Kiemelt hírek</h3>
+<p>A következő elem a főoldalon a kiemelt hírek szekciója. Ez a szekció jelenleg egy újragondoláson esik át. Jelenleg csak annyi a tartalma, amennyit látunk a főoldalon a kis slideren, de szeretném, ha ezek az elemek kattinthatóak legyenek és további szöveget tudjon olvasni a felhasználó a témával kapcsolatban. </p>
+
+![news](https://user-images.githubusercontent.com/105912216/230718764-0adcabc1-5373-42a3-a363-c03b8641aaa9.png)
+
+<small><em>Főoldal hírek szekció ábra</em></small>
+<h3>Kiemelt kategóriák</h3>
+<p>Ezt a sávot csak azért adtam hozzá a főoldalhoz, hogy ne csak a termékek jelenjenek meg a főoldalon, hanem  legyen egy kis szekció, ahol láthatják a felhasználók, hogy melyik kategóriák a felkapottak az oldalon. A jelenlegi állapotban csak az első 5 kategóriát választja ki az adatbázisból és jeleníti meg azokat. Tervben van, hogy a rendelések alapján szűrje ki, hogy melyik kategóriúbol rendelték a legtöbbet, és azok alapján állítsa elő a sorrendet.</p>
+
+![category](https://user-images.githubusercontent.com/105912216/230718773-2fd15482-39e1-48ac-910e-3d0e7417f198.png)
+
+<small><em>Kiemelt kategóriák ábra</em></small>
+<h3>Legnépszerűbb termék</h3>
+<p>Ebben a szekcióban az a termék jelenik meg, amelyik a legnépszerűbb termék az értékelések alapján. A  megjelenő szekció háttérszíne a termék képének színeinek átlaga, és a rajta elhelyezkedő szöveg színe pedig a háttér szín kontrasztja, hogy jól látható legyen a szöveg, akármilyen színű is a háttér.</p>
+
+![popular](https://user-images.githubusercontent.com/105912216/230718780-86f9eb03-f5bc-4d63-842f-d3459979f868.png)
+
+<small><em>Legnépszerűbb termék ábra</em></small>
+<h3>Termékek</h3>
+<p>Ebben a szekcióban az adatbázisba felvett termékek jelennek meg, kategóriákra bontva.  A termék kártyák tervezésénél kipróbáltam több változatot is, de a jelenlegi tetszett a legjobban a letisztultsága miatt. Igyekeztem minél kevesebb adat megjelenítésével minél több információt átadni a vásárlóknak.</p>
+
+![products](https://user-images.githubusercontent.com/105912216/230718783-0afba41f-29bc-4e34-a224-d934f5e191e9.png)
+
+<small><em>Termékek ábra</em></small>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
