@@ -82,7 +82,13 @@
                 <li><a href="#telefonokon-megjelenő-fejléc">Telefonokon megjelenő fejléc</a></li>
               </ul>
             </li>
-            <li><a href="#fejlécen-elhelyezkedő-gombok">Fejlécen elhelyezkedő gombok</a></li>
+            <li><a href="#fejlécen-elhelyezkedő-gombok">Fejlécen elhelyezkedő gombok</a>
+	      <ul>
+	        <li><a href="#keresés-gomb">Keresés gomb</a></li>
+	        <li><a href="#profil-gomb">Profil gomb</a></li>
+		<li><a href="#bevásárlókosár-gomb">Bevásárlókosár gomb</a></li>
+	      </ul>
+	    </li>
           </ul>
         </li>
       </ul>
