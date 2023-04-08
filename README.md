@@ -649,3 +649,101 @@ Ahhoz, hogy a felhasználók adatait kezelni tudjuk létre kelett hozni a „cus
 
 <small><em>Kijelentkezési script ábra</em></small>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Profil oldal
+
+<p>A profil oldal elkészítése közben igen erősen el kellett gondolkodnom, hogy tényleg akarom-e én ezt a funkciót az oldalra. Sok értelmét nem láttam, mert ez nem egy közösségi oldal, hogy szerkesztgesse az ember a profilját, de úgy voltam vele, hogy akkor próbálok rendelés központú lenni, és olyan adatokat megjeleníteni itt, amelyek tényleg hasznosak a felhasználónak. Ez többé-kevésbé sikerült, de összességében nem bántam meg, hogy úgy döntöttem, hogy elkészítem a profil oldalt.</p>
+<p>Annyit le szeretnék szögezni, hogy a profil oldal több oldalra van felosztva, és abbol néhány oldal csak demo, és nem működik. Ez több okból is így van. Van olyan oldal amelynek elkészítése több tudást vett volna igénybe és nem lett volna értelme az erőfeszítésnek ehhez a projekthez. Amennyiben viszont úgy döntök, hogy tovább szeretném fejleszteni ezt az oldalt, mert komoly terveim vannak vele, akkor mindenféleképpen tökéletesíteni fogom.</p>
+<h2>Profil áttekintése</h2>
+<p>Ezen az oldalon jelennek meg a felhasználó alap adatai, a rendelt termékei kategóriákra bontva, és a rendelései csoportosítva. Ezt az áttekintő oldalt a rendelésekre öszpontosítottam, ugyanis szerintem a leglényegesebb információ, hogy mire költötte az egyenlegét a felhasználó, és milyen szolgáltatást vagy terméket kapott érte.</p>
+
+![info](https://user-images.githubusercontent.com/105912216/230730555-ea265c65-8ead-4733-ac88-4db3f8708851.png)
+
+<small><em>Profil adatok ábra</em></small>
+<p>A profil adatok részlegen jelennek meg a felhasználó alap adatai, és az e-mail címével kapcsolat információk, például, hogy aktiválva van-e az e-mail címe a felhasználóknak. Ezeket az értesítéseket ki tudja a felhasználó kapcsolni, ha zavarja őt, de 7 nap után az értesítés újra meg fog jelenni.</p>
+
+![orders](https://user-images.githubusercontent.com/105912216/230730570-baa48314-9b4b-4218-aa51-bf2ad02e13c2.png)
+
+<small><em>Rendelések ábra</em></small>
+<p>Az áttekintés oldalon továbbá a felhasználó megtekintheti, hogy milyen kategóriákból rendelte a legtöbbet egy kördiagrammon. A diagramm mellett egy lista jelenik meg, ahol láthatja az összes eddigi rendeléseit, és azoknak a státuszát. Ezekre rákattintva megtekintheti a rendelés pontos adatait és minden információit.</p>
+
+<h2>Személyes információk</h2>
+<p>A személyes információk oldalon jelenik meg a felhasználó összes alap adata, ami szükséges lehet a rendelésekhez. Itt tudja szerkeszteni ezeket az adatokat.</p>
+
+![edit](https://user-images.githubusercontent.com/105912216/230730577-32bb63a6-66a0-47aa-867f-c3d297628816.png)
+
+<small><em>Személyes információk szerkeszése ábra</em></small>
+<p>Az adatok szerkesztése után a szekció jobb fenti sarkában látható Mentés gombra kattintva tudja elkezdeni az adatok mentését. A script előszőr megnézi, hogy tényleg történt-e változtatás. Amennyiben nem történt akkor egy hibaüzenet jelenik meg, hogy nem történt változtatás.</p>
+<p>Abban az esetben, ha mégis történt módosítás, egy panel fog megjelenni, ahol ki van listázva az összes módosított adat, hogy mire lesz módosítva. A Mentés gombra kattintva véglegesítheti a módosításokat, és amennyiben nem történt hiba a módosítás közben, egy üzenet fog megjelenni a módosítás sikerességéről.</p>
+
+![save](https://user-images.githubusercontent.com/105912216/230730580-86af2518-965a-4577-8679-797c0a750de2.png)
+
+<small><em>Adatok módosítása ábra</em></small>
+
+<h2>Fiók információk</h2>
+<p>A fiók információk oldalon olyan adatok szerepelnek, amelyek nem lényegesek a rendelés lebonyolításához, csak olyan adatokat lehet itt módosítani, amelyekkel még a projekt elején volt tervem, de út közben nem lettek felhasználva, így csak itt maradtak, és nincs semmilyen hasznuk. Kisebb-nagyobb próbálkozások voltak a nyelv módosítása lehetőséggel, de rájöttem, hogy annyira kevés külföldi megrendelő lesz, ha lesznek, hogy nem érte volna meg ezzel foglalkozni, hogy lefordítsam az oldalt több nyelvre is. Így a nyelvi és az időzóna beállítás csak úgy benne maradt a kódban, ha bár semmi hasznuk nincsen.</p>
+
+![account](https://user-images.githubusercontent.com/105912216/230730591-1695613b-53db-4349-b1b4-fa877015d62f.png)
+
+<small><em>Fiók adatainak módosítása ábra</em></small>
+<p>A módosítás ugyanúgy működik, mint a személyes információk módosításánal. Megnézi, hogy történt-e módosítás, és ha igen akkor átírja az adatbázisban az adatokat.</p>
+
+<h2>Biztonság</h2>
+<p>A biztonság oldalon lehet majd bekapcsolni a két lépcsős hitelesítést, bár ez a funkció még nem működik.</p>
+<p>Ennek az oldalnak az igazi lényege, hogy itt lehet megtekinteni a bejelentkezési előzményeket. Itt jelennek meg azok a próbálkozások amikor valaki próbált belépni a fiókunkba és vagy sikerült neki, vagy nem.</p>
+
+![security](https://user-images.githubusercontent.com/105912216/230730599-d3006a98-755e-43ec-8b20-fd140c2774ee.png)
+
+<small><em>Biztonság oldal ábra</em></small>
+
+<h2>Jelszó kezelése</h2>
+<p>A jelszó kezelése oldalon tudjuk megváltoztatni a jelszavunkat, és tudjuk megtekinteni a jelszó változtatási előzményeket. A jelszó módosításánál meg jelenik egy értesítés, ha a jelszavunk elavult. A jelszó akkor számít elavultnak, ha a felhasználó nem módosította a jelszavált már több, mint egy hónapja. Ez az értesítés azért kell, hogy kiküszöböljük azt a lehetőséget, hogy a felhasználó elfelejtse a jelszavát, vagy más megszerezhesse azt.</p>
+
+![password](https://user-images.githubusercontent.com/105912216/230730605-bdf61dc3-3b18-457b-8a3b-9396d97496bb.png)
+
+<small><em>Jelszó módosítása ábra</em></small>
+
+<h2>Email beállítások</h2>
+<p>Ez az az oldal, amelyik csak demó a profil oldalon, a beállítások nem működnek, ugyanis az e-mail rendszert a projekt legvégén szerettem volna megcsinálni, de idő hiánya miatt ez nem valósult meg. Terveim vannak, hogy miket szeretnék csinálni, és hogyan használnám ki az e-mail lehetőségeit, de ezt már csak akkor fogom megvalósítani, ha eladásra szánom az oldalt.</p>
+
+![email](https://user-images.githubusercontent.com/105912216/230730608-3a58b903-8289-4f3b-a12b-cee58f2547f4.png)
+
+<small><em>Email beállítások ábra</em></small>
+
+<h2>Mentett kártyák</h2>
+<p>A mentett kártyák oldalán tudjuk kezelni a feliratkozásainkat, és kezelhetjük a jelenlegi kártyáinkat.</p>
+
+![cards_overview](https://user-images.githubusercontent.com/105912216/230730613-ce6b3227-c2f2-49fa-b7f8-f6e819199770.png)
+
+<small><em>Mentett kártyák kezelése: Feliratkozások ábra</em></small>
+<p>A feliratkozás rendszert csak azért tettem bele, hogy kicsit több funkcióval rendelkezzen az oldal, de ez a funkció azonnal deaktiválásra fog kerülni, amint eladásra kerülne az oldal, ugyanis ennek csak lokálisan lenne értelme. A feliratkozás rendszer arról szól, hogy alapból, amikor regisztrál egy felhasználó, generálódik hozzá egy dedikált virtuális kártya, amivel tud tranzakciókat bonyolítani az oldalon.</p>
+<p>Az ingyenes, alap verzióval a felhasználó egyszerre 4 kártyát használhat, és ha töröl egy kártyát, a kártya helye ugyanúgy le lesz foglalva, mintha lenne kártyája a felhasználónak, hiába törölte. Ez a funkció azért van, hogy ne törölje ki a kártyáját a felhasználó, ha lefogyott róla az egyenleg, és generáljon egy újat helyette.</p>
+<p>A törzsvásárló és a vállalati előfizetássel már nem fogja foglalni a helyet a törölt kártya, és több kártyát használhat egyszerre a felhasználó, de a feliratkozásnak van havi díja, amit egy MYSQL event figyel, minden este éjfélkor ellenőrzi, hogy mikor járt le a feliratkozó 1 hónapja, és amennyiben lejárt, levonja a szolgáltatás díját.</p>
+<p>Annyi engedményt kapnak a felhasználók, ha előfizetnek egy szolgáltatásra, például vállalati, és lemondja egy héten belül, a következő előfizetésnél nem a teljes árat kell kifizetnie.</p>
+<p>A következő funkció a kártyák áttekintése. A felhasználó itt láthatja, hogy milyen kártyái vannak, és a hozzá tartozó adatokat.</p>
+
+![cards_info](https://user-images.githubusercontent.com/105912216/230730620-d78ebefd-7bc6-440a-8478-82983c723941.png)
+
+<small><em>Mentett kártyák: Kártya információ ábra</em></small>
+<p>Itt tud a felhasználó hozzá adni kártyát, kitörölni az eddigieket, vagy beállítani az elsődleges kártyát. A jobb fenti „Hozzáadás” gombra kattintva fog megjelenni egy panel, ahol a felhasználó létre hozhat magának egy új kártyát, és ki tudja cálasztani a kártya típusát. A kártya alap egyenlege az előfizetéstől függ. Amennyiben a felhasználónak nincsen előfizetése, 30 ezer forint lesz alapból a kártyáján.</p>
+
+![cards_add](https://user-images.githubusercontent.com/105912216/230730626-756d671a-31e2-4de5-a9bd-5609b6caaa28.png)
+
+<small><em>Metnett kártyák: Kártya hozzáadása ábra</em></small>
+
+<p>A kártya szerkeszése funkciónál egy ugyanolyan panel fog megjelenni, mint a kártya létrehozása funkciónál, csak itt már előre ki lesznek töltve az adatok. A kártya módosításával a kártyán megtalálható egyenleg nem fog módosulni, viszont a kártya lejárati dátumát barmikor módosíthatja a felhasználó, így ha lejárt, és van még rajta összeg, akkor csak átírja a lejárati dátumot és tud vele újra fizetni. (Ezért is lesz kivéve ez a kártyás funkció)</p>
+
+![cards_delete](https://user-images.githubusercontent.com/105912216/230730630-f7142870-f2ef-4bf6-9aae-84c4e75ed4f7.png)
+
+<small><em>Mentett kártyák: Kártya törlése ábra</em></small>
+<p>A kártya törlésénél egy panel fog megjelenni, ami kérni fogja a felhasználó jelszavát, amit ha helyesen ad meg, akkor a kártyája törtlődni fog.</p>
+
+<h2>Felfüggesztés</h2>
+<p>Ezen az oldalon a felhasználó el tudja dönteni, hogy fel szeretné-e függeszteni a profilját, vagy véglegesen törölni szeretné-e azt.</p>
+
+![deactive](https://user-images.githubusercontent.com/105912216/230730640-ba244ea0-ff0f-471b-b512-cb5e318934cb.png)
+
+<small><em>Felfüggesztés ábra</em></small>
+<p>A felasználó választhat, hogy fel szeretné-e függeszteni a profilját, vagy teljesen törölni szeretné-e a fiókot. Mind a kettőnek megvan az előnye és hátránya, de a fiók felfüggesztését ajánlom a felhasználóknak a törlés helyett. Ahogy az az ábrán is látszik egyik művelet sem történik meg egyből, mind a kettőnek van futási ideje. Deaktiválást követően, amint a felhasználó újra belép a fiókjába, többet nem lesz a felfüggesztett státusz a fiókján. Viszont ha a törlés opciót választotta a felhasználó, a kijelentkezetése után egy 30 napos futamidő fog elindulni, így ha a felhasználó nem lép be a fiókjába 30 napon belül, akkor a fiókját és a hozzá tartozó minden adat el lesz távolítva az oldalról és nem lesz lehetőség visszaállításra. Abban az esetben, ha a felhasználó belép a 30 napos időszakban, a számláló megáll, és kikerül a törlési folyamatból.</p>
+
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
