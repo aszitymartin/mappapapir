@@ -91,6 +91,16 @@
 	    </li>
           </ul>
         </li>
+        <li><a href="#lábléc-kialakítása">Lábléc kialakítása</a></li>
+        <li><a href="#főoldal-kialakítása">Főoldal kialakítása</a>
+	  <ul>
+	    <li><a href="#szolgáltatások-sáv">Szolgáltatások sáv</a></li>
+	    <li><a href="#kiemelt-hírek">Kiemelt hírek</a></li>
+	    <li><a href="#kiemelt.kategóriák">Kiemelt kategóriákt</a></li>
+	    <li><a href="#legnépszerűbb-termék">Legnépszerűbb termék</a></li>
+	    <li><a href="#termékek">Termékek</a></li>
+	  </ul>
+      	</li>
       </ul>
     </li>
 </ol>
