@@ -859,3 +859,86 @@ Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárl
 
 <small><em>Keresési találatok ábra</em></small>
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Admin oldal
+
+<p>Az admin oldal kialakítása során több tényezőt is szem előtt kellett tartani. A könnyű kezelhetőséget, hogy ne kelljen az embereket tanítani, hogy hogyan kell használni a rendszert, és a jogosultsági rendszert. Nem szerettem volna, hogy a személyzet olyan jogokkal rendelkezzen, mint egy rendszergazda, és olyan adatokat tudjon módosítani, amihez lehet nem kellene nyúlnia.</p>
+
+<h2>Áttekintés oldal</h2>
+<p>Ezen az oldalon akartam megjeleníteni a főbb elemeket az oldallal kapcsolatban, hogy egyből látni lehessen az aktualitásokat, a rendeléseket és a statisztikákat.</p>
+
+![widget](https://user-images.githubusercontent.com/105912216/232770858-b4b27597-cbdd-44f7-bbb4-b4ca74729d24.png)
+
+<small><em>Admin oldal - áttekintés: Widgetek ábra</em></small>
+<p>Az első sorban 3 widget jelenik meg, ahol a felhasználókról láthatunk egy pár adatot, mellette pedig az elmúlt 30 rendelés van egymás mellé állítva. Ezek mellett pedig egy havi statisztika van, hogy ebben a hónapban mennyi rendelés történt, és ez hány százaléka az előző hónapnak.</p>
+<p>Ezek a widgetek alatt még kettő szekció helyezkedik el: az egyik, az aktuális havi rendeléseit jeleníti meg egy diagrammon, és kiírja az összesített bevételt a rendelésekből. A másik egy készletjelentés a termékekről, hogy melyik termékből mennyi van még raktáron. </p>
+
+<h2>Oldal beállítások</h2>
+	<p>Ez az oldal csak a rendszergazda jogosultsággal rendelkező felhasználóknak érhető el. Ezen az oldalon lehet szerkeszteni a weboldal alap beállításait, például a nevét, az ikonját, és a meta tagokat is.</p>
+	<p>Egy nemrég hozzáadtt funkció, az oldal ikonjának szerkesztése. Sokat gondolkodtam azon, hogy tényleg érdemes-e megcsinálni ezt a funkciót, és ha meg is csinálom, hogyan valósítsam meg. Úgy voltam vele, hogy nagyon nagy tudást nem vesz igénybe a script megírása, és sosem baj, ha van egy plusz funkció, így megcsináltam. Előszőr csak simán fel lehetett tölteni egy ikont, és beállította azt az oldalnak. Aztán elgondolkodtam rajta, hogy ha már a feltöltött ikonokat úgyis elmentem egy mappába, akkor lássa már a felhasználó, hogy milyen eddigi ikonok voltak beállítva, és így született meg a véglegesített változatban, hogy a feltöltött képek listája is megjelenik az aktuális ikon alatt. Az előzményeknél ki lehet választani, hogy azt a képet állítsa be aktuális ikonnak, így nem kell mégegyszer feltölteni ugyanazt a képet.</p>
+
+![icon](https://user-images.githubusercontent.com/105912216/232770919-7e2f12a4-41d9-4a73-b962-2d1544ba53e3.png)
+	<small><em>Admin oldal - Ikon feltöltés ábra</em></small>
+	<p>Annyi bővítő funkció még lehet hogy hozzá lesz adva, hogy ne csak beállítani lehessen az ikonokat, hanem eltávolítani a listáról, így a szerverről is törlődni fognak.</p>
+	<p>A következő elem, amit kiemelnék, az a hírek kezelése funkció. Menet közben arra jutottam, hogy a hírek listája ugyanúgy meg fog itt jelenni, mint eddit, csak a szerkesztése egy másik oldalon fog megtörténni, ami egy kicsit komplexebb módon fog történni. A tervek szerint majd ott lehet hozzáadni híreket, szerkeszteni, vagy akár törölni azokat. Ez a funkció még csak egy prototipus, a kialakítása még folyamatban van, de mindeféleképpen szeretném, ha ez a funkció bekerülne a végleges kiadásba.</p>
+
+![news](https://user-images.githubusercontent.com/105912216/232770940-3663e984-7fd9-4349-8bc1-d62419616f86.png)
+	<small><em>Admin oldal - Hírek ábra</em></small>
+	<p>Az egyik kedven funkcióm a fejléc linkek szerkesztése. Itt tud a felhasználó további linkeket felvenni a fejlécre, vagy a jelenlegi elemeket szerkeszteni. Az egyetlen gondom vele, hogy bonyolultabb elérési útvonalat nem lehet megadni, pontosabban olyat nem lehet, amelyik egy queryt tartalmaz. Amíg a “/admin” útvonal helyes, addig a “/admin/?tab=default” már nem, ugyanis a szimbólumok feldolgozásánál gondok akadnak a PHP-ban, ami a prepared statementek miatt vannak, hogy kiszűrődjenek a kártékony parancsok, hogy ne tudjon megadni a felhasználó egy ártó MYSQL queryt elérési útnak, mivel azt fel fogja dolgozni a mysql és komoly károkat okozhat az adatbázisban.</p>
+	
+![links](https://user-images.githubusercontent.com/105912216/232770973-a3074e1c-970b-456c-b47b-8500ebcad8a7.png)
+	<small><em>Admin oldal - Fejléc linkek ábra</em></small>
+
+	<h2>Termékek oldal</h2>
+	<p>A termék oldalon jelennek meg az oldalon elérhető termékek, és ezek közül lehet választani, hogy melyiket szeretnénk szerkeszteni. Ezen az oldalon még a jobb felső sarokban megjelenő “Termék hozzáadása” gombra kattintva lehet új terméket felvenni az oldalra.</p>
+	<h3>Termék hozzáadása</h3>
+	<p>Ez az oldal három részre van felbontva: Az általános, haladó, és a vélemények oldal. Az általános oldalon lehet beállítani a termék alap információit, például a nevét, a képét, az árát, státuszát stb.  A haladó oldalon lehet beállítani a termék készleten lévő elérhetőségét, a termék variációit, a meta tagjait, és a szállítási beállításokat. A vélemények oldalon csak a termékhez kapcsolódó véleménybeállításokat lehet módosítani. </p>
+	<p>Ezek az adatok megadása után a terméket el lehet menteni, hogy feltöltődjön az adatbázisba, és a státuszától függően megjelenjen az oldalon. A mentés oldal mellett még megtalálható egy importálás gomb is, ahol ki lehet választani, hogy melyik termék adatait szeretnénk importalni, hogy azokat módosítva, vagy felhasználva létre tudjunk hozni egy új terméket.</p>
+	<h3>Termék szerkesztése</h3>
+	<p>Ez az oldal ugyanazt tudja, mint a termék létherhozása oldal, csak annyi a különbség, hogy nem egy új termék fog létrejönni, hanem a már meglévő termékekből választva lehet változtatni az adatokat. Ugyanezen az oldalon lehet törölni a kiválasztott terméket.</p>
+
+	<h3>Visszajelzések</h3>
+	<p>Ezen az oldalon látják a személyzet tagjai a felhasználók által írt visszajelzéseket, és az azokkal kapcsolatos statisztikákat is. A statisztikák alatt megjelenő listából a választott visszajelzésre kattintva meg lehet nyitni a visszajelzést, és eltudjuk olvasni a tartalmát, és kezelni tudjuk azt.</p>
+	<p>Visszajelzésre csak akkor tud a felhasználó válaszolni, ha azt a visszajelzést nem ő írta, és a megfelelő jogosultsággal rendelkezik. Amennyiben nem rendelkezik megfelelő jogokkal, csak új visszajelzést tud létrehozni. Az arra jogosult felhasználók tudják kezelni a visszajelzéseket, itt tudják a státuszát beállítani és lezárni a visszajelzést.</p>
+
+	<h3>Felhasználók oldal</h3>
+	<p>Ezen az oldalon az oldalra regisztrált felhasználók jelennek meg. A listából kiválasztva tudja az admin módosítani a kiválasztott felhasználó adatait. Az oldal lényegében megegyezik a profil oldallal, ugyanazokat az adatokat tudja szerkeszteni, mint egy profil oldalon. A plusz funkciók azok, amiket a sima felhasználó nem tud módosítani, hogy itt lehet a felhasználó egyenlegét módosítani, a kosara, és a mentett elemeinek tartalmát is tudja módosítani. Itt tudja a felhasználó jogosultságát szerkeszteni, valamint felfüggeszteni, vagy törölni a felhasználót, valamint megtudja tekinteni a felhasználó naplófájlját, így láthatja, hogy a felhasználó miket hajtott végre az oldalon.</p>
+
+	<h3>Rendelés oldal</h3>
+	<p>Ezen az oldalon jelennek meg a felhasználók által leadott rendelések, és ezeket tudja az admin szerkeszteni, és kezelni azokat, hogy milyen státuszban vannak. Az oldal elején pár információ és grafikonok jelennek meg a rendelésekkel kapcsolatban, és ezekből statisztikák vannak megjelenítve.</p>
+	![diagramm](https://user-images.githubusercontent.com/105912216/232771068-6fa8b775-73dd-4b6c-9344-3cad11f4f08d.png)
+	<small><em>Admin oldal: Rendelés statisztika ábra</em></small>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Rendelés
+
+<p>Rendelést leadni két féleképpen lehet az oldalon. Lehet megrendelni egyedül álló terméket, vagy azokat a termékeket egyszerre, amelyek a kosárba lettek rakva.</p>
+
+![order_basket](https://user-images.githubusercontent.com/105912216/232771211-8850bc83-49ae-4112-a5f4-7bdffdb89086.png)
+<small><em>Rendelés oldal: Kosár elemei ábra</em></small>
+	<p>A rendelés leadását megelőzően ki kell tölteni egy űrlapot, ahol meg kell adnia a rendelőnek az adatait, a szállítási címet, a szállítási opciót, a fizetési lehetőséget, a kuponkódokat és végül el kell fogadnia az általános szerződési feltételeket, hogy le tudja adni a rendelését.</p>
+	<p>A rendelés leadását követően a script feldolgozza az adatokat, és megnézi, hogy a rendelni kívánt termék(ek)ből van-e elegendő készleten, vagy csak raktáron van-e. Amennyiben nincs készleten megjelenik egy opció, ahol ki tudja választani, hogy megrendeli a terméket, de a kiszállítási idő megnövekszik, vagy csak a készleten lévő mennyiséget rendeli meg, ha van, vagy nem rendeli meg a terméket. Amint kiválasztotta az opciót, és leadja újból a rendelést, az adatok őjra feldolgozásra kerülnek, és megtörténik a rendelési folyamat. A felhasználó egyenlegének megtekintése után történik a raktár frissítése, és a számla generálása, végül a naplózás.</p>
+
+![order_success](https://user-images.githubusercontent.com/105912216/232771250-58d1a896-2e83-4eae-a70d-203571cc29e8.png)
+	<small><em>Rendelés oldal: Sikeres rendelés ábra</em></small>
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Téma beállítások
+
+<p>Ezt a funkciót elsősorban magam miatt hoztam létre, ugyanis amikor az oldalt este csináltam, zavart a fehér téma, napközben pedig a sötét téma volt a nem megfelelp számomra, így kitaláltam, hogy a felhasználó tudja változtatni az oldal témáját.</p>
+
+![theme](https://user-images.githubusercontent.com/105912216/232771310-ef1f7521-1a9d-4767-8593-b2d9e222ab0a.png)
+<small><em>Téma választó ábra</em></small>
+	<p>A felhasználó 4 opció közül tud választani: A sötét mód, a fényes mód (ami az alap az oldalon), az automatikus és az ütemezett mód. Az első kettő mód magától értetődő, hogy mit tudnak. Az ütemezett mód 6 és 20 óra között világos témát jelenít meg az oldalon, az után pedig sötétre vált az oldal. Ezt tervezem a jövőben bővíteni, hogy az időpontokat a felhasználó tudja beállítani, de nemhiszem, hogy nagy igény lenne rá.</p>
+	<p>Az automatikus opció a rendszer témájához igazítja az oldal megjelenítését, így ha az eszköz témája sötét, akkor az oldal is sötét színekben fog megjelenni. Amennyiben a felhasználó be van jelentkezve, ezek a beállítások mentve lesznek adatbázisba, így nem kell minden belépéskor állítani az oldal témáját.</p>
+
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Összegzés
+
+<p>Véleményem szerint ez a projekt egy igazi kihívás volt, ugyanis, hogy egyedül kellett megtervezni és megvalósítani egy komplett oldalt elég stresszes volt és egy jó pár órámba került, és meg így sem tudtam mindent megcsinálni amit szerettem volna. Remek szintfelmérés volt számomra és jó visszatekinteni, hogy honnan indultam amikor az oldalt kezdtem és hogy mennyit fejlődtem a fejlesztés közben. Büszke vagyok rá, hogy sikerült végig csinálnom a projektet és nem az egyszerűség volt a cél, hanem az oldal komplexitása és működése. Rengeteg tudást szereztem a projekt kivitelezése alatt, és úgy érzem, hogy az a több ezer fórum oldal böngészése kifizetődött.</p>
+<p>A projekt vége felé elgondolkodtam, hogy biztosan a webfejlesztéssel szeretném-e folytatni a jövőmet és arra jutottam, hogy bármikor tanulok új dolgokat és technológiákat, de inkább dolgoznék csapatban, mert úgy hatékonyabban lehet dolgozni, és jobban lehet a másikat segíteni, mert nem mindenkinek ugyanolyan a látásmódja. Bármikor szivesen vállalnék még ilyen projektet a jövőben, csak legyen kivel megvalósítani és remélem, hogy a továbbiakban lesz még rá alkalom.
+
+<p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+<p>Az oldal elérhetősége: amkkmp.nethely.hu</p>
