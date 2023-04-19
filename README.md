@@ -170,6 +170,7 @@
     </li>
     <li><a href="#rendelés">Rendelés</a></li>
     <li><a href="#téma-beállítások">Téma beállítások</a></li>
+    <li><a href="#összegzés">Összegzés</a></li>
 </ol>
 </details>
 
