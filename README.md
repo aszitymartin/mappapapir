@@ -886,9 +886,9 @@ Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárl
 
 ![icon](https://user-images.githubusercontent.com/105912216/232770919-7e2f12a4-41d9-4a73-b962-2d1544ba53e3.png)
 	    
-	<small><em>Admin oldal - Ikon feltöltés ábra</em></small>
-	<p>Annyi bővítő funkció még lehet hogy hozzá lesz adva, hogy ne csak beállítani lehessen az ikonokat, hanem eltávolítani a listáról, így a szerverről is törlődni fognak.</p>
-	<p>A következő elem, amit kiemelnék, az a hírek kezelése funkció. Menet közben arra jutottam, hogy a hírek listája ugyanúgy meg fog itt jelenni, mint eddit, csak a szerkesztése egy másik oldalon fog megtörténni, ami egy kicsit komplexebb módon fog történni. A tervek szerint majd ott lehet hozzáadni híreket, szerkeszteni, vagy akár törölni azokat. Ez a funkció még csak egy prototipus, a kialakítása még folyamatban van, de mindeféleképpen szeretném, ha ez a funkció bekerülne a végleges kiadásba.</p>
+<small><em>Admin oldal - Ikon feltöltés ábra</em></small>
+p>Annyi bővítő funkció még lehet hogy hozzá lesz adva, hogy ne csak beállítani lehessen az ikonokat, hanem eltávolítani a listáról, így a szerverről is törlődni fognak.</p>
+p>A következő elem, amit kiemelnék, az a hírek kezelése funkció. Menet közben arra jutottam, hogy a hírek listája ugyanúgy meg fog itt jelenni, mint eddit, csak a szerkesztése egy másik oldalon fog megtörténni, ami egy kicsit komplexebb módon fog történni. A tervek szerint majd ott lehet hozzáadni híreket, szerkeszteni, vagy akár törölni azokat. Ez a funkció még csak egy prototipus, a kialakítása még folyamatban van, de mindeféleképpen szeretném, ha ez a funkció bekerülne a végleges kiadásba.</p>
 
 ![news](https://user-images.githubusercontent.com/105912216/232770940-3663e984-7fd9-4349-8bc1-d62419616f86.png)
 	    
