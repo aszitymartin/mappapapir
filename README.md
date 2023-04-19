@@ -157,8 +157,19 @@
       <ul>
         <li><a href="#áttekintés-oldal">Áttekintés oldal</a></li>
         <li><a href="#oldal-beállítások">Oldal beállítások</a></li>
+	<li><a href="#termék-oldal">Termék oldal</a>
+	  <ul>
+	    <li><a href="#termék-hozzáadása">Termék hozzáadása</a></li>
+	    <li><a href="#termék-szerkesztése">Termék szerkesztése</a></li>
+	    <li><a href="#visszajelzések">Visszajelzések</a></li>
+	  </ul>
+	</li>
+	<li><a href="#felhaszálók-oldal">Felhasználók oldal</a></li>
+	<li><a href="#rendelés-oldal">Rendelés oldal</a></li>
       </ul>
     </li>
+    <li><a href="#rendelés">Rendelés</a></li>
+    <li><a href="#téma-beállítások">Téma beállítások</a></li>
 </ol>
 </details>
 
