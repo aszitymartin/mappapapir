@@ -153,6 +153,12 @@
         <li><a href="#találatok-listája">Találatok listája</a></li>
       </ul>
     </li>
+    <li><a href="#admin-oldal">Admin oldal</a>
+      <ul>
+        <li><a href="#áttekintés-oldal">Áttekintés oldal</a></li>
+        <li><a href="#oldal-beállítások">Oldal beállítások</a></li>
+      </ul>
+    </li>
 </ol>
 </details>
 
