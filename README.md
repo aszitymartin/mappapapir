@@ -157,7 +157,8 @@
 </details>
 
 ![home](https://user-images.githubusercontent.com/105912216/230601842-594abbad-6025-457b-90f0-9375fbd8bc1c.png)
-
+[Az oldal elérhetősége](http://www.amkkmp.nhely.hu "Weboldal megtekintése")
+	    
 # Előszó
 
 <p>Mindig is jobban érdeklődtem a webfejlesztés iránt, mint más
@@ -948,4 +949,4 @@ Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárl
 
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
 
-<p>Az oldal elérhetősége: amkkmp.nethely.hu</p>
+[Az oldal elérhetősége](http://www.amkkmp.nhely.hu "Weboldal megtekintése")
