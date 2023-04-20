@@ -170,6 +170,7 @@
     </li>
     <li><a href="#rendelés">Rendelés</a></li>
     <li><a href="#téma-beállítások">Téma beállítások</a></li>
+    <li><a href="#unit-tesztek">Unit tesztek</a></li>
     <li><a href="#összegzés">Összegzés</a></li>
 </ol>
 </details>
@@ -969,6 +970,37 @@ Ezt egy algoritmus nézi meg, ami sajnos elég bonyolultra sikeredett a vásárl
 <p>Az automatikus opció a rendszer témájához igazítja az oldal megjelenítését, így ha az eszköz témája sötét, akkor az oldal is sötét színekben fog megjelenni. Amennyiben a felhasználó be van jelentkezve, ezek a beállítások mentve lesznek adatbázisba, így nem kell minden belépéskor állítani az oldal témáját.</p>
 
 <p align="right">(<a href="#top">Vissza az elejére</a>)</p>
+
+# Unit tesztek
+
+<p>Az oldal különböző funkcióihoz készítettem pár unit tesztet is, ami ellenőrzi, hogy ténylegesen az történik a funkciókban, aminek kell, és nem történik semmi hiba a folyamat közben.</p>
+<p>Az egyik legfontosabb unit teszt a bejelentkezés tesztelése, ugyanis, ha a felhasználó nem tud bejelentkezni, akkor nem tud semmilyen más funkciót sem használni, például rendelés, kosárba helyezés, stb. Ebben a tesztben több szempont alapján nézem meg a bejelentkezés funkció helyességét. </p>
+<p>Előszőr az adatbázis kapcsolódást nézem meg, ugyanis enélkül nem tudom elérni az adatbázis adatait, így nem is tudom ellenőrizni, hogy létezik-e a bejelentkezni kívánt felhasználó.</p>
+<p>Az adatbázis ellenőrzése után az e-mail cím hitelesítése és a validálása történik meg, hogy a megadott formátum tényleg helyes-e és valóban létezik-e az e-mail cím az adatbázisban.</p>
+<p>Az e-mail címek ellenőrzése után a jelszót ellenőrzöm, itt megnézem, hogy a keresett e-mail címhez tényleg ez a jelszó tartozik-e. Amennyiben igen, akkor a következő lépés a sütik beállítása.</p>
+<p>A sütiket úgy tesztelem, hogy megnézem az oldalon generált sütiket, és ellenőrzöm annak a lejárati dátumának helyességét, illetve a benne eltárolt adatokat.
+Amennyiben a fenti funkciók hiba nélkül térnek vissza, a bejelentkezés sikeresen megtörtént.</p>
+
+![Screenshot from 2023-04-20 09-38-42](https://user-images.githubusercontent.com/105912216/233305052-3137f736-4aaf-4a3d-98cc-a5d6ac52161d.png)
+
+<small><em>Bejelentkezés unit test ábra</em></small>
+
+<p>A bejelentkezés után a második legfontosabb teszt, a rendelés érvényességének tesztelése. Itt kell ellenőrizni, hogy a rendelés folyamata közben biztos nem történik semmi hiba, és amennyiben történik, az adatok visszaállítása ténylegesen megtörténik, hogy se a felhasználónak, se az oldalnak ne keletkezzen kára.</p>
+
+![Screenshot from 2023-04-20 09-57-01](https://user-images.githubusercontent.com/105912216/233305133-8d9c53e7-7abc-43a2-978b-976c8a03a3fa.png)
+
+<small><em>Rendelés unit test ábra</em></small>
+
+<p>A tesztelés első lépése, hogy itt is megnézzük az adatbázis kapcsolódási státuszt, hogy a későbbiekben tudjuk elérni az adatbázis adatait és használni tudjuk azokat.</p>
+<p>A következő lépés, hogy a felhasználót ellenőrizzük, hogy tényleg be van-e jelentkezve, és azokkal az adatokkal rendel, ami az adott felhasználóhoz tartozik. Ez arra jó, ha esetleg más kártyájával szeretne fizetni, akkor nem fogja engedni a program, mivel nem az ő profiljához van társítva.</p>
+<p>Ezek ellenőrzése után pedig azt nézem meg, hogy a rendeléshez szükséges összes adatot megadta-e a felhasználó, és azok helyessége tényleg megfelel-e.</p>
+<p>A negyedik szempont a felhasználó egyenlegének ellenőrzése. Ez a folyamat úgy működik, hogy előszőr megnézi a program, hogy a kiválasztott kártya, amivel fizetni szeretne a rendelő, lejárt-e már. Amennyiben még érvényes a kártya egyenlegét hasonlítja össze a rendelt termékek értékével.</p>
+<p>Az egyenleg ellenőrzése után megnézi a program, hogy a rendelni kívánt termékek darabszáma elérhető-e a készleten. Amennyiben nincs elegendő termék készleten, megnézi a raktár készletét is és ezek a számok alapján dönti el, hogy a felhasználó megtudja-e rendelni a termékeket.</p>
+<p>A következő lépés a felhasználó egyenlegének módosítása. Itt kerül levonásra a rendelés összege. A levonás előtt még megnézi a program, hogy biztos van-e annyi összeg a felhasználó kártyáján.</p>
+<p>Amennyiben a levonás sikeresen megtörtént, a termékek készletének frissítése fog megtörténni. A tesztelés arra szolgál, hogy megnézzük, hogy tényleg annyi terméket távolított-e el a készletből/raktárból, amennyit rendelt.</p>
+<p>A levonás után megnézzük, hogy a felhasználó feliratkozott-e a hírlevélre. A tesztelés közben megvizsgáljuk, hogy a felhasználó már fel van-e iratkozva a hírlevélre, és amennyiben nincsen, tényleg feliratkoztatta-e a program az e-mail címet.</p>
+<p>Az hírlevél tesztelése után a számla generálás tesztelése jön. Itt megnézzük, hogy a rendeléshez leadott adatok szerepelnek-e a számlán.</p>
+<p>A számla tesztelését követően a naplózás rendszer ellenőrzése következik, ahol megnézi a program, hogy tényleg naplózva lett-e a tevékenység.</p>
 
 # Összegzés
 
